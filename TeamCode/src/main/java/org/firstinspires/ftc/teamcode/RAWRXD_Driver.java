@@ -122,24 +122,7 @@ public class RAWRXD_Driver extends OpMode
         }
 
 
-        final double x = Math.pow(gamepad1.left_stick_x, 3.0);
-        final double y = -Math.pow(gamepad1.left_stick_y, 3.0);
-        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
 
-        double direction = Math.atan2(x, y);
-        double robotAngle = direction + Math.PI / 4;
-
-        final double rotation = -Math.pow(gamepad1.right_stick_x, 3.0);
-
-        final double v1 = speed * Math.cos(robotAngle) + rotation;
-        final double v2 = speed * Math.sin(robotAngle) - rotation;
-        final double v3 = speed * Math.sin(robotAngle) + rotation;
-        final double v4 = speed * Math.cos(robotAngle) - rotation;
-
-        frontLeft.setPower(v1 * Sensitivity);
-        frontRight.setPower(v2 * Sensitivity);
-        rearLeft.setPower(v3 * Sensitivity);
-        rearRight.setPower(v4 * Sensitivity);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("GyroMode", gyroMode);
         telemetry.addData("Sensitivity",  Sensitivity);
