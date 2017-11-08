@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+import org.firstinspires.ftc.teamcode.vision.CryptoboxFineDetector;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -55,14 +58,8 @@ public class RAWRXD_Driver extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeft = null;
-    private DcMotor frontRight = null;
-    private DcMotor rearLeft = null;
-    private DcMotor rearRight = null;
 
-
-
-    private boolean gyroMode = false;
+    private CryptoboxFineDetector cryptoboxFineDetector;
 
     private double Sensitivity = 1.0;
     private Controller controller = null;
@@ -74,21 +71,11 @@ public class RAWRXD_Driver extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
+        cryptoboxFineDetector = new CryptoboxFineDetector();
+        cryptoboxFineDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0);
+
+
         controller = new Controller(gamepad1);
-
-
-        frontLeft  = hardwareMap.get(DcMotor.class, "fl");
-        frontRight = hardwareMap.get(DcMotor.class, "fr");
-
-        rearLeft  = hardwareMap.get(DcMotor.class, "rl");
-        rearRight = hardwareMap.get(DcMotor.class, "rr");
-
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
     }
 
 
@@ -106,6 +93,7 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void start() {
+        cryptoboxFineDetector.enable();
         runtime.reset();
     }
 
@@ -114,28 +102,6 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void loop() {
-
-        controller.Update();
-
-        if(controller.XState == Controller.ButtonState.JUST_PRESSED){
-            gyroMode = !gyroMode;
-        }
-
-
-
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("GyroMode", gyroMode);
-        telemetry.addData("Sensitivity",  Sensitivity);
-
-
-        if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED){
-            Sensitivity += 0.25;
-        }
-
-        if(controller.DPadDown == Controller.ButtonState.JUST_PRESSED){
-            Sensitivity -= 0.25;
-        }
-
     }
 
     /*
@@ -143,6 +109,7 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void stop() {
+        cryptoboxFineDetector.disable();
     }
 
 }
