@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by Alex on 11/3/2017.
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class RAWRXD_BOT {
     private HardwareMap hardwareMap;
 
+    //DRIVE RELATED VARS
     private String  Drive_FrontLeft_Name = "fl";
     private DcMotor Drive_FrontLeft_Motor = null;
     private DcMotorSimple.Direction Drive_FrontLeft_Direction = DcMotorSimple.Direction.REVERSE;
@@ -22,7 +24,7 @@ public class RAWRXD_BOT {
     private DcMotor Drive_FrontRight_Motor = null;
     private DcMotorSimple.Direction Drive_FrontRight_Direction = DcMotorSimple.Direction.FORWARD;
 
-    private String  Drive_RearLeft_Name = "rf";
+    private String  Drive_RearLeft_Name = "rl";
     private DcMotor Drive_RearLeft_Motor = null;
     private DcMotorSimple.Direction Drive_RearLeft_Direction = DcMotorSimple.Direction.REVERSE;
 
@@ -30,10 +32,34 @@ public class RAWRXD_BOT {
     private DcMotor Drive_RearRight_Motor = null;
     private DcMotorSimple.Direction Drive_RearRight_Direction = DcMotorSimple.Direction.FORWARD;
 
+    private String Lift_Name = "lift";
+    private DcMotor Lift_Motor = null;
+    private DcMotorSimple.Direction Lift_Direction = DcMotorSimple.Direction.FORWARD;
+
+    private String Push_Name = "push";
+    private DcMotor Push_Motor = null;
+    private DcMotorSimple.Direction Push_Direction = DcMotorSimple.Direction.FORWARD;
+
     private DcMotor.ZeroPowerBehavior DriveZeroPower = DcMotor.ZeroPowerBehavior.BRAKE;
 
-    private String Outake_Name  = "out";
-    private String Outake_Motor = null;
+
+    private String Left_Grab_Name  = "lg";
+    private Servo  Left_Grab_Servo = null;
+
+    private String Right_Grab_Name  = "lg";
+    private Servo  Right_Grab_Servo = null;
+
+
+    private double LEFT_GRAB_OPEN = 0;
+    private double LEFT_GRAB_IDLE = 0.5;
+    private double LEFT_GRAB_CLOSE = 0.6;
+    private double LEFT_GRAB_BLOCK = 1;
+
+    private double RIGHT_GRAB_OPEN = 1;
+    private double RIGHT_GRAB_IDLE = 0.5;
+    private double RIGHT_GRAB_CLOSE = 0.4;
+    private double RIGHT_GRAB_BLOCK = 0;
+
 
     public RAWRXD_BOT(HardwareMap _hwd){
         hardwareMap = _hwd;
@@ -46,10 +72,19 @@ public class RAWRXD_BOT {
         Drive_RearLeft_Motor   = hardwareMap.dcMotor.get(Drive_RearLeft_Name  );
         Drive_RearRight_Motor  = hardwareMap.dcMotor.get(Drive_RearRight_Name );
 
+        Lift_Motor = hardwareMap.dcMotor.get(Lift_Name);
+        Push_Motor = hardwareMap.dcMotor.get(Push_Name);
+
+        Left_Grab_Servo = hardwareMap.servo.get(Left_Grab_Name);
+        Right_Grab_Servo = hardwareMap.servo.get(Right_Grab_Name);
+
         Drive_FrontLeft_Motor.setDirection (Drive_FrontLeft_Direction);
         Drive_FrontRight_Motor.setDirection(Drive_FrontRight_Direction);
         Drive_RearLeft_Motor.setDirection  (Drive_RearLeft_Direction);
         Drive_RearRight_Motor.setDirection (Drive_RearRight_Direction);
+
+        Lift_Motor.setDirection(Lift_Direction);
+        Push_Motor = hardwareMap.dcMotor.get(Push_Name);
 
         Drive_FrontLeft_Motor.setZeroPowerBehavior(DriveZeroPower);
         Drive_FrontRight_Motor.setZeroPowerBehavior(DriveZeroPower);
@@ -76,5 +111,35 @@ public class RAWRXD_BOT {
         Drive_FrontRight_Motor.setPower(v2 * Sensitivity);
         Drive_RearLeft_Motor.setPower(v3 * Sensitivity);
         Drive_RearRight_Motor.setPower(v4 * Sensitivity);
+    }
+
+    public void LiftOverride(double val){
+        Lift_Motor.setPower(val);
+    }
+
+    public void PushOverride(double val){
+        Push_Motor.setPower(val);
+    }
+
+
+
+    public void OpenGrab(){
+        Left_Grab_Servo.setPosition(LEFT_GRAB_OPEN);
+        Right_Grab_Servo.setPosition(RIGHT_GRAB_OPEN);
+    }
+
+    public void IdleGrab(){
+        Left_Grab_Servo.setPosition(LEFT_GRAB_IDLE);
+        Right_Grab_Servo.setPosition(RIGHT_GRAB_IDLE);
+    }
+
+    public void CloseGrab(){
+        Left_Grab_Servo.setPosition(LEFT_GRAB_CLOSE);
+        Right_Grab_Servo.setPosition(RIGHT_GRAB_CLOSE);
+    }
+
+    public void BlockGrab(){
+        Left_Grab_Servo.setPosition(LEFT_GRAB_BLOCK);
+        Right_Grab_Servo.setPosition(RIGHT_GRAB_BLOCK);
     }
 }

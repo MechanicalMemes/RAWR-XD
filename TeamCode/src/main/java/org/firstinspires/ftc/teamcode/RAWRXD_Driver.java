@@ -55,12 +55,8 @@ public class RAWRXD_Driver extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeft = null;
-    private DcMotor frontRight = null;
-    private DcMotor rearLeft = null;
-    private DcMotor rearRight = null;
 
-
+    private RAWRXD_BOT bot = null;
 
     private boolean gyroMode = false;
 
@@ -76,18 +72,8 @@ public class RAWRXD_Driver extends OpMode
 
         controller = new Controller(gamepad1);
 
-
-        frontLeft  = hardwareMap.get(DcMotor.class, "fl");
-        frontRight = hardwareMap.get(DcMotor.class, "fr");
-
-        rearLeft  = hardwareMap.get(DcMotor.class, "rl");
-        rearRight = hardwareMap.get(DcMotor.class, "rr");
-
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        bot = new RAWRXD_BOT(hardwareMap);
+        bot.Init();
 
     }
 
@@ -112,14 +98,14 @@ public class RAWRXD_Driver extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+    double liftVal = 0;
+    double pushVal = 0;
     @Override
     public void loop() {
 
         controller.Update();
 
-        if(controller.XState == Controller.ButtonState.JUST_PRESSED){
-            gyroMode = !gyroMode;
-        }
+
 
 
 
@@ -127,13 +113,48 @@ public class RAWRXD_Driver extends OpMode
         telemetry.addData("GyroMode", gyroMode);
         telemetry.addData("Sensitivity",  Sensitivity);
 
+        bot.Drive(gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x, Sensitivity);
 
+
+        if(gamepad1.dpad_up){
+            liftVal = 1;
+        }else if(gamepad1.dpad_down){
+            liftVal = -1;
+        }else{
+            liftVal = 0;
+        }
+
+        if(gamepad1.left_trigger > 0.5){
+            pushVal = 1;
+        }else if(gamepad1.right_trigger > 0.5){
+            pushVal = -1;
+        }else{
+            pushVal = 0;
+        }
+
+        bot.LiftOverride(liftVal);
+        bot.PushOverride(pushVal);
         if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED){
             Sensitivity += 0.25;
         }
 
         if(controller.DPadDown == Controller.ButtonState.JUST_PRESSED){
             Sensitivity -= 0.25;
+        }
+
+
+
+        if(controller.AState == Controller.ButtonState.JUST_PRESSED){
+            bot.IdleGrab();
+        }
+        if(controller.BState == Controller.ButtonState.JUST_PRESSED){
+            bot.CloseGrab();
+        }
+        if(controller.XState == Controller.ButtonState.JUST_PRESSED){
+            bot.OpenGrab();
+        }
+        if(controller.YState == Controller.ButtonState.JUST_PRESSED){
+            bot.BlockGrab();
         }
 
     }

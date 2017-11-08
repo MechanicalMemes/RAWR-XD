@@ -14,3 +14,6 @@ dependencies {
     compile project(':endercv')
     compile project(':openCVLibrary320')
 }
+android {
+    buildToolsVersion '26.0.2'
+}
