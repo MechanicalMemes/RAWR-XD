@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+import org.firstinspires.ftc.teamcode.vision.CryptoboxFineDetector;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -56,6 +59,7 @@ public class RAWRXD_Driver extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
+    private CryptoboxFineDetector cryptoboxFineDetector;
     private RAWRXD_BOT bot = null;
 
     private boolean gyroMode = false;
@@ -70,7 +74,8 @@ public class RAWRXD_Driver extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        controller = new Controller(gamepad1);
+        cryptoboxFineDetector = new CryptoboxFineDetector();
+        cryptoboxFineDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0);
 
         bot = new RAWRXD_BOT(hardwareMap);
         bot.Init();
@@ -92,6 +97,7 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void start() {
+        cryptoboxFineDetector.enable();
         runtime.reset();
     }
 
@@ -164,6 +170,7 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void stop() {
+        cryptoboxFineDetector.disable();
     }
 
 }
