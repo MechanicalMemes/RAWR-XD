@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.disnodeteam.dogecv.CryptoboxDetector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -59,7 +60,6 @@ public class RAWRXD_Driver extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private CryptoboxFineDetector cryptoboxFineDetector;
     private RAWRXD_BOT bot = null;
 
     private boolean gyroMode = false;
@@ -73,9 +73,6 @@ public class RAWRXD_Driver extends OpMode
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
-
-        cryptoboxFineDetector = new CryptoboxFineDetector();
-        cryptoboxFineDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0);
 
         bot = new RAWRXD_BOT(hardwareMap);
         bot.Init();
@@ -97,7 +94,7 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void start() {
-        cryptoboxFineDetector.enable();
+
         runtime.reset();
     }
 
@@ -170,7 +167,7 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void stop() {
-        cryptoboxFineDetector.disable();
+        
     }
 
 }

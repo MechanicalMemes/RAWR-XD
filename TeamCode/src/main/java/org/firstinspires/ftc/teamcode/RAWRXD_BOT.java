@@ -17,27 +17,27 @@ public class RAWRXD_BOT {
 
     //DRIVE RELATED VARS
     private String  Drive_FrontLeft_Name = "fl";
-    private DcMotor Drive_FrontLeft_Motor = null;
+    public DcMotor Drive_FrontLeft_Motor = null;
     private DcMotorSimple.Direction Drive_FrontLeft_Direction = DcMotorSimple.Direction.REVERSE;
 
     private String  Drive_FrontRight_Name = "fr";
-    private DcMotor Drive_FrontRight_Motor = null;
+    public DcMotor Drive_FrontRight_Motor = null;
     private DcMotorSimple.Direction Drive_FrontRight_Direction = DcMotorSimple.Direction.FORWARD;
 
     private String  Drive_RearLeft_Name = "rl";
-    private DcMotor Drive_RearLeft_Motor = null;
+    public DcMotor Drive_RearLeft_Motor = null;
     private DcMotorSimple.Direction Drive_RearLeft_Direction = DcMotorSimple.Direction.REVERSE;
 
     private String  Drive_RearRight_Name = "rr";
-    private DcMotor Drive_RearRight_Motor = null;
+    public DcMotor Drive_RearRight_Motor = null;
     private DcMotorSimple.Direction Drive_RearRight_Direction = DcMotorSimple.Direction.FORWARD;
 
     private String Lift_Name = "lift";
-    private DcMotor Lift_Motor = null;
+    public DcMotor Lift_Motor = null;
     private DcMotorSimple.Direction Lift_Direction = DcMotorSimple.Direction.FORWARD;
 
     private String Push_Name = "push";
-    private DcMotor Push_Motor = null;
+    public DcMotor Push_Motor = null;
     private DcMotorSimple.Direction Push_Direction = DcMotorSimple.Direction.FORWARD;
 
     private DcMotor.ZeroPowerBehavior DriveZeroPower = DcMotor.ZeroPowerBehavior.BRAKE;
