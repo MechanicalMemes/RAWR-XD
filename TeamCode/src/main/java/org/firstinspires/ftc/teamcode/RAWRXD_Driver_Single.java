@@ -36,7 +36,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -51,15 +50,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWR-XD Tester", group="Development")
+@TeleOp(name="RAWR Drive Single", group="Iterative Opmode")
 
-public class RAWRXD_Tester extends OpMode
+public class RAWRXD_Driver_Single extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     private RAWRXD_BOT bot = null;
 
+    private boolean gyroMode = false;
+
+    private double Sensitivity = 1.0;
     private Controller controller = null;
 
     /*
@@ -70,50 +72,91 @@ public class RAWRXD_Tester extends OpMode
         telemetry.addData("Status", "Initialized");
 
         bot = new RAWRXD_BOT(hardwareMap);
+        controller = new Controller(gamepad1);
         bot.Init();
 
     }
 
+
+
+    /*
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
     @Override
     public void init_loop() {
         telemetry.addData("Status", "Initialized. Gyro Calibration");
     }
 
+    /*
+     * Code to run ONCE when the driver hits PLAY
+     */
     @Override
     public void start() {
+
         runtime.reset();
     }
 
+    /*
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
+    double liftVal = 0;
+    double pushVal = 0;
     @Override
     public void loop() {
 
         controller.Update();
 
+
+
+
+
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("GyroMode", gyroMode);
+        telemetry.addData("Sensitivity",  Sensitivity);
 
-        if(controller.AState == Controller.ButtonState.PRESSED){
-            bot.Drive_FrontLeft_Motor.setPower(1);
+        bot.Drive(-gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x, Sensitivity);
+
+
+        if(gamepad1.dpad_up){
+            liftVal = 1;
+        }else if(gamepad1.dpad_down){
+            liftVal = -1;
         }else{
-            bot.Drive_FrontLeft_Motor.setPower(0);
+            liftVal = 0;
         }
 
-        if(controller.BState == Controller.ButtonState.PRESSED){
-            bot.Drive_FrontRight_Motor.setPower(1);
+        if(gamepad1.left_trigger > 0.5){
+            pushVal = 1;
+        }else if(gamepad1.right_trigger > 0.5){
+            pushVal = -1;
         }else{
-            bot.Drive_FrontRight_Motor.setPower(0);
+            pushVal = 0;
         }
 
-        if(controller.XState == Controller.ButtonState.PRESSED){
-            bot.Drive_RearLeft_Motor.setPower(1);
-        }else{
-            bot.Drive_RearLeft_Motor.setPower(0);
+        bot.LiftOverride(liftVal);
+        bot.PushOverride(pushVal);
+        if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED){
+            Sensitivity += 0.25;
         }
 
-        if(controller.YState == Controller.ButtonState.PRESSED){
-            bot.Drive_RearRight_Motor.setPower(1);
-        }else{
-            bot.Drive_RearRight_Motor.setPower(0);
+        if(controller.DPadDown == Controller.ButtonState.JUST_PRESSED){
+            Sensitivity -= 0.25;
         }
+
+
+        if(controller.AState == Controller.ButtonState.JUST_PRESSED){
+            bot.OpenGrab();
+        }
+        if(controller.BState == Controller.ButtonState.JUST_PRESSED){
+            bot.CloseGrab();
+        }
+        if(controller.XState == Controller.ButtonState.JUST_PRESSED){
+            bot.IdleGrab();
+        }
+        if(controller.YState == Controller.ButtonState.JUST_PRESSED){
+            bot.BlockGrab();
+        }
+
     }
 
     /*

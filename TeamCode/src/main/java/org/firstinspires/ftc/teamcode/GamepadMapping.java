@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.sun.tools.javac.comp.Check;
 
 import java.lang.reflect.Method;
 import java.sql.Struct;

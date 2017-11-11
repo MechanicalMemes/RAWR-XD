@@ -30,14 +30,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.disnodeteam.dogecv.CryptoboxDetector;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
-import org.firstinspires.ftc.teamcode.vision.CryptoboxFineDetector;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -53,9 +57,9 @@ import org.firstinspires.ftc.teamcode.vision.CryptoboxFineDetector;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWR Drive", group="Iterative Opmode")
+@TeleOp(name="RAWR IMU Test", group="Iterative Opmode")
 
-public class RAWRXD_Driver extends OpMode
+public class RAWRXD_IMUTest extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -67,6 +71,13 @@ public class RAWRXD_Driver extends OpMode
     private double Sensitivity = 1.0;
     private Controller controller = null;
 
+    // The IMU sensor object
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -75,8 +86,22 @@ public class RAWRXD_Driver extends OpMode
         telemetry.addData("Status", "Initialized");
 
         bot = new RAWRXD_BOT(hardwareMap);
+        controller = new Controller(gamepad1);
         bot.Init();
 
+
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "Calib.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        imu.startAccelerationIntegration(new Position(), new Velocity(),100);
     }
 
 
@@ -103,6 +128,9 @@ public class RAWRXD_Driver extends OpMode
      */
     double liftVal = 0;
     double pushVal = 0;
+    double distance = 0;
+    double lastTime = 0;
+
     @Override
     public void loop() {
 
@@ -111,12 +139,27 @@ public class RAWRXD_Driver extends OpMode
 
 
 
+        double currentAccel =  imu.getAcceleration().xAccel;
 
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("GyroMode", gyroMode);
+        if(currentAccel < 0.5){
+            currentAccel = 0;
+        }
+        distance += currentAccel * (runtime.seconds() - lastTime);
+        lastTime = runtime.seconds();
+
+        telemetry.addData("Disntace",distance);
+
+
+        telemetry.addData("POS", imu.getPosition());
+        telemetry.addData("Error", imu.getSystemError());
+        telemetry.addData("Status", imu.getSystemStatus());
+        telemetry.addData("Accel", imu.getAcceleration());
+        telemetry.addData("Gravity", imu.getGravity());
+        telemetry.addData("Velo", imu.getVelocity());
+        telemetry.addData("Temp", imu.getTemperature());
         telemetry.addData("Sensitivity",  Sensitivity);
 
-        bot.Drive(gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x, Sensitivity);
+        bot.Drive(-gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x, Sensitivity);
 
 
         if(gamepad1.dpad_up){
@@ -146,9 +189,8 @@ public class RAWRXD_Driver extends OpMode
         }
 
 
-
         if(controller.AState == Controller.ButtonState.JUST_PRESSED){
-            bot.IdleGrab();
+            bot.OpenGrab();
         }
         if(controller.BState == Controller.ButtonState.JUST_PRESSED){
             bot.CloseGrab();
@@ -167,7 +209,7 @@ public class RAWRXD_Driver extends OpMode
      */
     @Override
     public void stop() {
-        
+
     }
 
 }

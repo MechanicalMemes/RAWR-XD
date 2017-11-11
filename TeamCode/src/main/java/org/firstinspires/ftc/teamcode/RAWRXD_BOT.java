@@ -46,7 +46,7 @@ public class RAWRXD_BOT {
     private String Left_Grab_Name  = "lg";
     private Servo  Left_Grab_Servo = null;
 
-    private String Right_Grab_Name  = "lg";
+    private String Right_Grab_Name  = "rg";
     private Servo  Right_Grab_Servo = null;
 
 

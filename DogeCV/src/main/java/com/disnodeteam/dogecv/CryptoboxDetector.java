@@ -1,6 +1,5 @@
 package com.disnodeteam.dogecv;
 
-import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
 import org.opencv.core.Mat;
 
 
