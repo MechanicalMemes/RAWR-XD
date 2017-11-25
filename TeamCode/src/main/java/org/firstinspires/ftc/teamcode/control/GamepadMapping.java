@@ -1,15 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.control;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import java.lang.reflect.Method;
-import java.sql.Struct;
+import org.firstinspires.ftc.teamcode.control.Controller;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * Created by Victo on 10/23/2017.

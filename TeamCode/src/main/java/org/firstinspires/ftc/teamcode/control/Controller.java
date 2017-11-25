@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.control;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -28,7 +28,7 @@ public class Controller {
 
     public ButtonState LeftBumper = ButtonState.RELEASED;
     public ButtonState RightBumper = ButtonState.RELEASED;
-    Controller(Gamepad _gamepad){
+    public Controller(Gamepad _gamepad){
         gamepad = _gamepad;
     }
 
