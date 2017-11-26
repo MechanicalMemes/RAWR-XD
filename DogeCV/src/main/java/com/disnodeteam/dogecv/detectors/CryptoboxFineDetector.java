@@ -1,4 +1,6 @@
-package com.disnodeteam.dogecv;
+package com.disnodeteam.dogecv.detectors;
+
+import com.disnodeteam.dogecv.OpenCVPipeline;
 
 import org.opencv.core.Mat;
 

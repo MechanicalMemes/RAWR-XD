@@ -46,6 +46,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -55,6 +56,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 //modified for turbo: removed blockly imports
+import com.disnodeteam.dogelogger.DogeLogger;
 import com.qualcomm.ftccommon.AboutActivity;
 import com.qualcomm.ftccommon.ClassManagerFactory;
 import com.qualcomm.ftccommon.FtcEventLoop;
@@ -145,6 +147,8 @@ public class FtcRobotControllerActivity extends Activity
 
   protected FtcEventLoop eventLoop;
   protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
+
+  public DogeLogger dogeLogger;
 
   protected class RobotRestarter implements Restarter {
 
@@ -252,6 +256,10 @@ public class FtcRobotControllerActivity extends Activity
 
     setContentView(R.layout.activity_ftc_controller);
 
+    dogeLogger.StartServer();
+    dogeLogger.LogVar("Connected", "True");
+
+
     preferencesHelper = new PreferencesHelper(TAG, context);
     preferencesHelper.writeBooleanPrefIfDifferent(context.getString(R.string.pref_rc_connected), true);
     preferencesHelper.getSharedPreferences().registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
@@ -289,6 +297,8 @@ public class FtcRobotControllerActivity extends Activity
     textOpenFTCVersion = (TextView) findViewById(R.id.openftc_version);
     textOpenFTCVersion.setText(org.openftc.BuildConfig.VERSION_COMPLETE);
 
+
+
     immersion = new ImmersiveMode(getWindow().getDecorView());
     dimmer = new Dimmer(this);
     dimmer.longBright();
@@ -307,6 +317,9 @@ public class FtcRobotControllerActivity extends Activity
 
     wifiLock.acquire();
     callback.networkConnectionUpdate(WifiDirectAssistant.Event.DISCONNECTED);
+
+
+
     readNetworkType();
     ServiceController.startService(FtcRobotControllerWatchdogService.class);
     bindToService();

@@ -1,10 +1,13 @@
-package com.disnodeteam.dogecv;
+package com.disnodeteam.dogecv.detectors;
 
+
+import com.disnodeteam.dogecv.OpenCVPipeline;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
@@ -30,10 +33,12 @@ public class JewelDetector extends OpenCVPipeline {
         Mat hsv = new Mat();
         Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV);
 
+        Mat structure = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(40,100));
+        Imgproc.morphologyEx(hsv,hsv,Imgproc.MORPH_OPEN, structure);
         double bluePos = GetBlue(hsv);
 
 
-        return null;
+        return hsv;
     }
 
     public double GetBlue(Mat input){
@@ -47,6 +52,8 @@ public class JewelDetector extends OpenCVPipeline {
         List<MatOfPoint> countours = new ArrayList<>();
 
         Imgproc.findContours(mask,countours,hierachy,Imgproc.RETR_TREE,Imgproc.CHAIN_APPROX_SIMPLE);
+
+
         return -1;
     }
 

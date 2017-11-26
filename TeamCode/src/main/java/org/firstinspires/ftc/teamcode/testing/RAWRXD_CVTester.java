@@ -29,12 +29,23 @@
 
 package org.firstinspires.ftc.teamcode.testing;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import com.disnodeteam.dogecv.CameraViewDisplay;
+import com.disnodeteam.dogecv.detectors.*;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
 import org.firstinspires.ftc.teamcode.control.Controller;
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+
+import java.io.IOException;
 
 
 /**
@@ -51,17 +62,15 @@ import org.firstinspires.ftc.teamcode.control.Controller;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWR-XD Tester", group="Development")
+@TeleOp(name="RAWR-XD CV Tester", group="Development")
 
-public class RAWRXD_Tester extends OpMode
+public class RAWRXD_CVTester extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private RAWRXD_BOT bot = null;
 
-    private Controller controller = null;
-
+    private GlyphDetector glyphDetector = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -69,8 +78,11 @@ public class RAWRXD_Tester extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXD_BOT(hardwareMap);
-        bot.Init();
+
+        glyphDetector = new GlyphDetector();
+        glyphDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        glyphDetector.enable();
+
 
     }
 
@@ -82,38 +94,20 @@ public class RAWRXD_Tester extends OpMode
     @Override
     public void start() {
         runtime.reset();
+
+
     }
 
     @Override
     public void loop() {
 
-        controller.Update();
+
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Glyph Pos X", glyphDetector.ChosenGlyphPos);
+        telemetry.addData("Glyph Pos Offest", glyphDetector.ChosenGlyphOffset);
 
-        if(controller.AState == Controller.ButtonState.PRESSED){
-            bot.Drive_FrontLeft_Motor.setPower(1);
-        }else{
-            bot.Drive_FrontLeft_Motor.setPower(0);
-        }
 
-        if(controller.BState == Controller.ButtonState.PRESSED){
-            bot.Drive_FrontRight_Motor.setPower(1);
-        }else{
-            bot.Drive_FrontRight_Motor.setPower(0);
-        }
-
-        if(controller.XState == Controller.ButtonState.PRESSED){
-            bot.Drive_RearLeft_Motor.setPower(1);
-        }else{
-            bot.Drive_RearLeft_Motor.setPower(0);
-        }
-
-        if(controller.YState == Controller.ButtonState.PRESSED){
-            bot.Drive_RearRight_Motor.setPower(1);
-        }else{
-            bot.Drive_RearRight_Motor.setPower(0);
-        }
     }
 
     /*
@@ -121,7 +115,7 @@ public class RAWRXD_Tester extends OpMode
      */
     @Override
     public void stop() {
-
+        glyphDetector.disable();
     }
 
 }
