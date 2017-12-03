@@ -31,7 +31,7 @@ import java.util.List;
 public class CryptoboxDetector extends OpenCVPipeline {
 
     public Mat MatOverride = new Mat();
-
+    public boolean UseImportedImage = false;
 
     public void SetTestMat( int rId){
         try {
@@ -41,12 +41,15 @@ public class CryptoboxDetector extends OpenCVPipeline {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //hardwareMap.appContext, com.qualcomm.ftcrobotcontroller.R.drawable.test_cv, CvType.CV_8UC4);
+
     }
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
 
-        Mat raw = MatOverride.clone();
+        Mat raw = rgba.clone();
+        if(UseImportedImage){
+            raw = MatOverride;
+        }
         Imgproc.resize(raw,raw,new Size(480,360));
 
         Mat hsv = new Mat();
