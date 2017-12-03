@@ -34,6 +34,7 @@ import android.graphics.BitmapFactory;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.*;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -62,15 +63,15 @@ import java.io.IOException;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWR-XD CV Tester", group="Development")
+@Autonomous(name="RAWR-XD CV Cryptobox", group="Testing")
 
-public class RAWRXD_CVTester extends OpMode
+public class RAWRXD_CV_Crypto extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private GlyphDetector glyphDetector = null;
+    private CryptoboxDetector cryptoboxDetector = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -79,9 +80,11 @@ public class RAWRXD_CVTester extends OpMode
         telemetry.addData("Status", "Initialized");
 
 
-        glyphDetector = new GlyphDetector();
-        glyphDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-        glyphDetector.enable();
+        cryptoboxDetector = new CryptoboxDetector();
+        cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        cryptoboxDetector.UseImportedImage = true;
+        cryptoboxDetector.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv);
+        cryptoboxDetector.enable();
 
 
     }
@@ -104,8 +107,7 @@ public class RAWRXD_CVTester extends OpMode
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Glyph Pos X", glyphDetector.ChosenGlyphPos);
-        telemetry.addData("Glyph Pos Offest", glyphDetector.ChosenGlyphOffset);
+
 
 
     }
@@ -115,7 +117,7 @@ public class RAWRXD_CVTester extends OpMode
      */
     @Override
     public void stop() {
-        glyphDetector.disable();
+        cryptoboxDetector.disable();
     }
 
 }

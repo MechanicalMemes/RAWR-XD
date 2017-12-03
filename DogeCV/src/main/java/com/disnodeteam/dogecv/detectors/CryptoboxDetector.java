@@ -48,8 +48,11 @@ public class CryptoboxDetector extends OpenCVPipeline {
 
         Mat raw = rgba.clone();
         if(UseImportedImage){
-            raw = MatOverride;
+            raw = MatOverride.clone();
+            rgba.release();
         }
+
+
         Imgproc.resize(raw,raw,new Size(480,360));
 
         Mat hsv = new Mat();
