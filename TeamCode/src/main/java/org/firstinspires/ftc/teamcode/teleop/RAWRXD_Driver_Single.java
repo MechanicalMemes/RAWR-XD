@@ -114,7 +114,7 @@ public class RAWRXD_Driver_Single extends OpMode
         telemetry.addData("GyroMode", gyroMode);
         telemetry.addData("Sensitivity",  Sensitivity);
 
-        bot.Drive(gamepad1.left_stick_y, gamepad2.right_stick_y, Sensitivity);
+        bot.Drive(gamepad1.left_stick_y, gamepad1.right_stick_y, Sensitivity);
 
 
         if(gamepad1.dpad_up){
@@ -133,7 +133,7 @@ public class RAWRXD_Driver_Single extends OpMode
             pushVal = 0;
         }
 
-        bot.LiftOverride(liftVal);
+       // bot.LiftOverride(liftVal);
 
 
     }
