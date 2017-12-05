@@ -30,7 +30,8 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.detectors.*;
+import com.disnodeteam.dogecv.detectors.CryptoboxDetectorBlue;
+import com.disnodeteam.dogecv.detectors.CryptoboxDetectorRed;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -50,15 +51,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RAWR-XD CV Cryptobox", group="Testing")
+@Autonomous(name="DogeCV Cryptobox Blur", group="Testing")
 
-public class RAWRXD_CV_Crypto extends OpMode
+public class RAWRXD_CV_Crypto_Blue extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private CryptoboxDetectorRed cryptoboxDetectorRed = null;
+    private CryptoboxDetectorBlue cryptoboxDetectorBlue = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -67,15 +68,15 @@ public class RAWRXD_CV_Crypto extends OpMode
         telemetry.addData("Status", "Initialized");
 
 
-        cryptoboxDetectorRed = new CryptoboxDetectorRed();
-        cryptoboxDetectorRed.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        cryptoboxDetectorBlue = new CryptoboxDetectorBlue();
+        cryptoboxDetectorBlue.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
 
         //Optional Test Code to load images via Drawables
-        //cryptoboxDetectorRed.UseImportedImage = false;
-        //cryptoboxDetectorRed.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv4);
+        cryptoboxDetectorBlue.UseImportedImage = true;
+        cryptoboxDetectorBlue.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv);
 
-        cryptoboxDetectorRed.enable();
+        cryptoboxDetectorBlue.enable();
 
 
     }
@@ -98,12 +99,12 @@ public class RAWRXD_CV_Crypto extends OpMode
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("isCryptoBoxDetected", cryptoboxDetectorRed.isCryptoBoxDetected());
-        telemetry.addData("isColumnDetected ",  cryptoboxDetectorRed.isColumnDetected());
+        telemetry.addData("isCryptoBoxDetected", cryptoboxDetectorBlue.isCryptoBoxDetected());
+        telemetry.addData("isColumnDetected ",  cryptoboxDetectorBlue.isColumnDetected());
 
-        telemetry.addData("Column Left ",  cryptoboxDetectorRed.getCryptoBoxLeftPosition());
-        telemetry.addData("Column Center ",  cryptoboxDetectorRed.getCryptoBoxCenterPosition());
-        telemetry.addData("Column Right ",  cryptoboxDetectorRed.getCryptoBoxRightPosition());
+        telemetry.addData("Column Left ",  cryptoboxDetectorBlue.getCryptoBoxLeftPosition());
+        telemetry.addData("Column Center ",  cryptoboxDetectorBlue.getCryptoBoxCenterPosition());
+        telemetry.addData("Column Right ",  cryptoboxDetectorBlue.getCryptoBoxRightPosition());
 
 
     }
@@ -113,7 +114,7 @@ public class RAWRXD_CV_Crypto extends OpMode
      */
     @Override
     public void stop() {
-        cryptoboxDetectorRed.disable();
+        cryptoboxDetectorBlue.disable();
     }
 
 }
