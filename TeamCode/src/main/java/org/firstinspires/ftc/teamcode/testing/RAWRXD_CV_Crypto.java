@@ -29,24 +29,11 @@
 
 package org.firstinspires.ftc.teamcode.testing;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.*;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
-import org.firstinspires.ftc.teamcode.control.Controller;
-import org.opencv.android.Utils;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-
-import java.io.IOException;
 
 
 /**
@@ -56,7 +43,7 @@ import java.io.IOException;
  * When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
  *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * This particular OpMode just executes a basic Tank DriveManual Teleop for a two wheeled robot
  * It includes all the skeletal structure that all iterative OpModes contain.
  *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
@@ -71,7 +58,7 @@ public class RAWRXD_CV_Crypto extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private CryptoboxDetector cryptoboxDetector = null;
+    private CryptoboxDetectorRed cryptoboxDetectorRed = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -80,18 +67,22 @@ public class RAWRXD_CV_Crypto extends OpMode
         telemetry.addData("Status", "Initialized");
 
 
-        cryptoboxDetector = new CryptoboxDetector();
-        cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-        cryptoboxDetector.UseImportedImage = true;
-        cryptoboxDetector.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv);
-        cryptoboxDetector.enable();
+        cryptoboxDetectorRed = new CryptoboxDetectorRed();
+        cryptoboxDetectorRed.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+
+
+        //Optional Test Code to load images via Drawables
+        //cryptoboxDetectorRed.UseImportedImage = false;
+        //cryptoboxDetectorRed.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv4);
+
+        cryptoboxDetectorRed.enable();
 
 
     }
 
     @Override
     public void init_loop() {
-        telemetry.addData("Status", "Initialized. Gyro Calibration");
+        telemetry.addData("Status", "Initialized");
     }
 
     @Override
@@ -107,7 +98,12 @@ public class RAWRXD_CV_Crypto extends OpMode
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("isCryptoBoxDetected", cryptoboxDetectorRed.isCryptoBoxDetected());
+        telemetry.addData("isColumnDetected ",  cryptoboxDetectorRed.isColumnDetected());
 
+        telemetry.addData("Column Left ",  cryptoboxDetectorRed.getCryptoBoxLeftPosition());
+        telemetry.addData("Column Center ",  cryptoboxDetectorRed.getCryptoBoxCenterPosition());
+        telemetry.addData("Column Right ",  cryptoboxDetectorRed.getCryptoBoxRightPosition());
 
 
     }
@@ -117,7 +113,7 @@ public class RAWRXD_CV_Crypto extends OpMode
      */
     @Override
     public void stop() {
-        cryptoboxDetector.disable();
+        cryptoboxDetectorRed.disable();
     }
 
 }
