@@ -45,7 +45,7 @@ public class RAWRXD_Auto_Red_Far extends OpMode
 
         bot.SetPhoneInside();
 
-        jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+       // jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
     }
 
@@ -67,17 +67,13 @@ public class RAWRXD_Auto_Red_Far extends OpMode
 
         runtime.reset();
 
-        JewelDetector.JewelOrder jewelOrder =  jewelDetector.getOrder();
+       // JewelDetector.JewelOrder jewelOrder =  jewelDetector.getOrder();
 
-        if(jewelOrder == JewelDetector.JewelOrder.BLUE_RED){
-            bot.DriveStraight(500,0.5,0.0);
-        }else if( jewelOrder == JewelDetector.JewelOrder.RED_BLUE){
-
-        }else{
-
-        }
 
         bot.SetPhoneOutside();
+
+        bot.DriveStraight(2000,0.5,0.0);
+        bot.Turn(1.0,45.0);
 
 
 
