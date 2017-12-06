@@ -20,10 +20,22 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class CryptoboxDetectorRed extends OpenCVPipeline {
+public class CryptoboxDetector extends OpenCVPipeline {
 
-    public Mat MatOverride = new Mat();
-    public boolean UseImportedImage = false;
+    public enum CryptoboxDetectionMode {
+        HSV_RED, HSV_BLUE
+    }
+
+    public enum CryptoboxSpeed {
+        VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
+    }
+
+    //Settings
+    public Mat                    MatOverride        = new Mat();
+    public boolean                useImportedImage   = false;
+    public CryptoboxDetectionMode detectionMode      = CryptoboxDetectionMode.HSV_RED;
+    public double                 downScaleFactor    = 0.5;
+    public CryptoboxSpeed         speed              = CryptoboxSpeed.BALANCED;
 
     private boolean CryptoBoxDetected = false;
     private boolean ColumnDetected = false;
@@ -40,6 +52,9 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
 
     }
 
+    Scalar lower = new Scalar(90, 135, 25);
+    Scalar upper = new Scalar(130, 250, 150);
+
     private Mat raw  = new Mat();
     private Mat mask1  = new Mat();
     private Mat mask2  = new Mat();
@@ -48,6 +63,9 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
     private Mat structure  = new Mat();
     private Mat hierarchy = new Mat();
     Mat kernel = Mat.ones(5,5,CvType.CV_32F);
+
+
+
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
 
@@ -55,9 +73,7 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
 
         rgba.copyTo(raw);
 
-
-
-        if(UseImportedImage){
+        if(useImportedImage){
             raw = MatOverride.clone();
             rgba.release();
         }else {
@@ -65,9 +81,9 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
         }
 
 
-        Imgproc.resize(raw,raw,new Size(384,288));
+        Imgproc.resize(raw,raw,new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor));
 
-        if(!UseImportedImage){
+        if(!useImportedImage){
             Mat tempBefore = raw.t();
 
             Core.flip(tempBefore, raw, 1); //mRgba.t() is the transpose
@@ -83,27 +99,41 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
         Imgproc.cvtColor(raw,hsv,Imgproc.COLOR_RGB2HSV);
 
 
+        switch(detectionMode){
+            case HSV_RED:
+                getRedMask(hsv);
+                break;
+            case HSV_BLUE:
+                getBlueMask(hsv);
+        }
 
-        //Imgproc.erode(hsv,hsv,kernel);
-        //Imgproc.dilate(hsv,hsv,kernel);
-        Imgproc.blur(hsv,hsv,new Size(6,6));
+        switch (speed){
+            case VERY_FAST:
+                Imgproc.blur(hsv,hsv,new Size(3,3));
+                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1,30));
+                break;
+            case FAST:
+                Imgproc.blur(hsv,hsv,new Size(4,4));
+                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,30));
+                break;
 
-        Scalar lower1 = new Scalar(0,150,100);
-        Scalar upper1 = new Scalar(20,255,255);
+            case BALANCED:
+                Imgproc.blur(hsv,hsv,new Size(5,5));
+                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,40));
+                break;
 
-        Scalar lower2 = new Scalar(140,100,100);
-        Scalar upper2 = new Scalar(179,255,255);
+            case SLOW:
+                Imgproc.blur(hsv,hsv,new Size(6,6));
+                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,50));
+                break;
+
+            case VERY_SLOW:
+                Imgproc.blur(hsv,hsv,new Size(7,7));
+                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,50));
+                break;
+        }
 
 
-        Core.inRange(hsv,lower1,upper1,mask1);
-
-
-        Core.inRange(hsv,lower2,upper2,mask2);
-
-        Core.addWeighted(mask1,1.0, mask2,1.0, 0.0, mask);
-
-
-        structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,50));
         Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
 
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -157,12 +187,15 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
             for(int i=0;i<boxes.size() - 1;i++){
                 Point collumn = drawSlot(i,boxes);
                 Imgproc.circle(raw,collumn,5,new Scalar(0,255,255), 3);
+                if(i<3){
+                    CryptoBoxPositions[i] = (int)collumn.x;
+                }
             }
 
             ColumnDetected = boxes.size() > 1;
         }
 
-        if(!UseImportedImage){
+        if(!useImportedImage){
 
             Mat tempAfter = raw.t();
 
@@ -182,9 +215,35 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
 
     }
 
-    public Object getKey(List item) {
-        return item.get(0);
+    public Mat getRedMask(Mat input){
+        Scalar lower1 = new Scalar(0,150,100);
+        Scalar upper1 = new Scalar(20,255,255);
+
+        Scalar lower2 = new Scalar(140,100,100);
+        Scalar upper2 = new Scalar(179,255,255);
+
+
+        Core.inRange(input,lower1,upper1,mask1);
+
+
+        Core.inRange(input,lower2,upper2,mask2);
+
+        Core.addWeighted(mask1,1.0, mask2,1.0, 0.0, mask);
+        return mask;
     }
+
+    public Mat getBlueMask(Mat input){
+
+        Scalar lower = new Scalar(90, 135, 25);
+        Scalar upper = new Scalar(130, 250, 150);
+
+
+
+        Core.inRange(input,lower,upper,mask);
+        return mask;
+    }
+
+
     public Point drawSlot(int slot, List<Rect> boxes){
         Rect leftColumn = boxes.get(slot); //Get the pillar to the left
         Rect rightColumn = boxes.get(slot + 1); //Get the pillar to the right
