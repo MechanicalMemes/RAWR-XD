@@ -72,8 +72,6 @@ public class RAWRXD_Auto_Red_Far extends OpMode
 
         bot.SetPhoneOutside();
 
-        bot.DriveStraight(2000,0.5,0.0);
-        bot.Turn(1.0,45.0);
 
 
 
@@ -87,6 +85,8 @@ public class RAWRXD_Auto_Red_Far extends OpMode
     public void loop() {
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+
+        bot.DriveStraight(-5000,0.5,15.0);
 
 
 

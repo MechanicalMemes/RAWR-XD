@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWR DriveManual Single", group="Iterative Opmode")
+@TeleOp(name="RAWRXD Drive", group="Iterative Opmode")
 
 public class RAWRXD_Driver_Single extends OpMode
 {
@@ -118,20 +118,13 @@ public class RAWRXD_Driver_Single extends OpMode
 
 
         if(gamepad1.dpad_up){
-            liftVal = 1;
+            bot.SetPhoneFront();
         }else if(gamepad1.dpad_down){
-            liftVal = -1;
+            bot.SetPhoneOutside();
         }else{
             liftVal = 0;
         }
 
-        if(gamepad1.left_trigger > 0.5){
-            pushVal = 1;
-        }else if(gamepad1.right_trigger > 0.5){
-            pushVal = -1;
-        }else{
-            pushVal = 0;
-        }
 
        // bot.LiftOverride(liftVal);
 

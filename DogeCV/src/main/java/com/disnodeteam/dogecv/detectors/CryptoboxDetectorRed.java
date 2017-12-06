@@ -65,7 +65,7 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
         }
 
 
-        Imgproc.resize(raw,raw,new Size(480,360));
+        Imgproc.resize(raw,raw,new Size(384,288));
 
         if(!UseImportedImage){
             Mat tempBefore = raw.t();
@@ -103,7 +103,7 @@ public class CryptoboxDetectorRed extends OpenCVPipeline {
         Core.addWeighted(mask1,1.0, mask2,1.0, 0.0, mask);
 
 
-        structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1,50));
+        structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,50));
         Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
 
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
