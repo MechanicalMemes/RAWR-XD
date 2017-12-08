@@ -23,7 +23,7 @@ public class DogeTask {
 
     }
 
-    public void ForceStop(){
+    public void Stop(){
 
     }
 }

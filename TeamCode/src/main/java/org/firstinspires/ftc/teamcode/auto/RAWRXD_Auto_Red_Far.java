@@ -37,7 +37,7 @@ public class RAWRXD_Auto_Red_Far extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXD_BOT(hardwareMap);
+        bot = new RAWRXD_BOT(hardwareMap, this);
 
         bot.Init();
 
@@ -69,6 +69,8 @@ public class RAWRXD_Auto_Red_Far extends OpMode
 
 
         bot.SetPhoneOutside();
+        bot.DriveStraight(3000,1.0, 0);
+        
 
 
 
@@ -84,7 +86,7 @@ public class RAWRXD_Auto_Red_Far extends OpMode
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-        bot.DriveStraight(-5000,0.5,15.0);
+
 
 
 

@@ -10,7 +10,7 @@ public class Controller {
 
     Gamepad gamepad = null;
 
-    enum ButtonState {
+    public enum ButtonState {
         PRESSED, // Button State when Held Down. Constant.
         RELEASED,// Button State when Released / Up. Constant.
         JUST_PRESSED, // Button State when the button was prssed, This is called only once

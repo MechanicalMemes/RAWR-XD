@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.bots;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * Created by Alex on 11/3/2017.
@@ -46,10 +49,28 @@ public class RAWRXD_BOT {
 
     private String Phone_Name = "phone";
     public Servo Phone_Servo = null;
-
     private double PHONE_POS_INSIDE = 0;
     private double PHONE_POS_FRONT = 0.5;
     private double PHONE_POST_OUTSIDE = 1;
+
+    private String Lift1_Name = "lift1";
+    public DcMotor Lift1_Motor = null;
+    public DcMotor.Direction Lift1_Direction = DcMotorSimple.Direction.FORWARD;
+
+    private String Lift2_Name = "lift2";
+    public DcMotor Lift2_Motor = null;
+    public DcMotor.Direction Lift2_Direction = DcMotorSimple.Direction.FORWARD;
+
+    private String Grab_Left_Name = "lg";
+    public Servo Grab_Left_Servo = null;
+    public final double GRAB_LEFT_CLOSED = 0.8;
+    public final double GRAB_LEFT_OPEN   = 0.2;
+
+    private String Grab_Right_Name = "rg";
+    public Servo Grab_Right_Servo = null;
+    public final double GRAB_RIGHT_CLOSED = 0.2;
+    public final double GRAB_RIGHT_OPEN   = 0.8;
+
 
 
 
@@ -57,8 +78,11 @@ public class RAWRXD_BOT {
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
 
-    public RAWRXD_BOT(HardwareMap _hwd){
+    private OpMode opMode;
+
+    public RAWRXD_BOT(HardwareMap _hwd, OpMode parent){
         hardwareMap = _hwd;
+        opMode = parent;
 
     }
 
@@ -98,7 +122,16 @@ public class RAWRXD_BOT {
 
         Phone_Servo = hardwareMap.servo.get(Phone_Name);
 
-        while(!imu.isGyroCalibrated()){}
+        Lift1_Motor = hardwareMap.dcMotor.get(Lift1_Name);
+        Lift2_Motor = hardwareMap.dcMotor.get(Lift2_Name);
+        Lift1_Motor.setDirection(Lift1_Direction);
+        Lift2_Motor.setDirection(Lift2_Direction);
+
+
+        while(!imu.isGyroCalibrated()){
+            opMode.telemetry.addData("IMU Calibrating", imu.getSystemStatus());
+            opMode.telemetry.update();
+        }
 
         SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -109,8 +142,6 @@ public class RAWRXD_BOT {
         Drive_Right_Motor.setMode(mode);
         Drive_Right_Motor2.setMode(mode);
     }
-
-
 
     public boolean AreMotorsBusy(){
         return (Drive_Left_Motor.isBusy() && Drive_Left_Motor2.isBusy() && Drive_Right_Motor.isBusy() && Drive_Right_Motor2.isBusy());
@@ -208,6 +239,9 @@ public class RAWRXD_BOT {
     public void Turn(double Speed, double Angel){
         // keep looping while we are still active, and not on heading.
         while (!onHeading(Speed, Angel, P_TURN_COEFF)) {
+            opMode.telemetry.addData("Gyro 1", imu.getAngularOrientation().firstAngle);
+            opMode.telemetry.addData("Gyro 2", imu.getAngularOrientation().secondAngle);
+            opMode.telemetry.addData("Gyro 3", imu.getAngularOrientation().thirdAngle);
 
         }
     }
@@ -276,7 +310,7 @@ public class RAWRXD_BOT {
     }
 
 
-
+    // Phone Settings
 
     public void SetPhoneInside(){
         Phone_Servo.setPosition(PHONE_POS_INSIDE);
@@ -290,6 +324,23 @@ public class RAWRXD_BOT {
         Phone_Servo.setPosition(PHONE_POST_OUTSIDE);
     }
 
+    // Lift Settings
 
+    public void LiftPower(double power){
+        Lift1_Motor.setPower(power);
+        Lift2_Motor.setPower(power);
+    }
+
+    // Grabbers
+
+    public void CloseGrab(){
+        Grab_Right_Servo.setPosition(GRAB_RIGHT_CLOSED);
+        Grab_Left_Servo.setPosition(GRAB_LEFT_CLOSED);
+    }
+
+    public void OpenGrab(){
+        Grab_Right_Servo.setPosition(GRAB_RIGHT_OPEN);
+        Grab_Left_Servo.setPosition(GRAB_LEFT_OPEN);
+    }
 
 }

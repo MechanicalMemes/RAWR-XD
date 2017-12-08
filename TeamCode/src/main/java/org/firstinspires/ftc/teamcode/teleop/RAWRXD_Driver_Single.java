@@ -71,7 +71,7 @@ public class RAWRXD_Driver_Single extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXD_BOT(hardwareMap);
+        bot = new RAWRXD_BOT(hardwareMap, this);
         controller = new Controller(gamepad1);
         bot.Init();
 
@@ -107,9 +107,6 @@ public class RAWRXD_Driver_Single extends OpMode
         controller.Update();
 
 
-
-
-
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("GyroMode", gyroMode);
         telemetry.addData("Sensitivity",  Sensitivity);
@@ -118,15 +115,21 @@ public class RAWRXD_Driver_Single extends OpMode
 
 
         if(gamepad1.dpad_up){
-            bot.SetPhoneFront();
+            liftVal = 1;
         }else if(gamepad1.dpad_down){
-            bot.SetPhoneOutside();
+            liftVal = -1;
         }else{
             liftVal = 0;
         }
 
+        bot.LiftPower(liftVal);
 
-       // bot.LiftOverride(liftVal);
+        if(controller.AState == Controller.ButtonState.JUST_PRESSED){
+            bot.CloseGrab();
+        }
+        if(controller.BState == Controller.ButtonState.JUST_PRESSED){
+            bot.OpenGrab();
+        }
 
 
     }
