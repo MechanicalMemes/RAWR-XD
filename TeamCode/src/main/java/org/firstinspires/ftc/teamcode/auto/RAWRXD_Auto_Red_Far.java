@@ -30,7 +30,7 @@ public class RAWRXD_Auto_Red_Far extends OpMode
     private RAWRXD_BOT bot = null;
 
     private JewelDetector jewelDetector = null;
-    private CryptoboxDetectorBlue cryptoboxDetectorBlue = null;
+   // private CryptoboxDetectorBlue cryptoboxDetectorBlue = null;
 
 
     @Override

@@ -33,8 +33,9 @@ public class RAWRXD_CV_Glyph extends OpMode
 
         glyphDetector = new GlyphDetector();
         glyphDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-        glyphDetector.UseImportedImage = true;
-        glyphDetector.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv3);
+        glyphDetector.minScore = 1;
+        glyphDetector.downScaleFactor = 0.3;
+        glyphDetector.speed = GlyphDetector.GlyphDetectionSpeed.SLOW;
         glyphDetector.enable();
 
 
@@ -58,8 +59,8 @@ public class RAWRXD_CV_Glyph extends OpMode
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Glyph Pos X", glyphDetector.ChosenGlyphPos);
-        telemetry.addData("Glyph Pos Offest", glyphDetector.ChosenGlyphOffset);
+        telemetry.addData("Glyph Pos X", glyphDetector.getChosenGlyphOffset());
+        telemetry.addData("Glyph Pos Offest", glyphDetector.getChosenGlyphPosition().toString());
 
 
     }

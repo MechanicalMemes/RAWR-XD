@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DogeCV Cryptobox Blur", group="Testing")
+@Autonomous(name="DogeCV Cryptobox Blue", group="Testing")
 
 public class RAWRXD_CV_Crypto_Blue extends OpMode
 {
@@ -72,7 +72,7 @@ public class RAWRXD_CV_Crypto_Blue extends OpMode
 
         cryptoboxDetector.downScaleFactor = 0.6;
         cryptoboxDetector.detectionMode = CryptoboxDetector.CryptoboxDetectionMode.HSV_BLUE;
-        cryptoboxDetector.speed = CryptoboxDetector.CryptoboxSpeed.BALANCED;
+        cryptoboxDetector.speed = CryptoboxDetector.CryptoboxSpeed.VERY_SLOW;
 
         //Optional Test Code to load images via Drawables
         //cryptoboxDetector.useImportedImage = true;

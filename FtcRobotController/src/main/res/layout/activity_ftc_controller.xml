@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <RelativeLayout
       android:id="@+id/top_bar"
       android:layout_width="fill_parent"
-      android:layout_height="140dp"
+      android:layout_height="70dp"
       android:background="@color/background_black">
 
     <ImageView
