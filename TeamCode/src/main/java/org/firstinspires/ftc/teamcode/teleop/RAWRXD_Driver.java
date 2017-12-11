@@ -50,9 +50,9 @@ import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWRXD Drive", group="Iterative Opmode")
+@TeleOp(name="RAWRXD Drive - Single", group="Comp")
 
-public class RAWRXD_Driver_Single extends OpMode
+public class RAWRXD_Driver extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -115,9 +115,9 @@ public class RAWRXD_Driver_Single extends OpMode
 
 
         if(gamepad1.dpad_up){
-            liftVal = 1;
-        }else if(gamepad1.dpad_down){
             liftVal = -1;
+        }else if(gamepad1.dpad_down){
+            liftVal = 1;
         }else{
             liftVal = 0;
         }

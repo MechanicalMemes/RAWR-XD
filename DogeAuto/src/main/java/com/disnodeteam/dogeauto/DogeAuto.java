@@ -2,8 +2,7 @@ package com.disnodeteam.dogeauto;
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 
 import java.util.ArrayList;
 
@@ -14,7 +13,7 @@ public class DogeAuto {
 
     private String currentStatus = "";
 
-    private OpMode opMode;
+   // private OpMode opMode;
 
     private boolean isStopped = false;
     public DogeAuto(){

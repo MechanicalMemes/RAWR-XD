@@ -11,6 +11,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 /**
  * Created by Alex on 11/3/2017.
@@ -20,7 +23,7 @@ public class RAWRXD_BOT {
     private HardwareMap hardwareMap;
 
 
-    private BNO055IMU imu = null;
+    public BNO055IMU imu = null;
 
     //
     //DRIVE RELATED VARS
@@ -59,24 +62,32 @@ public class RAWRXD_BOT {
 
     private String Lift2_Name = "lift2";
     public DcMotor Lift2_Motor = null;
-    public DcMotor.Direction Lift2_Direction = DcMotorSimple.Direction.FORWARD;
+    public DcMotor.Direction Lift2_Direction = DcMotorSimple.Direction.REVERSE;
 
     private String Grab_Left_Name = "lg";
     public Servo Grab_Left_Servo = null;
-    public final double GRAB_LEFT_CLOSED = 0.8;
-    public final double GRAB_LEFT_OPEN   = 0.2;
+    public final double GRAB_LEFT_CLOSED = 1;
+    public final double GRAB_LEFT_OPEN   = 0.7;
+
+    private String Grab2_Left_Name = "lg2";
+    public Servo Grab2_Left_Servo = null;
+    public final double GRAB2_LEFT_CLOSED = 0;
+    public final double GRAB2_LEFT_OPEN   = 0.3;
 
     private String Grab_Right_Name = "rg";
     public Servo Grab_Right_Servo = null;
-    public final double GRAB_RIGHT_CLOSED = 0.2;
-    public final double GRAB_RIGHT_OPEN   = 0.8;
+    public final double GRAB_RIGHT_CLOSED = 1;
+    public final double GRAB_RIGHT_OPEN   = 0.7;
+
+    private String Grab2_Right_Name = "rg2";
+    public Servo Grab2_Right_Servo = null;
+    public final double GRAB2_RIGHT_CLOSED = 0;
+    public final double GRAB2_RIGHT_OPEN   = 0.3;
 
 
-
-
-    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
+    static final double     HEADING_THRESHOLD       = 15 ;      // As tight as we can make it with an integer gyro
+    static final double     P_TURN_COEFF            = 0.05;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.05;     // Larger is more responsive, but also less stable
 
     private OpMode opMode;
 
@@ -126,6 +137,11 @@ public class RAWRXD_BOT {
         Lift2_Motor = hardwareMap.dcMotor.get(Lift2_Name);
         Lift1_Motor.setDirection(Lift1_Direction);
         Lift2_Motor.setDirection(Lift2_Direction);
+
+        Grab_Left_Servo = hardwareMap.servo.get(Grab_Left_Name);
+        Grab2_Left_Servo = hardwareMap.servo.get(Grab2_Left_Name);
+        Grab_Right_Servo = hardwareMap.servo.get(Grab_Right_Name);
+        Grab2_Right_Servo = hardwareMap.servo.get(Grab2_Right_Name);
 
 
         while(!imu.isGyroCalibrated()){
@@ -239,9 +255,11 @@ public class RAWRXD_BOT {
     public void Turn(double Speed, double Angel){
         // keep looping while we are still active, and not on heading.
         while (!onHeading(Speed, Angel, P_TURN_COEFF)) {
-            opMode.telemetry.addData("Gyro 1", imu.getAngularOrientation().firstAngle);
-            opMode.telemetry.addData("Gyro 2", imu.getAngularOrientation().secondAngle);
-            opMode.telemetry.addData("Gyro 3", imu.getAngularOrientation().thirdAngle);
+            opMode.telemetry.addData("Errror 1", getError(Angel));
+
+
+            opMode.telemetry.update();
+
 
         }
     }
@@ -288,8 +306,8 @@ public class RAWRXD_BOT {
             leftSpeed   = -rightSpeed;
         }
 
-        Drive_Left_Motor.setPower(leftSpeed);
-        Drive_Left_Motor2.setPower(leftSpeed);
+      Drive_Left_Motor.setPower(leftSpeed);
+      Drive_Left_Motor2.setPower(leftSpeed);
 
         Drive_Right_Motor.setPower(rightSpeed);
         Drive_Right_Motor2.setPower(rightSpeed);
@@ -299,7 +317,7 @@ public class RAWRXD_BOT {
     public double getError(double targetAngle) {
 
         double robotError;
-        robotError = targetAngle - imu.getAngularOrientation().thirdAngle;
+        robotError = targetAngle - imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
@@ -336,11 +354,16 @@ public class RAWRXD_BOT {
     public void CloseGrab(){
         Grab_Right_Servo.setPosition(GRAB_RIGHT_CLOSED);
         Grab_Left_Servo.setPosition(GRAB_LEFT_CLOSED);
+
+        Grab2_Right_Servo.setPosition(GRAB2_RIGHT_CLOSED);
+        Grab2_Left_Servo.setPosition(GRAB2_LEFT_CLOSED);
     }
 
     public void OpenGrab(){
         Grab_Right_Servo.setPosition(GRAB_RIGHT_OPEN);
         Grab_Left_Servo.setPosition(GRAB_LEFT_OPEN);
+        Grab2_Right_Servo.setPosition(GRAB2_RIGHT_OPEN);
+        Grab2_Left_Servo.setPosition(GRAB2_LEFT_OPEN);
     }
 
 }

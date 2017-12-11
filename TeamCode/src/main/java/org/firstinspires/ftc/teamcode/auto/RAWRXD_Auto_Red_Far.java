@@ -2,9 +2,15 @@
 package org.firstinspires.ftc.teamcode.auto;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
 
 /**
@@ -23,84 +29,110 @@ import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
 
 @Autonomous(name="RAWR Auto - Red - Far", group="RED AUTO")
 
-public class RAWRXD_Auto_Red_Far extends OpMode
-{
-    // Declare OpMode members.
+
+public class RAWRXD_Auto_Red_Far extends LinearOpMode {
+
     private ElapsedTime runtime = new ElapsedTime();
     private RAWRXD_BOT bot = null;
-
-    private JewelDetector jewelDetector = null;
-   // private CryptoboxDetectorBlue cryptoboxDetectorBlue = null;
-
-
     @Override
-    public void init() {
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
         bot = new RAWRXD_BOT(hardwareMap, this);
 
         bot.Init();
 
-        bot.SetPhoneInside();
 
-       // jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-
-    }
-
-
-
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-        telemetry.addData("Status", "Initialized. Gyro Calibration");
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-
+        bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+        waitForStart();
         runtime.reset();
 
-       // JewelDetector.JewelOrder jewelOrder =  jewelDetector.getOrder();
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
 
 
-        bot.SetPhoneOutside();
-        bot.DriveStraight(3000,1.0, 0);
-        
+            bot.SetPhoneOutside();
+            bot.CloseGrab();
+            while(runtime.seconds() < 0.5){
+
+            }
+            bot.LiftPower(-1);
+            runtime.reset();
+            while(runtime.seconds() < 0.5){
+
+            }
+            bot.LiftPower(0);
+
+
+            bot.Drive_Left_Motor.setTargetPosition(-4000);
+            bot.Drive_Left_Motor2.setTargetPosition(-4000);
+            bot.Drive_Right_Motor.setTargetPosition(-4000);
+            bot.Drive_Right_Motor2.setTargetPosition(-4000);
+
+
+
+            bot.Drive_Left_Motor.setPower(1.0);
+            bot.Drive_Left_Motor2.setPower(1.0);
+            bot.Drive_Right_Motor.setPower(1.0);
+            bot.Drive_Right_Motor2.setPower(1.0);
+
+            while(bot.AreMotorsBusy()){
+
+            }
+
+            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            bot.OpenGrab();
+
+
+            bot.Drive_Left_Motor.setTargetPosition(1000);
+            bot.Drive_Left_Motor2.setTargetPosition(1000);
+            bot.Drive_Right_Motor.setTargetPosition(1000);
+            bot.Drive_Right_Motor2.setTargetPosition(1000);
+
+
+
+            bot.Drive_Left_Motor.setPower(0.7);
+            bot.Drive_Left_Motor2.setPower(0.7);
+            bot.Drive_Right_Motor.setPower(0.7);
+            bot.Drive_Right_Motor2.setPower(0.7);
+
+            while(bot.AreMotorsBusy()){
+
+            }
+
+            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            /*
+            bot.Drive_Left_Motor.setPower(-1.0);
+            bot.Drive_Left_Motor2.setPower(-1.0);
+            bot.Drive_Right_Motor.setPower(1.0);
+            bot.Drive_Right_Motor2.setPower(1.0);
+
+            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            bot.LiftPower(-1);
+            runtime.reset();
+            while(runtime.seconds() < 0.5){
+
+            }
+            bot.LiftPower(0);
+
+            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+          ///  bot.Drive_Left_Motor.setTargetPosition(-8000);
+          ///  bot.Drive_Left_Motor2.setTargetPosition(-8000);
+           // bot.Drive_Right_Motor.setTargetPosition(-8000);
+            //bot.Drive_Right_Motor2.setTargetPosition(-8000);
+            */
 
 
 
 
+            //bot.Turn(0.5,-90);
+            //bot.DriveStraight(-500, 0.5, -90);
+            //bot.OpenGrab();
+            requestOpModeStop();
+        }
     }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-
-    @Override
-    public void loop() {
-
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-
-
-
-
-
-
-
-
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-
-    }
-
 }

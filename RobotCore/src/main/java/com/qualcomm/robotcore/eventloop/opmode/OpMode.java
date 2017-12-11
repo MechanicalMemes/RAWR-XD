@@ -111,7 +111,7 @@ public abstract class OpMode {
    * Example usage: Starting another thread.
    *
    */
-  public void start() {};
+  public void start() throws InterruptedException {};
 
   /**
    * User defined loop method
