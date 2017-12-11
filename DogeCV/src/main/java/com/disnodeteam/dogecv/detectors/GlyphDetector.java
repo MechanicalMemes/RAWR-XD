@@ -175,7 +175,6 @@ public class GlyphDetector extends OpenCVPipeline {
                 double h = rect.height;
 
                 Point centerPoint = new Point(x + ( w/2), y + (h/2));
-
                 double cubeRatio = Math.max(Math.abs(h/w), Math.abs(w/h));
 
                 double score = 100;

@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.control.Controller;
-import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".

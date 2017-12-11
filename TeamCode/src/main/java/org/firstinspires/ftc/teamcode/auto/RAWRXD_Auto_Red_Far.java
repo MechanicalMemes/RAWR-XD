@@ -1,17 +1,12 @@
 
 package org.firstinspires.ftc.teamcode.auto;
-import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.bots.RAWRXD_BOT;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
+import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -34,28 +29,41 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private RAWRXD_BOT bot = null;
+
+    private VuforiaHardware vuforia;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
         bot = new RAWRXD_BOT(hardwareMap, this);
-
         bot.Init();
-
+        bot.SetPhonePicto();
 
         bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
-        waitForStart();
+
+        vuforia = new VuforiaHardware();
+        vuforia.Init(hardwareMap);
+
+
+
+        while(!isStarted() && !isStopRequested()){
+            vuforia.Loop();
+        }
+
+
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        if (opModeIsActive()) {
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            vuforia.Stop();
 
 
             bot.SetPhoneOutside();
             bot.CloseGrab();
-            while(runtime.seconds() < 0.5){
+            while(runtime.seconds() < 0.2){
 
             }
             bot.LiftPower(-1);
@@ -66,30 +74,135 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             bot.LiftPower(0);
 
 
-            bot.Drive_Left_Motor.setTargetPosition(-4000);
-            bot.Drive_Left_Motor2.setTargetPosition(-4000);
-            bot.Drive_Right_Motor.setTargetPosition(-4000);
-            bot.Drive_Right_Motor2.setTargetPosition(-4000);
 
-
+            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+            bot.Drive_Left_Motor.setTargetPosition(-2000);
+            bot.Drive_Left_Motor2.setTargetPosition(-2000);
+            bot.Drive_Right_Motor.setTargetPosition(-2000);
+            bot.Drive_Right_Motor2.setTargetPosition(-2000);
 
             bot.Drive_Left_Motor.setPower(1.0);
             bot.Drive_Left_Motor2.setPower(1.0);
             bot.Drive_Right_Motor.setPower(1.0);
             bot.Drive_Right_Motor2.setPower(1.0);
 
-            while(bot.AreMotorsBusy()){
+            while(bot.AreMotorsBusy()){}
+            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+            while(runtime.seconds() < 2){
 
             }
 
+
+
+
+            switch(vuforia.getVuMark()){
+                case UNKNOWN:
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    bot.Drive_Left_Motor.setTargetPosition(-2000);
+                    bot.Drive_Left_Motor2.setTargetPosition(-2000);
+                    bot.Drive_Right_Motor.setTargetPosition(-2000);
+                    bot.Drive_Right_Motor2.setTargetPosition(-2000);
+
+                    bot.Drive_Left_Motor.setPower(1.0);
+                    bot.Drive_Left_Motor2.setPower(1.0);
+                    bot.Drive_Right_Motor.setPower(1.0);
+                    bot.Drive_Right_Motor2.setPower(1.0);
+
+                    while(bot.AreMotorsBusy()){}
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    break;
+                case LEFT:
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    bot.Drive_Left_Motor.setTargetPosition(-300);
+                    bot.Drive_Left_Motor2.setTargetPosition(-3000);
+                    bot.Drive_Right_Motor.setTargetPosition(-3000);
+                    bot.Drive_Right_Motor2.setTargetPosition(-3000);
+
+                    bot.Drive_Left_Motor.setPower(1.0);
+                    bot.Drive_Left_Motor2.setPower(1.0);
+                    bot.Drive_Right_Motor.setPower(1.0);
+                    bot.Drive_Right_Motor2.setPower(1.0);
+
+                    while(bot.AreMotorsBusy()){}
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    break;
+
+                case CENTER:
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    bot.Drive_Left_Motor.setTargetPosition(-2000);
+                    bot.Drive_Left_Motor2.setTargetPosition(-2000);
+                    bot.Drive_Right_Motor.setTargetPosition(-2000);
+                    bot.Drive_Right_Motor2.setTargetPosition(-2000);
+
+                    bot.Drive_Left_Motor.setPower(1.0);
+                    bot.Drive_Left_Motor2.setPower(1.0);
+                    bot.Drive_Right_Motor.setPower(1.0);
+                    bot.Drive_Right_Motor2.setPower(1.0);
+
+                    while(bot.AreMotorsBusy()){}
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    break;
+
+                case RIGHT:
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    bot.Drive_Left_Motor.setTargetPosition(-1000);
+                    bot.Drive_Left_Motor2.setTargetPosition(-1000);
+                    bot.Drive_Right_Motor.setTargetPosition(-1000);
+                    bot.Drive_Right_Motor2.setTargetPosition(-1000);
+
+                    bot.Drive_Left_Motor.setPower(1.0);
+                    bot.Drive_Left_Motor2.setPower(1.0);
+                    bot.Drive_Right_Motor.setPower(1.0);
+                    bot.Drive_Right_Motor2.setPower(1.0);
+
+                    while(bot.AreMotorsBusy()){}
+                    bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    break;
+            }
+
+            while(runtime.seconds() < 0.2){
+
+            }
+            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+            bot.Drive_Left_Motor.setTargetPosition(-2000);
+            bot.Drive_Left_Motor2.setTargetPosition(-2000);
+            bot.Drive_Right_Motor.setTargetPosition(2000);
+            bot.Drive_Right_Motor2.setTargetPosition(2000);
+
+            bot.Drive_Left_Motor.setPower(1.0);
+            bot.Drive_Left_Motor2.setPower(1.0);
+            bot.Drive_Right_Motor.setPower(-1.0);
+            bot.Drive_Right_Motor2.setPower(-1.0);
+
+            while(bot.AreMotorsBusy()){}
             bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            while(runtime.seconds() < 0.5){
+            }
+
+            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+            bot.Drive_Left_Motor.setTargetPosition(-2000);
+            bot.Drive_Left_Motor2.setTargetPosition(-2000);
+            bot.Drive_Right_Motor.setTargetPosition(-2000);
+            bot.Drive_Right_Motor2.setTargetPosition(-2000);
+
+            bot.Drive_Left_Motor.setPower(1.0);
+            bot.Drive_Left_Motor2.setPower(1.0);
+            bot.Drive_Right_Motor.setPower(-1.0);
+            bot.Drive_Right_Motor2.setPower(-1.0);
+
+            while(bot.AreMotorsBusy()){}
+            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
             bot.OpenGrab();
 
-
-            bot.Drive_Left_Motor.setTargetPosition(1000);
-            bot.Drive_Left_Motor2.setTargetPosition(1000);
-            bot.Drive_Right_Motor.setTargetPosition(1000);
-            bot.Drive_Right_Motor2.setTargetPosition(1000);
+            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+            bot.Drive_Left_Motor.setTargetPosition(1500);
+            bot.Drive_Left_Motor2.setTargetPosition(1500);
+            bot.Drive_Right_Motor.setTargetPosition(1500);
+            bot.Drive_Right_Motor2.setTargetPosition(1500);
 
 
 
@@ -104,7 +217,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
             bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            /*
+            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
             bot.Drive_Left_Motor.setPower(-1.0);
             bot.Drive_Left_Motor2.setPower(-1.0);
             bot.Drive_Right_Motor.setPower(1.0);
@@ -120,11 +233,11 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             bot.LiftPower(0);
 
             bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
-          ///  bot.Drive_Left_Motor.setTargetPosition(-8000);
-          ///  bot.Drive_Left_Motor2.setTargetPosition(-8000);
-           // bot.Drive_Right_Motor.setTargetPosition(-8000);
-            //bot.Drive_Right_Motor2.setTargetPosition(-8000);
-            */
+            bot.Drive_Left_Motor.setTargetPosition(-8000);
+            bot.Drive_Left_Motor2.setTargetPosition(-8000);
+            bot.Drive_Right_Motor.setTargetPosition(-8000);
+            bot.Drive_Right_Motor2.setTargetPosition(-8000);
+
 
 
 
@@ -132,7 +245,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             //bot.Turn(0.5,-90);
             //bot.DriveStraight(-500, 0.5, -90);
             //bot.OpenGrab();
-            requestOpModeStop();
+
         }
     }
 }

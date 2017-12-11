@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.bots;
+package org.firstinspires.ftc.teamcode.hardware.bots;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -52,8 +51,9 @@ public class RAWRXD_BOT {
 
     private String Phone_Name = "phone";
     public Servo Phone_Servo = null;
-    private double PHONE_POS_INSIDE = 0;
+    private double PHONE_POS_INSIDE = 0.4;
     private double PHONE_POS_FRONT = 0.5;
+    private double PHONE_POST_PICTO = 0.8;
     private double PHONE_POST_OUTSIDE = 1;
 
     private String Lift1_Name = "lift1";
@@ -338,6 +338,9 @@ public class RAWRXD_BOT {
         Phone_Servo.setPosition(PHONE_POS_FRONT);
     }
 
+    public void SetPhonePicto(){
+        Phone_Servo.setPosition(PHONE_POST_PICTO);
+    }
     public void SetPhoneOutside(){
         Phone_Servo.setPosition(PHONE_POST_OUTSIDE);
     }
