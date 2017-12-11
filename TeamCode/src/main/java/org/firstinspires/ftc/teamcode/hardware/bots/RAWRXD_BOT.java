@@ -171,162 +171,23 @@ public class RAWRXD_BOT {
         Drive_Right_Motor2.setPower(RightVal * Sensitivity);
     }
 
-    public void DriveStraight(double EncoderDistance, double Power, double Angle){
-        int     newLeftTarget;
-        int     newLeftTarget2;
-        int     newRightTarget;
-        int     newRightTarget2;
-
-        int     moveCounts;
-        double  max;
-        double  error;
-        double  steer;
-        double  leftSpeed;
-        double  rightSpeed;
-
-        // Determine new target position, and pass to motor controller
-        moveCounts = (int)EncoderDistance;
-        newLeftTarget = Drive_Left_Motor.getCurrentPosition() + moveCounts;
-        newLeftTarget2 = Drive_Left_Motor2.getCurrentPosition() + moveCounts;
-        newRightTarget = Drive_Right_Motor.getCurrentPosition() + moveCounts;
-        newRightTarget2 = Drive_Right_Motor2.getCurrentPosition() + moveCounts;
-
-        // Set Target and Turn On RUN_TO_POSITION
-
-
-        Drive_Left_Motor.setTargetPosition(newLeftTarget);
-        Drive_Left_Motor2.setTargetPosition(newLeftTarget2);
-
-        Drive_Right_Motor.setTargetPosition(newRightTarget);
-        Drive_Right_Motor2.setTargetPosition(newRightTarget2);
-
-
+    public void EncoderDrive(int LeftVal, int RightVal, double speed){
         SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        // start motion.
-        Power = Range.clip(Math.abs(Power), 0.0, 1.0);
-        Drive_Left_Motor.setPower(Power);
-        Drive_Left_Motor2.setPower(Power);
+        Drive_Left_Motor.setTargetPosition(-LeftVal);
+        Drive_Left_Motor2.setTargetPosition(-LeftVal);
+        Drive_Right_Motor.setTargetPosition(-RightVal);
+        Drive_Right_Motor2.setTargetPosition(-RightVal);
 
-        Drive_Right_Motor.setPower(Power);
-        Drive_Right_Motor2.setPower(Power);
+        Drive_Left_Motor.setPower(speed);
+        Drive_Left_Motor2.setPower(speed);
+        Drive_Right_Motor.setPower(speed);
+        Drive_Right_Motor2.setPower(speed);
 
-        // keep looping while we are still active, and BOTH motors are running.
-        while (AreMotorsBusy()) {
+        while(AreMotorsBusy()){}
 
-            // adjust relative speed based on heading error.
-            error = getError(Angle);
-            steer = getSteer(error, P_DRIVE_COEFF);
-
-            // if driving in reverse, the motor correction also needs to be reversed
-            if (EncoderDistance < 0)
-                steer *= -1.0;
-
-            leftSpeed = Power - steer;
-            rightSpeed = Power + steer;
-
-            // Normalize speeds if either one exceeds +/- 1.0;
-            max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-            if (max > 1.0)
-            {
-                leftSpeed /= max;
-                rightSpeed /= max;
-            }
-
-            Drive_Left_Motor.setPower(leftSpeed);
-            Drive_Left_Motor2.setPower(leftSpeed);
-
-            Drive_Right_Motor.setPower(rightSpeed);
-            Drive_Right_Motor2.setPower(rightSpeed);
-
-        }
-
-        // Stop all motion;
-        Drive_Left_Motor.setPower(0);
-        Drive_Left_Motor2.setPower(0);
-
-        Drive_Right_Motor.setPower(0);
-        Drive_Right_Motor2.setPower(0);
-
-        // Turn off RUN_TO_POSITION
-        SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
-
-    public void Turn(double Speed, double Angel){
-        // keep looping while we are still active, and not on heading.
-        while (!onHeading(Speed, Angel, P_TURN_COEFF)) {
-            opMode.telemetry.addData("Errror 1", getError(Angel));
-
-
-            opMode.telemetry.update();
-
-
-        }
-    }
-
-    public void Hold( double speed, double angle, double holdTime) {
-
-        ElapsedTime holdTimer = new ElapsedTime();
-
-        // keep looping while we have time remaining.
-        holdTimer.reset();
-        while ((holdTimer.time() < holdTime)) {
-            // Update telemetry & Allow time for other processes to run.
-            onHeading(speed, angle, P_TURN_COEFF);
-        }
-
-
-        // Stop all motion;
-        Drive_Left_Motor.setPower(0);
-        Drive_Left_Motor2.setPower(0);
-
-        Drive_Right_Motor.setPower(0);
-        Drive_Right_Motor2.setPower(0);
-    }
-
-    boolean onHeading(double speed, double angle, double PCoeff) {
-        double   error ;
-        double   steer ;
-        boolean  onTarget = false ;
-        double leftSpeed;
-        double rightSpeed;
-
-        // determine turn power based on +/- error
-        error = getError(angle);
-
-        if (Math.abs(error) <= HEADING_THRESHOLD) {
-            steer = 0.0;
-            leftSpeed  = 0.0;
-            rightSpeed = 0.0;
-            onTarget = true;
-        }
-        else {
-            steer = getSteer(error, PCoeff);
-            rightSpeed  = speed * steer;
-            leftSpeed   = -rightSpeed;
-        }
-
-      Drive_Left_Motor.setPower(leftSpeed);
-      Drive_Left_Motor2.setPower(leftSpeed);
-
-        Drive_Right_Motor.setPower(rightSpeed);
-        Drive_Right_Motor2.setPower(rightSpeed);
-        return onTarget;
-    }
-
-    public double getError(double targetAngle) {
-
-        double robotError;
-        robotError = targetAngle - imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
-        while (robotError > 180)  robotError -= 360;
-        while (robotError <= -180) robotError += 360;
-        return robotError;
-    }
-
-    public double getSteer(double error, double PCoeff) {
-        return Range.clip(error * PCoeff, -1, 1);
-    }
-
 
     // Phone Settings
 
