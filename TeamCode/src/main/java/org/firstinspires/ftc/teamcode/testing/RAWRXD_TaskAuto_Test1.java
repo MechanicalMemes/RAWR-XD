@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
-import org.firstinspires.ftc.teamcode.lib.AutonomousAction;
-import org.firstinspires.ftc.teamcode.lib.AutonomousProgressor;
-import org.firstinspires.ftc.teamcode.lib.AutonomousTask;
-import org.firstinspires.ftc.teamcode.lib.DogeAutonomous;
-import org.firstinspires.ftc.teamcode.lib.actions.DriveAction;
-import org.firstinspires.ftc.teamcode.lib.progressors.TimeProgressor;
+import org.firstinspires.ftc.teamcode.lib.auto.AutonomousAction;
+import org.firstinspires.ftc.teamcode.lib.auto.AutonomousProgressor;
+import org.firstinspires.ftc.teamcode.lib.auto.AutonomousTask;
+import org.firstinspires.ftc.teamcode.lib.auto.DogeAutonomous;
+import org.firstinspires.ftc.teamcode.lib.auto.actions.DriveAction;
+import org.firstinspires.ftc.teamcode.lib.auto.progressors.TimeProgressor;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".

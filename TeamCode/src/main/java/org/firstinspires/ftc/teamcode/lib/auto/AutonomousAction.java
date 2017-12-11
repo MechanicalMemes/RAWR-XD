@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.lib;
+package org.firstinspires.ftc.teamcode.lib.auto;
 
 /**
  * Created by Victo on 12/10/2017.

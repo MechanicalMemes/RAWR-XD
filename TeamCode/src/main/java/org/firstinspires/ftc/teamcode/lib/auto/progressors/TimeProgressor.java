@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.lib.progressors;
+package org.firstinspires.ftc.teamcode.lib.auto.progressors;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.lib.AutonomousProgressor;
-import org.firstinspires.ftc.teamcode.lib.AutonomousTask;
+import org.firstinspires.ftc.teamcode.lib.auto.AutonomousProgressor;
+import org.firstinspires.ftc.teamcode.lib.auto.AutonomousTask;
 
 /**
  * Created by Victo on 12/10/2017.

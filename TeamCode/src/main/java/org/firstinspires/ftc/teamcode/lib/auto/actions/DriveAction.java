@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.lib.actions;
+package org.firstinspires.ftc.teamcode.lib.auto.actions;
 
-import org.firstinspires.ftc.teamcode.lib.AutonomousAction;
+import org.firstinspires.ftc.teamcode.lib.auto.AutonomousAction;
 
 /**
  * Created by Victo on 12/10/2017.
