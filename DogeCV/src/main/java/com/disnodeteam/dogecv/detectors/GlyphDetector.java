@@ -57,11 +57,12 @@ public class GlyphDetector extends OpenCVPipeline {
     private Mat edges = new Mat();
     private Mat processed = new Mat();
     private Mat structure = new Mat();
+    private Size newSize  = new Size();
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
 
         Size initSize = rgba.size();
-        Size newSize  = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
+        newSize = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
 
         rgba.copyTo(workingMat);
         Imgproc.resize(workingMat,workingMat, newSize);
@@ -293,5 +294,9 @@ public class GlyphDetector extends OpenCVPipeline {
 
     public boolean isFoundRect() {
         return foundRect;
+    }
+
+    public Size getFrameSize() {
+        return newSize;
     }
 }
