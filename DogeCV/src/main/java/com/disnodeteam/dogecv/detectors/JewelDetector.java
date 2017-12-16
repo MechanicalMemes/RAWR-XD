@@ -4,6 +4,7 @@ package com.disnodeteam.dogecv.detectors;
 import com.disnodeteam.dogecv.OpenCVPipeline;
 
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
@@ -27,6 +28,42 @@ public class JewelDetector extends OpenCVPipeline {
 
 
     private JewelOrder order = JewelOrder.UNKNOWN;
+
+    public enum JewelDetectionMode {
+        HSV_SCORING
+    }
+
+    public enum JewelDetectionSpeed {
+        VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
+    }
+
+
+    public JewelDetectionMode detectionMode      = JewelDetectionMode.HSV_SCORING;
+    public double                 downScaleFactor    = 0.6;
+    public boolean                rotateMat          = false;
+    public CryptoboxDetector.CryptoboxSpeed speed              = CryptoboxDetector.CryptoboxSpeed.BALANCED;
+    public int                    centerOffset       = 0;
+    public boolean                debugShowMask      = true;
+
+
+    private boolean CryptoBoxDetected = false;
+    private boolean ColumnDetected = false;
+    private int[] CryptoBoxPositions = new int[3];
+
+
+    Scalar lower = new Scalar(90, 135, 25);
+    Scalar upper = new Scalar(130, 250, 150);
+
+    private Mat workingMat = new Mat();
+    private Mat mask1  = new Mat();
+    private Mat mask2  = new Mat();
+    private Mat mask  = new Mat();
+    private Mat hsv  = new Mat();
+    private Mat structure  = new Mat();
+    private Mat hierarchy = new Mat();
+    Mat kernel = Mat.ones(5,5, CvType.CV_32F);
+
+    private Size newSize = new Size();
 
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
