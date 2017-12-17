@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
+import com.disnodeteam.dogecv.detectors.CryptoboxDetectorV2;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -58,7 +59,7 @@ public class RAWRXD_CV_Crypto_Blue extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private CryptoboxDetector cryptoboxDetector = null;
+    private CryptoboxDetectorV2 cryptoboxDetector = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -67,12 +68,12 @@ public class RAWRXD_CV_Crypto_Blue extends OpMode
         telemetry.addData("Status", "Initialized");
 
 
-        cryptoboxDetector = new CryptoboxDetector();
+        cryptoboxDetector = new CryptoboxDetectorV2();
         cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
-        cryptoboxDetector.downScaleFactor = 0.6;
-        cryptoboxDetector.detectionMode = CryptoboxDetector.CryptoboxDetectionMode.HSV_BLUE;
-        cryptoboxDetector.speed = CryptoboxDetector.CryptoboxSpeed.VERY_SLOW;
+        cryptoboxDetector.downScaleFactor = 0.4;
+        cryptoboxDetector.detectionMode = CryptoboxDetectorV2.CryptoboxDetectionMode.BLUE;
+        cryptoboxDetector.speed = CryptoboxDetectorV2.CryptoboxSpeed.FAST;
 
         //Optional Test Code to load images via Drawables
         //cryptoboxDetector.useImportedImage = true;
