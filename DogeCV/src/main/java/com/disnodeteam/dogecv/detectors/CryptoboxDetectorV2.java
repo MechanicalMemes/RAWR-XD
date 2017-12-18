@@ -100,7 +100,7 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
                 getBlueMask(blurredMat);
         }
 
-
+        /*
 
         switch (speed){
             case VERY_FAST:
@@ -133,6 +133,7 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
                 Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
                 break;
         }
+        */
        // Imgproc.erode(mask, mask,kernel);
 
 
@@ -228,10 +229,10 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
         }
 
         Imgproc.resize(workingMat, workingMat, initSize);
-
+        Imgproc.resize(mask, mask, initSize);
 
         Imgproc.putText(workingMat,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
-        return workingMat;
+        return mask;
 
 
     }

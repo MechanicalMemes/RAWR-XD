@@ -68,7 +68,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             }
             bot.LiftPower(0);
 
-            switch (jewelDetector.getOrder()){
+            switch (jewelDetector.getLastOrder()){
                 case BLUE_RED:
                    bot.EncoderDrive(-500,-500,0.7);
                    bot.EncoderDrive(500,500,0.5);

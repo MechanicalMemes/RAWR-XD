@@ -30,10 +30,10 @@ public class JewelDetector extends OpenCVPipeline {
     }
 
 
-    private JewelOrder order = JewelOrder.UNKNOWN;
+
 
     public enum JewelDetectionMode {
-        EDGE_SCORING
+        PERFECT_AREA, MAX_AREA
     }
 
     public enum JewelDetectionSpeed {
@@ -41,11 +41,20 @@ public class JewelDetector extends OpenCVPipeline {
     }
 
 
-    public JewelDetectionMode  detectionMode    = JewelDetectionMode.EDGE_SCORING;
+    public JewelDetectionMode  detectionMode    = JewelDetectionMode.MAX_AREA;
     public double              downScaleFactor  = 0.6;
     public boolean             rotateMat        = false;
     public JewelDetectionSpeed speed            = JewelDetectionSpeed.BALANCED;
-    public double perfectArea = 750;
+    public double              perfectArea      = 6500;
+    public double              areaWeight       = 0.05; // Since we're dealing with 100's of pixels
+    public double              minArea          = 700;
+    public double              ratioWeight      = 15; // Since most of the time the area diffrence is a decimal place
+    public double              maxDiffrence     = 10; // Since most of the time the area diffrence is a decimal place
+    public boolean             debugContours    = false;
+
+    private JewelOrder currentOrder = JewelOrder.UNKNOWN;
+    private JewelOrder lastOrder    = JewelOrder.UNKNOWN;
+
 
     private Mat workingMat = new Mat();
     private Mat blurredMat  = new Mat();
@@ -53,7 +62,6 @@ public class JewelDetector extends OpenCVPipeline {
     private Mat maskBlue  = new Mat();
     private Mat hiarchy  = new Mat();
 
-    Mat kernel = Mat.ones(5,5, CvType.CV_32F);
 
     private Size newSize = new Size();
 
@@ -63,7 +71,6 @@ public class JewelDetector extends OpenCVPipeline {
         Size initSize= rgba.size();
         newSize  = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
         rgba.copyTo(workingMat);
-
 
         Imgproc.resize(workingMat, workingMat,newSize);
 
@@ -75,19 +82,18 @@ public class JewelDetector extends OpenCVPipeline {
             tempBefore.release();
         }
 
+        Mat redConvert = workingMat.clone();
+        Mat blueConvert = workingMat.clone();
+
+        getRedMask(redConvert);
+        getBlueMask(blueConvert);
 
 
-
-        Imgproc.erode(workingMat, blurredMat,kernel);
-        Imgproc.dilate(blurredMat, blurredMat,kernel);
-
-        getRedMask(workingMat);
-        getBlueMask(workingMat);
 
         List<MatOfPoint> contoursRed = new ArrayList<>();
 
         Imgproc.findContours(maskRed, contoursRed, hiarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
+        Imgproc.drawContours(workingMat,contoursRed,-1,new Scalar(230,70,70),2);
         Rect chosenRedRect = null;
         double chosenRedScore = Integer.MAX_VALUE;
 
@@ -112,9 +118,16 @@ public class JewelDetector extends OpenCVPipeline {
 
 
             double area = Imgproc.contourArea(c);
-            double areaDiffrence = Math.abs(perfectArea - area);
-            double areaWeight = 0.1; // Since we're dealing with 100's of pixels
+            double areaDiffrence = 0;
 
+            switch(detectionMode){
+                case MAX_AREA:
+                    areaDiffrence = -area * areaWeight;
+                    break;
+                case PERFECT_AREA:
+                    areaDiffrence = Math.abs(perfectArea - area);
+                    break;
+            }
 
             // Just declaring vars to make my life eassy
             double x = rect.x;
@@ -123,25 +136,28 @@ public class JewelDetector extends OpenCVPipeline {
             double h = rect.height;
             Point centerPoint = new Point(x + ( w/2), y + (h/2));
 
+
+
             double cubeRatio = Math.max(Math.abs(h/w), Math.abs(w/h)); // Get the ratio. We use max in case h and w get swapped??? it happens when u account for rotation
-            double ratioDiffrence = Math.abs(1- cubeRatio);
-            double ratioWeight = 10; // Since most of the time the area diffrence is a decimal place
+            double ratioDiffrence = Math.abs(cubeRatio - 1);
+
 
             double finalDiffrence = (ratioDiffrence * ratioWeight) + (areaDiffrence * areaWeight);
 
 
             // Optional to ALWAYS return a result.
-            if(chosenRedRect == null){
-                chosenRedRect = rect;
-                chosenRedScore = finalDiffrence;
-            }
 
             // Update the chosen rect if the diffrence is lower then the curreny chosen
             // Also can add a condition for min diffrence to filter out VERY wrong answers
             // Think of diffrence as score. 0 = perfect
-            if(finalDiffrence < chosenRedScore){
+            if(finalDiffrence < chosenRedScore && finalDiffrence < maxDiffrence && area > minArea){
                 chosenRedScore = finalDiffrence;
                 chosenRedRect = rect;
+            }
+
+            if(debugContours && area > 100){
+                Imgproc.circle(workingMat,centerPoint,3,new Scalar(0,255,255),3);
+                Imgproc.putText(workingMat,"Area: " + area,centerPoint,0,0.5,new Scalar(0,255,255));
             }
 
         }
@@ -149,7 +165,7 @@ public class JewelDetector extends OpenCVPipeline {
         List<MatOfPoint> contoursBlue = new ArrayList<>();
 
         Imgproc.findContours(maskBlue, contoursBlue,hiarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
+        Imgproc.drawContours(workingMat,contoursBlue,-1,new Scalar(70,130,230),2);
         Rect chosenBlueRect = null;
         double chosenBlueScore = Integer.MAX_VALUE;
 
@@ -172,8 +188,16 @@ public class JewelDetector extends OpenCVPipeline {
 
 
             double area = Imgproc.contourArea(c);
-            double areaDiffrence = Math.abs(perfectArea - area);
-            double areaWeight = 0.1; // Since we're dealing with 100's of pixels
+            double areaDiffrence = 0;
+
+            switch(detectionMode){
+                case MAX_AREA:
+                    areaDiffrence = -area * areaWeight;
+                    break;
+                case PERFECT_AREA:
+                    areaDiffrence = Math.abs(perfectArea - area);
+                    break;
+            }
 
 
             // Just declaring vars to make my life eassy
@@ -184,24 +208,23 @@ public class JewelDetector extends OpenCVPipeline {
             Point centerPoint = new Point(x + ( w/2), y + (h/2));
 
             double cubeRatio = Math.max(Math.abs(h/w), Math.abs(w/h)); // Get the ratio. We use max in case h and w get swapped??? it happens when u account for rotation
-            double ratioDiffrence = Math.abs(1- cubeRatio);
-            double ratioWeight = 10; // Since most of the time the area diffrence is a decimal place
+            double ratioDiffrence = Math.abs(cubeRatio - 1);
 
             double finalDiffrence = (ratioDiffrence * ratioWeight) + (areaDiffrence * areaWeight);
 
 
-            // Optional to ALWAYS return a result.
-            if(chosenBlueRect == null){
-                chosenBlueRect = rect;
-                chosenBlueScore = finalDiffrence;
-            }
 
             // Update the chosen rect if the diffrence is lower then the curreny chosen
             // Also can add a condition for min diffrence to filter out VERY wrong answers
             // Think of diffrence as score. 0 = perfect
-            if(finalDiffrence < chosenBlueScore){
+            if(finalDiffrence < chosenBlueScore && finalDiffrence < maxDiffrence && area > minArea){
                 chosenBlueScore = finalDiffrence;
                 chosenBlueRect = rect;
+            }
+
+            if(debugContours && area > 100){
+                Imgproc.circle(workingMat,centerPoint,3,new Scalar(0,255,255),3);
+                Imgproc.putText(workingMat,"Area: " + area,centerPoint,0,0.5,new Scalar(0,255,255));
             }
 
         }
@@ -216,7 +239,7 @@ public class JewelDetector extends OpenCVPipeline {
                     "Red: " + chosenRedScore,
                     new Point(chosenRedRect.x - 5, chosenRedRect.y - 10),
                     Core.FONT_HERSHEY_PLAIN,
-                    2,
+                    1.3,
                     new Scalar(255, 0, 0),
                     2);
         }
@@ -231,10 +254,25 @@ public class JewelDetector extends OpenCVPipeline {
                     "Blue: " + chosenRedScore,
                     new Point(chosenBlueRect.x - 5, chosenBlueRect.y - 10),
                     Core.FONT_HERSHEY_PLAIN,
-                    2,
+                    1.3,
                     new Scalar(0, 0, 255),
                     2);
         }
+
+        if(chosenBlueRect != null && chosenRedRect != null){
+            if(chosenBlueRect.x < chosenRedRect.x){
+                currentOrder = JewelOrder.BLUE_RED;
+                lastOrder = currentOrder;
+            }else{
+                currentOrder = JewelOrder.RED_BLUE;
+                lastOrder = currentOrder;
+            }
+        }else{
+            currentOrder = JewelOrder.UNKNOWN;
+        }
+
+        Imgproc.putText(workingMat,"Result: " + lastOrder.toString(),new Point(10,newSize.height - 30),0,1, new Scalar(255,255,0),1);
+        Imgproc.putText(workingMat,"Current Track: " + currentOrder.toString(),new Point(10,newSize.height - 10),0,0.5, new Scalar(255,255,255),1);
 
         if(rotateMat){
             Mat tempAfter = workingMat.t();
@@ -242,42 +280,45 @@ public class JewelDetector extends OpenCVPipeline {
             tempAfter.release();
         }
 
+        redConvert.release();
+        blueConvert.release();
         Imgproc.resize(workingMat, workingMat, initSize);
-        Imgproc.resize(maskBlue, maskBlue, initSize);
+
+
+
 
         Imgproc.putText(workingMat,"DogeCV JewelV1: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
         return workingMat;
     }
 
-    public void getRedMask(Mat input){
-        Mat convrted = new Mat();
-        input.copyTo(convrted);
-        Imgproc.cvtColor(convrted, convrted, Imgproc.COLOR_RGB2Lab);
+    private void getRedMask(Mat input){
+
+        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2Lab);
         Imgproc.GaussianBlur(input,input,new Size(3,3),0);
         List<Mat> channels = new ArrayList<Mat>();
         Core.split(input, channels);
         Imgproc.threshold(channels.get(1), maskRed, 164.0, 255, Imgproc.THRESH_BINARY);
-        convrted.release();
+
     }
 
-    public Mat getBlueMask(Mat input){
-        Mat convrted = new Mat();
+    private Mat getBlueMask(Mat input){
 
-        input.copyTo(convrted);
-        Imgproc.cvtColor(convrted, convrted, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YUV);
         Imgproc.GaussianBlur(input,input,new Size(3,3),0);
+        List<Mat> channels = new ArrayList<Mat>();
+        Core.split(input, channels);
+        Imgproc.threshold(channels.get(1), maskBlue, 145.0, 255, Imgproc.THRESH_BINARY);
 
-        Scalar lower = new Scalar(90, 135, 25);
-        Scalar upper = new Scalar(130, 250, 150);
 
 
-
-        Core.inRange(convrted,lower,upper,maskBlue);
-        convrted.release();
         return maskBlue;
     }
 
-    public JewelOrder getOrder() {
-        return order;
+    public JewelOrder getCurrentOrder() {
+        return currentOrder;
+    }
+
+    public JewelOrder getLastOrder() {
+        return lastOrder;
     }
 }

@@ -34,8 +34,15 @@ public class RAWRXD_CV_Jewel extends OpMode
         jewelDetector = new JewelDetector();
         jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
-        jewelDetector.downScaleFactor = 0.3;
-        jewelDetector.speed = JewelDetector.JewelDetectionSpeed.FAST;
+        //Jewel Detector Settings
+        jewelDetector.areaWeight = 0.02;
+        jewelDetector.detectionMode = JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
+        //jewelDetector.perfectArea = 6500; <- Needed for PERFECT_AREA
+        jewelDetector.debugContours = true;
+        jewelDetector.maxDiffrence = 15;
+        jewelDetector.ratioWeight = 15;
+        jewelDetector.minArea = 700;
+
         jewelDetector.enable();
 
 
@@ -43,14 +50,12 @@ public class RAWRXD_CV_Jewel extends OpMode
 
     @Override
     public void init_loop() {
-        telemetry.addData("Status", "Initialized. Gyro Calibration");
+        telemetry.addData("Status", "Initialized.");
     }
 
     @Override
     public void start() {
         runtime.reset();
-
-
     }
 
     @Override
@@ -60,13 +65,11 @@ public class RAWRXD_CV_Jewel extends OpMode
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-
+        telemetry.addData("Current Order", "Jewel Order: " + jewelDetector.getCurrentOrder().toString()); // Current Result
+        telemetry.addData("Last Order", "Jewel Order: " + jewelDetector.getLastOrder().toString()); // Last Known Result
 
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
     @Override
     public void stop() {
         jewelDetector.disable();

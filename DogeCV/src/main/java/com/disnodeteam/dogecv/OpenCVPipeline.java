@@ -74,7 +74,9 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
         } catch (InterruptedException e) { return; }
 
         cameraView.enableView();
+        cameraView.setMaxFrameSize(1920,1080);
         viewDisplay.setCurrentView(context, getCameraView());
+
     }
 
     /**
