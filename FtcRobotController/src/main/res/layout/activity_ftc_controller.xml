@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <RelativeLayout
       android:id="@+id/top_bar"
       android:layout_width="fill_parent"
-      android:layout_height="70dp"
+      android:layout_height="50dp"
       android:background="@color/background_black">
 
     <ImageView
@@ -71,8 +71,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:id="@+id/openftc_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textDeviceName"
-        android:layout_toEndOf="@+id/robotIcon"
+        android:layout_alignBottom="@+id/menu_buttons"
+        android:layout_marginEnd="29dp"
+        android:layout_toStartOf="@+id/menu_buttons"
         android:padding="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?attr/textWhite"
@@ -89,9 +90,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         android:layout_margin="10dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
-        android:padding="15dp"
+        android:padding="5dp"
         android:scaleType="fitXY"
         android:src="@drawable/icon_menu" />
+
+    <TextView
+        android:id="@+id/textRemoteProgrammingMode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/menu_buttons"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="19dp"
+        android:layout_toEndOf="@+id/robotIcon"
+        android:background="?attr/backgroundLight"
+        android:gravity="center"
+        android:text=""
+        android:textColor="?attr/textWhite"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
   </RelativeLayout>
   <!-- end of black bar -->
@@ -177,17 +194,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       android:text="" />
 
     <!-- invisible except when programming mode is activated from the DS -->
-    <TextView
-      android:id="@+id/textRemoteProgrammingMode"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="?attr/backgroundLight"
-      android:gravity="center"
-      android:textColor="?attr/textWhite"
-      android:textSize="40sp"
-      android:textStyle="bold"
-      android:visibility="invisible"
-      android:text="" />
 
   </RelativeLayout>
 

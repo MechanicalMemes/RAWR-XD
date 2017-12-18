@@ -102,69 +102,16 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             while(runtime.seconds() < 0.2){
 
             }
-            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
-            bot.Drive_Left_Motor.setTargetPosition(-2000);
-            bot.Drive_Left_Motor2.setTargetPosition(-2000);
-            bot.Drive_Right_Motor.setTargetPosition(2000);
-            bot.Drive_Right_Motor2.setTargetPosition(2000);
+            bot.EncoderDrive(2000,-2000,0.8);
 
-            bot.Drive_Left_Motor.setPower(1.0);
-            bot.Drive_Left_Motor2.setPower(1.0);
-            bot.Drive_Right_Motor.setPower(-1.0);
-            bot.Drive_Right_Motor2.setPower(-1.0);
-
-            while(bot.AreMotorsBusy()){}
-            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            while(runtime.seconds() < 0.5){
-            }
-
-            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
-            bot.Drive_Left_Motor.setTargetPosition(-2000);
-            bot.Drive_Left_Motor2.setTargetPosition(-2000);
-            bot.Drive_Right_Motor.setTargetPosition(-2000);
-            bot.Drive_Right_Motor2.setTargetPosition(-2000);
-
-            bot.Drive_Left_Motor.setPower(1.0);
-            bot.Drive_Left_Motor2.setPower(1.0);
-            bot.Drive_Right_Motor.setPower(-1.0);
-            bot.Drive_Right_Motor2.setPower(-1.0);
-
-            while(bot.AreMotorsBusy()){}
-            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            bot.EncoderDrive(2000,2000,0.5);
 
             bot.OpenGrab();
 
-
-
-            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
-            bot.Drive_Left_Motor.setPower(-1.0);
-            bot.Drive_Left_Motor2.setPower(-1.0);
-            bot.Drive_Right_Motor.setPower(1.0);
-            bot.Drive_Right_Motor2.setPower(1.0);
-
-            bot.SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            bot.LiftPower(-1);
-            runtime.reset();
-            while(runtime.seconds() < 0.5){
-
+            while(runtime.seconds() < 0.1){
             }
-            bot.LiftPower(0);
 
-            bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
-            bot.Drive_Left_Motor.setTargetPosition(-8000);
-            bot.Drive_Left_Motor2.setTargetPosition(-8000);
-            bot.Drive_Right_Motor.setTargetPosition(-8000);
-            bot.Drive_Right_Motor2.setTargetPosition(-8000);
-
-
-
-
-
-            //bot.Turn(0.5,-90);
-            //bot.DriveStraight(-500, 0.5, -90);
-            //bot.OpenGrab();
+            bot.EncoderDrive(-1000,-1000,1.0);
 
         }
     }

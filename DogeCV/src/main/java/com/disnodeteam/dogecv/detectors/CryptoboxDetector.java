@@ -58,7 +58,7 @@ public class CryptoboxDetector extends OpenCVPipeline {
 
 
     @Override
-    public Mat processFrame(Mat rgba, Mat gray) {
+    public Mat[] processFrame(Mat rgba, Mat gray) {
 
         Size initSize= rgba.size();
         newSize  = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
@@ -201,7 +201,8 @@ public class CryptoboxDetector extends OpenCVPipeline {
         Imgproc.resize(workingMat, workingMat, initSize);
 
 
-        return workingMat;
+        Mat[] returnMats = {workingMat,mask1,mask2, mask};
+        return returnMats;
 
 
     }

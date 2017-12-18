@@ -39,6 +39,7 @@ public class CameraViewDisplay implements ViewDisplay {
                 }
                 l.addView(queuedView);
                 view = queuedView;
+
             }
         });
     }

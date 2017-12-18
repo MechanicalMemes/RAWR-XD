@@ -59,7 +59,7 @@ public class GlyphDetector extends OpenCVPipeline {
     private Mat structure = new Mat();
     private Size newSize  = new Size();
     @Override
-    public Mat processFrame(Mat rgba, Mat gray) {
+    public  Mat[] processFrame(Mat rgba, Mat gray) {
 
         Size initSize = rgba.size();
         newSize = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
@@ -160,9 +160,7 @@ public class GlyphDetector extends OpenCVPipeline {
                 }
             }
         });
-        if(contours.size() <= 0){
-            return rgba;
-        }
+
         contours.remove(0); // Remove First Index which is usually a large square filling the entire screen,
 
         for(MatOfPoint c : contours) {
@@ -246,15 +244,21 @@ public class GlyphDetector extends OpenCVPipeline {
         }else{
             foundRect = true;
         }
-        if(rotateMat){
-            Mat tempAfter = workingMat.t();
-            Core.flip(tempAfter, workingMat, 0); //mRgba.t() is the transpose
 
-            tempAfter.release();
+        Mat[] returnMats = {workingMat,edges};
+
+        for(Mat mat: returnMats){
+            if(rotateMat){
+                Mat tempAfter = mat.t();
+                Core.flip(tempAfter, mat, 0); //mRgba.t() is the transpose
+
+                tempAfter.release();
+            }
+
+            Imgproc.resize(mat,mat,initSize);
         }
 
-        Imgproc.resize(workingMat,workingMat,initSize);
-        return workingMat;
+        return returnMats;
     }
 
 

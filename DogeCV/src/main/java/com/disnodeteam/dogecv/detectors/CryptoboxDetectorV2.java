@@ -12,7 +12,6 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -65,7 +64,7 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
 
 
     @Override
-    public Mat processFrame(Mat rgba, Mat gray) {
+    public Mat[] processFrame(Mat rgba, Mat gray) {
 
         Size initSize= rgba.size();
         newSize  = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
@@ -219,20 +218,22 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
         }
 
 
-        if(rotateMat){
+        Imgproc.putText(workingMat,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
 
-            Mat tempAfter = workingMat.t();
+        Mat[] returnMats = {workingMat,mask};
 
-            Core.flip(tempAfter, workingMat, 0); //mRgba.t() is the transpose
+        for(Mat mat: returnMats){
+            if(rotateMat){
+                Mat tempAfter = mat.t();
+                Core.flip(tempAfter, mat, 0); //mRgba.t() is the transpose
 
-            tempAfter.release();
+                tempAfter.release();
+            }
+
+            Imgproc.resize(mat,mat,initSize);
         }
 
-        Imgproc.resize(workingMat, workingMat, initSize);
-        Imgproc.resize(mask, mask, initSize);
-
-        Imgproc.putText(workingMat,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
-        return mask;
+        return returnMats;
 
 
     }

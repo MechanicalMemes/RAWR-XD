@@ -63,7 +63,9 @@ public class DogeLogger{
 
     public static void SendData(){
         String finalPacket = "";
-
+        for (LogData data : LogValues){
+            finalPacket += data.ConvertToPacket();
+        }
         Log.d("WS-SERVER", "Sending: " + finalPacket);
         server.SendString(finalPacket);
     }
