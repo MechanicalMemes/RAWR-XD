@@ -297,26 +297,19 @@ public class JewelDetector extends OpenCVPipeline {
     }
 
     private void getRedMask(Mat input){
-
         Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2Lab);
         Imgproc.GaussianBlur(input,input,new Size(3,3),0);
         List<Mat> channels = new ArrayList<Mat>();
         Core.split(input, channels);
         Imgproc.threshold(channels.get(1), maskRed, 164.0, 255, Imgproc.THRESH_BINARY);
-
     }
 
-    private Mat getBlueMask(Mat input){
-
+    private void getBlueMask(Mat input){
         Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YUV);
         Imgproc.GaussianBlur(input,input,new Size(3,3),0);
         List<Mat> channels = new ArrayList<Mat>();
         Core.split(input, channels);
         Imgproc.threshold(channels.get(1), maskBlue, 145.0, 255, Imgproc.THRESH_BINARY);
-
-
-
-        return maskBlue;
     }
 
     public JewelOrder getCurrentOrder() {
