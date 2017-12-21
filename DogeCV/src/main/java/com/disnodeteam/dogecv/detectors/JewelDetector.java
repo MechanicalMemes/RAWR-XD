@@ -42,7 +42,7 @@ public class JewelDetector extends OpenCVPipeline {
 
 
     public JewelDetectionMode  detectionMode    = JewelDetectionMode.MAX_AREA;
-    public double              downScaleFactor  = 0.2;
+    public double              downScaleFactor  = 0.4;
     public boolean             rotateMat        = false;
     public JewelDetectionSpeed speed            = JewelDetectionSpeed.BALANCED;
     public double              perfectArea      = 6500;
