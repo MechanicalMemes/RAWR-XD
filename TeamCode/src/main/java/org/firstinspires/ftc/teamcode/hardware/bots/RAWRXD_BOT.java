@@ -67,21 +67,25 @@ public class RAWRXD_BOT {
     private String Grab_Left_Name = "lg";
     public Servo Grab_Left_Servo = null;
     public final double GRAB_LEFT_CLOSED = 1;
+    public final double GRAB_LEFT_MID = 0.85;
     public final double GRAB_LEFT_OPEN   = 0.7;
 
     private String Grab2_Left_Name = "lg2";
     public Servo Grab2_Left_Servo = null;
     public final double GRAB2_LEFT_CLOSED = 0;
+    public final double GRAB2_LEFT_MID = 0.15;
     public final double GRAB2_LEFT_OPEN   = 0.3;
 
     private String Grab_Right_Name = "rg";
     public Servo Grab_Right_Servo = null;
     public final double GRAB_RIGHT_CLOSED = 1;
+    public final double GRAB_RIGHT_MID = 0.85;
     public final double GRAB_RIGHT_OPEN   = 0.7;
 
     private String Grab2_Right_Name = "rg2";
     public Servo Grab2_Right_Servo = null;
     public final double GRAB2_RIGHT_CLOSED = 0;
+    public final double GRAB2_RIGHT_MID   = 0.15;
     public final double GRAB2_RIGHT_OPEN   = 0.3;
 
 
@@ -137,6 +141,9 @@ public class RAWRXD_BOT {
         Lift2_Motor = hardwareMap.dcMotor.get(Lift2_Name);
         Lift1_Motor.setDirection(Lift1_Direction);
         Lift2_Motor.setDirection(Lift2_Direction);
+
+        Lift1_Motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Lift2_Motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Grab_Left_Servo = hardwareMap.servo.get(Grab_Left_Name);
         Grab2_Left_Servo = hardwareMap.servo.get(Grab2_Left_Name);
@@ -222,6 +229,15 @@ public class RAWRXD_BOT {
         Grab2_Right_Servo.setPosition(GRAB2_RIGHT_CLOSED);
         Grab2_Left_Servo.setPosition(GRAB2_LEFT_CLOSED);
     }
+
+    public void MidGrab(){
+        Grab_Right_Servo.setPosition(GRAB_RIGHT_MID);
+        Grab_Left_Servo.setPosition(GRAB_LEFT_MID);
+
+        Grab2_Right_Servo.setPosition(GRAB2_RIGHT_MID);
+        Grab2_Left_Servo.setPosition(GRAB2_LEFT_MID);
+    }
+
 
     public void OpenGrab(){
         Grab_Right_Servo.setPosition(GRAB_RIGHT_OPEN);

@@ -39,10 +39,11 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
         vuforia = new VuforiaHardware();
         vuforia.Init(hardwareMap);
-
+        jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         while(!isStarted() && !isStopRequested()){
             vuforia.Loop();
         }
+
 
         runtime.reset();
 
@@ -52,18 +53,19 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             vuforia.Stop();
 
-            jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+
             jewelDetector.enable();
 
 
             bot.SetPhoneOutside();
             bot.CloseGrab();
-            while(runtime.seconds() < 0.2){
+            runtime.reset();
+            while(runtime.seconds() < 0.5){
 
             }
             bot.LiftPower(-1);
             runtime.reset();
-            while(runtime.seconds() < 0.5){
+            while(runtime.seconds() < 0.3){
 
             }
             bot.LiftPower(0);
@@ -74,44 +76,41 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
                    bot.EncoderDrive(500,500,0.5);
 
             }
-
-            bot.EncoderDrive(2000,2000,0.9);
-
-
-            while(runtime.seconds() < 2){
+            
+            while(runtime.seconds() < 0.2){
             }
 
 
             switch(vuforia.getVuMark()){
                 case UNKNOWN:
-                    bot.EncoderDrive(2000,2000,1.0);
+                    bot.EncoderDrive(2000,2000,0.6);
                     break;
                 case LEFT:
-                    bot.EncoderDrive(3000,3000,1.0);
+                    bot.EncoderDrive(3000,3000,0.6);
                     break;
 
                 case CENTER:
-                    bot.EncoderDrive(2000,2000,1.0);
+                    bot.EncoderDrive(2000,2000,0.6);
                     break;
 
                 case RIGHT:
-                    bot.EncoderDrive(1000,1000,1.0);
+                    bot.EncoderDrive(1000,1000,0.6);
                     break;
             }
 
             while(runtime.seconds() < 0.2){
 
             }
-            bot.EncoderDrive(2000,-2000,0.8);
+            bot.EncoderDrive(1600,-1600,0.5);
 
-            bot.EncoderDrive(2000,2000,0.5);
+            bot.EncoderDrive(1300,1300,0.2);
 
             bot.OpenGrab();
 
             while(runtime.seconds() < 0.1){
             }
 
-            bot.EncoderDrive(-1000,-1000,1.0);
+            bot.EncoderDrive(-1000,-1000,0.3);
 
         }
     }
