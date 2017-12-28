@@ -58,7 +58,7 @@ public class RAWRXD_CV_Crypto_Red extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private CryptoboxDetectorV2 cryptoboxDetector = null;
+    private CryptoboxDetector cryptoboxDetector = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -67,13 +67,14 @@ public class RAWRXD_CV_Crypto_Red extends OpMode
         telemetry.addData("Status", "Initialized");
 
 
-        cryptoboxDetector = new CryptoboxDetectorV2();
+        cryptoboxDetector = new CryptoboxDetector();
         cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
         cryptoboxDetector.downScaleFactor = 0.5;
-        cryptoboxDetector.detectionMode = CryptoboxDetectorV2.CryptoboxDetectionMode.BLUE;
-        cryptoboxDetector.speed = CryptoboxDetectorV2.CryptoboxSpeed.BALANCED;
-        cryptoboxDetector.rotateMat = true;
+        cryptoboxDetector.detectionMode = CryptoboxDetector.CryptoboxDetectionMode.BLUE;
+        cryptoboxDetector.speed = CryptoboxDetector.CryptoboxSpeed.BALANCED;
+        cryptoboxDetector.trackableMemory = 5;
+        cryptoboxDetector.rotateMat = false;
 
         //Optional Test Code to load images via Drawables
         //cryptoboxDetector.useImportedImage = true;

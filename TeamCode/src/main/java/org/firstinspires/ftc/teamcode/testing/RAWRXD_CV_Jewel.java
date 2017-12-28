@@ -42,7 +42,8 @@ public class RAWRXD_CV_Jewel extends OpMode
         jewelDetector.maxDiffrence = 15;
         jewelDetector.ratioWeight = 15;
         jewelDetector.minArea = 700;
-        jewelDetector.rotateMat = true;
+        jewelDetector.perfectRatio = 1.8;
+        jewelDetector.rotateMat = false;
         jewelDetector.enable();
 
 

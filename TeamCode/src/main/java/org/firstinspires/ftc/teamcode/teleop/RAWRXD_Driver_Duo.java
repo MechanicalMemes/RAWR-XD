@@ -30,7 +30,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
+import com.disnodeteam.dogecv.detectors.legacy.CryptoboxDetector_Old;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -68,7 +68,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     private double Sensitivity = 1.0;
     private Controller controller = null;
     private Controller controller2 = null;
-    private CryptoboxDetector cryptoboxDetector;
+    private CryptoboxDetector_Old cryptoboxDetectorOld;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -80,9 +80,9 @@ public class RAWRXD_Driver_Duo extends OpMode
         controller = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
         bot.Init();
-        cryptoboxDetector= new CryptoboxDetector();
-        cryptoboxDetector.rotateMat = true;
-        cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        cryptoboxDetectorOld = new CryptoboxDetector_Old();
+        cryptoboxDetectorOld.rotateMat = true;
+        cryptoboxDetectorOld.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
     }
 
@@ -103,7 +103,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     public void start() {
 
         runtime.reset();
-        //cryptoboxDetector.enable();
+        //cryptoboxDetectorOld.enable();
     }
 
     /*
@@ -157,7 +157,7 @@ public class RAWRXD_Driver_Duo extends OpMode
      */
     @Override
     public void stop() {
-        cryptoboxDetector.disable();
+        cryptoboxDetectorOld.disable();
     }
 
 }

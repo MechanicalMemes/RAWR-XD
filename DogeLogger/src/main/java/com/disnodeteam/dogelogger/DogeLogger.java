@@ -55,7 +55,11 @@ public class DogeLogger{
 
         LogData newData = new LogData(key,val);
         if(dataKeyIndex(key) == -1){
-            LogValues.add(newData);
+            if(LogValues.size() == 0){
+                LogValues.add(newData);
+            }else{
+                LogValues.set(0, newData);
+            }
         }
 
         SendData();

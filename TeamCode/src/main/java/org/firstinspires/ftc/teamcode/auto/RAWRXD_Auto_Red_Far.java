@@ -1,7 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.auto;
 import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
+import com.disnodeteam.dogecv.detectors.legacy.CryptoboxDetector_Old;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
-import org.firstinspires.ftc.teamcode.hardware.sensors.IMU;
 import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 
 
@@ -23,7 +22,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
     private VuforiaHardware vuforia;
     private JewelDetector jewelDetector;
-    private CryptoboxDetector cryptoboxDetector;
+    private CryptoboxDetector_Old cryptoboxDetectorOld;
 
     @Override
     public void runOpMode() {
@@ -38,12 +37,12 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
         jewelDetector = new JewelDetector();
         jewelDetector.downScaleFactor = 0.4;
         jewelDetector.rotateMat = true;
-        cryptoboxDetector = new CryptoboxDetector();
+        cryptoboxDetectorOld = new CryptoboxDetector_Old();
 
         vuforia = new VuforiaHardware();
         vuforia.Init(hardwareMap);
 
-        cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        cryptoboxDetectorOld.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         while(!isStarted() && !isStopRequested()){
             vuforia.Loop();
@@ -86,7 +85,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             }
 
             jewelDetector.disable();
-            cryptoboxDetector.enable();
+            cryptoboxDetectorOld.enable();
 
             bot.WaitForTime(0.2);
 

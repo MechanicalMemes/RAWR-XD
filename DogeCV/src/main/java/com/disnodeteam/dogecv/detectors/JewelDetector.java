@@ -43,6 +43,7 @@ public class JewelDetector extends OpenCVPipeline {
 
     public JewelDetectionMode  detectionMode    = JewelDetectionMode.MAX_AREA;
     public double              downScaleFactor  = 0.4;
+    public double              perfectRatio     = 1;
     public boolean             rotateMat        = false;
     public JewelDetectionSpeed speed            = JewelDetectionSpeed.BALANCED;
     public double              perfectArea      = 6500;
@@ -77,7 +78,7 @@ public class JewelDetector extends OpenCVPipeline {
         if(rotateMat){
             Mat tempBefore = workingMat.t();
 
-            Core.flip(tempBefore, workingMat, 3); //mRgba.t() is the transpose
+            Core.flip(tempBefore, workingMat, -1); //mRgba.t() is the transpose
 
             tempBefore.release();
         }
@@ -139,7 +140,7 @@ public class JewelDetector extends OpenCVPipeline {
 
 
             double cubeRatio = Math.max(Math.abs(h/w), Math.abs(w/h)); // Get the ratio. We use max in case h and w get swapped??? it happens when u account for rotation
-            double ratioDiffrence = Math.abs(cubeRatio - 1);
+            double ratioDiffrence = Math.abs(cubeRatio - perfectRatio);
 
 
             double finalDiffrence = (ratioDiffrence * ratioWeight) + (areaDiffrence * areaWeight);
