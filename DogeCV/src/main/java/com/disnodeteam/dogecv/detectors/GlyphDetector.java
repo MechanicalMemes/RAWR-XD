@@ -248,12 +248,6 @@ public class GlyphDetector extends OpenCVPipeline {
         Mat[] returnMats = {workingMat,edges};
 
         for(Mat mat: returnMats){
-            if(rotateMat){
-                Mat tempAfter = mat.t();
-                Core.flip(tempAfter, mat, 0); //mRgba.t() is the transpose
-
-                tempAfter.release();
-            }
 
             Imgproc.resize(mat,mat,initSize);
         }

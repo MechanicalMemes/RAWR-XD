@@ -70,10 +70,10 @@ public class RAWRXD_CV_Crypto_Red extends OpMode
         cryptoboxDetector = new CryptoboxDetectorV2();
         cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
-        cryptoboxDetector.downScaleFactor = 0.4;
-        cryptoboxDetector.detectionMode = CryptoboxDetectorV2.CryptoboxDetectionMode.RED;
+        cryptoboxDetector.downScaleFactor = 0.5;
+        cryptoboxDetector.detectionMode = CryptoboxDetectorV2.CryptoboxDetectionMode.BLUE;
         cryptoboxDetector.speed = CryptoboxDetectorV2.CryptoboxSpeed.BALANCED;
-        cryptoboxDetector.rotateMat = false;
+        cryptoboxDetector.rotateMat = true;
 
         //Optional Test Code to load images via Drawables
         //cryptoboxDetector.useImportedImage = true;

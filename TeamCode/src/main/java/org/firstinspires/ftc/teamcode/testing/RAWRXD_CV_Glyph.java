@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.io.IOException;
 
 
-@Autonomous(name="DogeCV Glyph Detector", group="testing")
+@Autonomous(name="DogeCV Glyph Detector", group="Testing")
 
 public class RAWRXD_CV_Glyph extends OpMode
 {

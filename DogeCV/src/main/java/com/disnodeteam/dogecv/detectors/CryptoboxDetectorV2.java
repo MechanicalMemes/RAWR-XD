@@ -1,6 +1,11 @@
 package com.disnodeteam.dogecv.detectors;
 
+import android.util.Log;
+
 import com.disnodeteam.dogecv.OpenCVPipeline;
+import com.disnodeteam.dogecv.math.Line;
+import com.disnodeteam.dogecv.math.Lines;
+import com.disnodeteam.dogecv.math.MathFTC;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -28,12 +33,9 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
         VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
     }
 
-    public class CryptoboxTrackable{
-        public List<Point> points = new ArrayList<>();
-    }
 
     public CryptoboxDetectionMode detectionMode      = CryptoboxDetectionMode.RED;
-    public double                 downScaleFactor    = 0.6;
+    public double                 downScaleFactor    = 0.5;
     public boolean                rotateMat          = false;
     public CryptoboxSpeed         speed              = CryptoboxSpeed.BALANCED;
     public int                    centerOffset       = 0;
@@ -45,23 +47,12 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
     private int[] CryptoBoxPositions = new int[3];
 
 
-    Scalar lower = new Scalar(90, 135, 25);
-    Scalar upper = new Scalar(130, 250, 150);
-
     private Mat workingMat = new Mat();
-    private Mat blurredMat = new Mat();
-    private Mat mask1  = new Mat();
-    private Mat mask2  = new Mat();
-    private Mat mask  = new Mat();
-    private Mat hsv  = new Mat();
-    private Mat structure  = new Mat();
-    private Mat hierarchy = new Mat();
-    Mat kernel = Mat.ones(3,3,CvType.CV_32F);
+    private Mat mask = new Mat();
+    private Mat white = new Mat();
+    private Mat display = null;
 
     private Size newSize = new Size();
-
-    private CryptoboxTrackable[] collumnTrack = new CryptoboxTrackable[3];
-
 
     @Override
     public Mat[] processFrame(Mat rgba, Mat gray) {
@@ -72,93 +63,44 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
 
 
         Imgproc.resize(workingMat, workingMat,newSize);
-
-
-        if(rotateMat){
+        if(rotateMat) {
             Mat tempBefore = workingMat.t();
-
             Core.flip(tempBefore, workingMat, 1); //mRgba.t() is the transpose
-
             tempBefore.release();
         }
 
-
-
-        List<MatOfPoint> contours = new ArrayList<>();
-        List<Rect> boxes = new ArrayList<>();
-
-        Imgproc.erode(workingMat, blurredMat,kernel);
-        Imgproc.dilate(blurredMat, blurredMat,kernel);
-
-
         switch(detectionMode){
             case RED:
-                getRedMask(blurredMat);
+                Mat redMask = workingMat.clone();
+                getRedMask(redMask);
+                redMask.release();
                 break;
             case BLUE:
-                getBlueMask(blurredMat);
-        }
-
-        /*
-
-        switch (speed){
-            case VERY_FAST:
-
-                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1,30));
-                Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
-                break;
-            case FAST:
-
-                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,30));
-                Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
-                break;
-
-            case BALANCED:
-
-                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,40));
-                Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
-                break;
-
-
-            case SLOW:
-                Imgproc.blur(hsv,hsv,new Size(7,7));
-                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2,55));
-                Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
-                break;
-
-            case VERY_SLOW:
-
-                structure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,60));
-                Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE, structure);
+                Mat blueMask = workingMat.clone();
+                getBlueMask(blueMask);
+                blueMask.release();
                 break;
         }
-        */
-       // Imgproc.erode(mask, mask,kernel);
 
 
-
-        Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        for(MatOfPoint c : contours) {
-            if(Imgproc.contourArea(c) >= newSize.height * 0.8 ) { //Filter by area
-                Rect column = Imgproc.boundingRect(c);
-                int ratio = Math.abs(column.height / column.width);
-
-                if(ratio > 1.5) { //Check to see if the box is tall
-                    boxes.add(column); //If all true add the box to array
-                }
+        display = new Mat(mask.height(), mask.width(), CvType.CV_8UC1);
+        ArrayList<Line> lines = (ArrayList<Line>) Lines.getOpenCvLines(mask, 1, 55);
+        lines = (ArrayList<Line>) Lines.linearExtend(lines, 4, newSize);
+        //lines = Lines.mergeLines(lines, 13, 300, 6);
+        //lines = Lines.mergeLines(lines, 6, 2000, 4);
+        List<Line> linesVertical = new ArrayList<Line>();
+        for (Line line : lines) {
+            if(Lines.getAngularDistance(line, new Line(new Point(0,0), new Point(100,0))) > 45) {
+                linesVertical.add(line);
             }
         }
-        for(Rect box : boxes) {
-            Imgproc.rectangle(workingMat,new Point(box.x,box.y),new Point(box.x+box.width,box.y+box.height),new Scalar(255,0,0),2);
-        }
 
-        Collections.sort(boxes, new Comparator<Rect>() {
+        Collections.sort(linesVertical, new Comparator<Line>() {
             @Override
-            public int compare(Rect rect, Rect t1) {
-                if(rect.x > t1.x){
+            public int compare(Line line1, Line line2) {
+                if(line1.center().x > line2.center().x){
                     return 1;
-                }else if(rect.x < t1.x){
+                }else if(line1.center().x < line2.center().x){
                     return -1;
                 }else{
                     return 0;
@@ -166,69 +108,169 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
             }
         });
 
+        if(linesVertical.size() == 0){
+            Mat[] returnMats = {workingMat,mask };
 
-        for(int i=0;i<boxes.size() - 1;i++){
+            for(Mat mat: returnMats){
 
-            if(i<3){
-                if(collumnTrack[i] == null){
-                    collumnTrack[i] = new CryptoboxTrackable();
+
+                Imgproc.resize(mat,mat,initSize);
+            }
+            return returnMats;
+        }
+
+        Line left = linesVertical.get(0);
+        Line right = linesVertical.get(linesVertical.size()-1);
+
+        double perpDistance = Lines.getPerpindicularDistance(left, right);
+        double collumnLength =Lines.getPerpindicularDistance(left, right)/6;
+
+        List<List<Line>> groupings = new ArrayList<List<Line>>();
+        int j = 0;
+        while (j < linesVertical.size()) {
+            List<Line> group = new ArrayList<Line>();
+            group.add(linesVertical.get(j));
+            int i = j+1;
+            while ( i < linesVertical.size() && Lines.getPerpindicularDistance(linesVertical.get(j), linesVertical.get(i)) < collumnLength) {
+                group.add(linesVertical.get(i));
+                i++;
+            }
+            groupings.add(group);
+            j = i;
+        }
+
+        for (int i = 0; i < groupings.size()-1; i++) {
+            Point center = new Line(Lines.getMeanPoint(groupings.get(i)), Lines.getMeanPoint(groupings.get(i+1))).center();
+            int y = (int) MathFTC.clip(0.6*center.y, 0, mask.height());
+            double max = 1.4*center.y;
+            if (center.y < 125) {
+                y = 1;
+                max = 250;
+            }
+            int count = 0;
+            while (y < mask.height() && y < max && count < 10) {
+                if(mask.get(y, (int) center.x)[0] > 0) {
+                    count++;
+                    //Imgproc.circle(original, new Point(2*center.x, 2*y), 10, new Scalar(255,255,255), 6);
+                } else {
+                    //Imgproc.circle(original, new Point(2*center.x, 2*y), 10, new Scalar(30,30,200), 6);
                 }
-
-                if(collumnTrack[i].points.size() < 10){
-                    collumnTrack[i].points.add(drawSlot(i,boxes));
-                }else{
-                    Collections.rotate(collumnTrack[i].points, -1);
-                    collumnTrack[i].points.set(9,drawSlot(i,boxes));
-                }
-
-                for(int j =0;j< collumnTrack[i].points.size();j++){
-                    Imgproc.circle(workingMat,collumnTrack[i].points.get(j),4,new Scalar(255,255,255),3);
-                }
+                y += 10;
+            }
+            if(count >= 10) {
+                List<Line> appendee = groupings.get(i);
+                appendee.addAll(groupings.get(i+1));
+                groupings.set(i, appendee);
+                groupings.remove(i+1);
+                i -= 1;
             }
         }
 
-        CryptoBoxDetected = boxes.size() >=4;
-        if(CryptoBoxDetected){
-            Point left = drawSlot(0,boxes);
-            Point center = drawSlot(1,boxes);
-            Point right = drawSlot(2,boxes);
-
-            CryptoBoxPositions[0] = (int)left.x;
-            CryptoBoxPositions[1] = (int)center.x;
-            CryptoBoxPositions[2] = (int)right.x;
-
-            Imgproc.putText(workingMat, "Left", new Point(left.x - 10, left.y - 20), 0,0.8, new Scalar(0,255,255),2);
-            Imgproc.circle(workingMat,left,5,new Scalar(0,255,255), 3);
-
-            Imgproc.putText(workingMat, "Center", new Point(center.x - 10, center.y - 20), 0,0.8, new Scalar(0,255,255),2);
-            Imgproc.circle(workingMat,center, 5,new Scalar(0,255,255), 3);
-
-            Imgproc.putText(workingMat, "Right", new Point(right.x - 10, right.y - 20), 0,0.8, new Scalar(0,255,255),2);
-            Imgproc.circle(workingMat,right, 5,new Scalar(0,255,255), 3);
-        }else{
-            for(int i=0;i<boxes.size() - 1;i++){
-                Point collumn = drawSlot(i,boxes);
-                Imgproc.circle(workingMat,collumn,5,new Scalar(0,255,255), 3);
-                if(i<3){
-                    CryptoBoxPositions[i] = (int)collumn.x;
-                }
+        for (int i = 0; i < groupings.size(); i++) {
+            Point center = Lines.getMeanPoint(groupings.get(i));
+            int y = (int) MathFTC.clip(0.2*center.y, 0, mask.height());
+            double max = 1.8*center.y;
+            if (center.y < 50) {
+                y = 1;
+                max = (int) 0.8*mask.height();
             }
-
-            ColumnDetected = boxes.size() > 1;
+            int minX = (int) MathFTC.clip(center.x-5, 0, mask.width());
+            int maxX = (int) MathFTC.clip(center.x+5, 0, mask.width());
+            int count = 0;
+            while (y < mask.height() && y < max && count < 10) {
+                if(mask.get(y, (int) center.x)[0] > 0 || mask.get(y, minX)[0] > 0 || mask.get(y, maxX)[0] > 0) {
+                    count++;
+                    Imgproc.circle(workingMat, new Point(2*center.x, 2*y), 10, new Scalar(255,255,255), 6);
+                } else {
+                    Imgproc.circle(workingMat, new Point(2*center.x, 2*y), 10, new Scalar(30,30,200), 6);
+                }
+                y += 4;
+            }
+            if(count <= 9) {
+                groupings.remove(i);
+                i -= 1;
+            }
         }
 
+        if(groupings.size() > 4) {
+            Collections.sort(groupings, new Comparator<List<Line>>() {
+                @Override
+                public int compare(List<Line> g1, List<Line> g2) {
+                    if(Lines.stdDevX(g1) > Lines.stdDevX(g2)){
+                        return 1;
+                    }else if(Lines.stdDevX(g1) < Lines.stdDevX(g2)){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+                }
+            });
+            groupings = groupings.subList(0, 4);
+        }
+        List<Line> columns = new ArrayList<Line>();
+        for (int i = 0; i < groupings.size(); i++) {
+            Point center =  Lines.getMeanPoint(groupings.get(i));
+            double angle = Lines.getMeanAngle(groupings.get(i));
+            columns.add(Lines.constructLine(Lines.getMeanPoint(groupings.get(i)), Lines.getMeanAngle(groupings.get(i)), 400));
+        }
+
+        for(int i = 0; i < groupings.size(); i++) {
+            groupings.set(i, Lines.resize(groupings.get(i), 1/downScaleFactor));
+        }
+
+        for(int i = 0; i < groupings.size(); i++) {
+            //Imgproc.circle(original, Lines.getMeanPoint(groupings.get(i)), 50, new Scalar(40,200,70), 4);
+            for (Line line : groupings.get(i)) {
+                Imgproc.line(workingMat, line.point1, line.point2, new Scalar(50,200,55), 4);
+                Imgproc.circle(workingMat, line.center(), 20, new Scalar(80,60,190),4);
+                Imgproc.putText(workingMat, Integer.toString(i), line.center(), Core.FONT_HERSHEY_PLAIN, 7, new Scalar(10,240,230),3);
+            }
+        }
+
+        for (Line line : columns) {
+            line.resize(1/downScaleFactor);
+            Imgproc.line(workingMat, line.point1, line.point2, new Scalar(20,165,240), 40);
+        }
+        if(columns.size() < 3){
+            Mat[] returnMats = {workingMat,mask };
+
+            for(Mat mat: returnMats){
+                if(rotateMat){
+                    Mat tempAfter = mat.t();
+                    Core.flip(tempAfter, mat, 0); //mRgba.t() is the transpose
+
+                    tempAfter.release();
+                }
+
+                Imgproc.resize(mat,mat,initSize);
+            }
+
+            return  returnMats;
+        }
+        Line conec = Lines.getPerpindicularConnector(columns.get(0), columns.get(1), workingMat.size());
+        Imgproc.line(workingMat, conec.point1, conec.point2, new Scalar(210,30,40), 7);
+
+      //  Imgproc.cvtColor(white, white, Imgproc.COLOR_RGB2HSV);
+
+
+        double[] pos = getPosition(columns.get(0), columns.get(1), workingMat.size(), 1000, 960, 540);
+        Log.d("DogeCV","X1: " + Double.toString(pos[0]));
+        Log.d("DogeCV","Y1: " + Double.toString(pos[1]));
+        Log.d("DogeCV","X2: " + Double.toString(pos[2]));
+        Log.d("DogeCV","Y2: " + Double.toString(pos[3]));
+        Log.d("DogeCV","Angle: " + Double.toString(180*Math.atan2(pos[3]-pos[1], pos[2]-pos[0])/Math.PI));
+        pos = getPosition(columns.get(1), columns.get(2), workingMat.size(), 1000, 960, 540);
+        Log.d("DogeCV","X1: " + Double.toString(pos[0]));
+        Log.d("DogeCV","Y1: " + Double.toString(pos[1]));
+        Log.d("DogeCV","X2: " + Double.toString(pos[2]));
+        Log.d("DogeCV","Y2: " + Double.toString(pos[3]));
+        Log.d("DogeCV","Angle: " + Double.toString(180*Math.atan2(pos[3]-pos[1], pos[2]-pos[0])/Math.PI));
 
         Imgproc.putText(workingMat,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
 
-        Mat[] returnMats = {workingMat,mask};
+        Mat[] returnMats = {workingMat,mask };
 
         for(Mat mat: returnMats){
-            if(rotateMat){
-                Mat tempAfter = mat.t();
-                Core.flip(tempAfter, mat, 0); //mRgba.t() is the transpose
-
-                tempAfter.release();
-            }
 
             Imgproc.resize(mat,mat,initSize);
         }
@@ -238,24 +280,22 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
 
     }
 
-    public Mat getRedMask(Mat input){
+    public void getRedMask(Mat input){
         Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2Lab);
         Imgproc.GaussianBlur(input,input,new Size(3,3),0);
         List<Mat> channels = new ArrayList<Mat>();
         Core.split(input, channels);
         Imgproc.threshold(channels.get(1), mask, 164.0, 255, Imgproc.THRESH_BINARY);
-        return mask;
     }
 
-    public Mat getBlueMask(Mat input){
+    public void getBlueMask(Mat input){
 
         Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YUV);
         Imgproc.GaussianBlur(input,input,new Size(3,3),0);
-        List<Mat> channels = new ArrayList<Mat>();
+        List<Mat> channels = new ArrayList<>();
         Core.split(input, channels);
         Imgproc.threshold(channels.get(1), mask, 145.0, 255, Imgproc.THRESH_BINARY);
 
-        return mask;
     }
 
 
@@ -272,16 +312,21 @@ public class CryptoboxDetectorV2 extends OpenCVPipeline {
         return new Point(drawX, drawY);
     }
 
-    public ArrayList ones(int width, int height) {
-        ArrayList output = new ArrayList();
-        for(int i = 1; i <= height; i++) {
-            ArrayList row = new ArrayList();
-            for(int j = 1; i <= width; i++) {
-                row.add(1);
-            }
-            output.add(row);
-        }
-        return output;
+
+    public static double[] getPosition(Line left, Line right, Size size, double f, double x0, double y0) {
+        Line connector = Lines.getPerpindicularConnector(left, right, size);
+        double u1 = connector.x1-x0;
+        double u2 = connector.x2-x0;
+        double v1 = y0-connector.y1;
+        double v2 = y0-connector.y2;
+
+        double y1 = 7.63*f*Math.sqrt(1/( (Math.pow(u1, 2)+1) - (2*v1*(u1*u2+1)/v2) + (Math.pow(v1/v2, 2)*(Math.pow(u2, 2)+1)) ));
+        double y2 = 7.63*f*Math.sqrt(1/( (Math.pow(u2, 2)+1) - (2*v2*(u1*u2+1)/v1) + (Math.pow(v2/v1, 2)*(Math.pow(u1, 2)+1)) ));
+
+        double x1 = y1*u1/f;
+        double x2 = y2*u2/f;
+
+        return new double[] {x1,y1,x2,y2};
     }
 
     public int[] getCryptoBoxPositions() {

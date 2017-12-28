@@ -189,19 +189,15 @@ public class CryptoboxDetector extends OpenCVPipeline {
             ColumnDetected = boxes.size() > 1;
         }
 
-        if(rotateMat){
-
-            Mat tempAfter = workingMat.t();
-
-            Core.flip(tempAfter, workingMat, 0); //mRgba.t() is the transpose
-
-            tempAfter.release();
-        }
-
-        Imgproc.resize(workingMat, workingMat, initSize);
 
 
         Mat[] returnMats = {workingMat,mask1,mask2, mask};
+
+        for(Mat mat: returnMats){
+
+            Imgproc.resize(mat,mat,initSize);
+        }
+
         return returnMats;
 
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware.bots;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,6 +14,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.hardware.sensors.IMU;
 
 /**
  * Created by Alex on 11/3/2017.
@@ -22,7 +24,7 @@ public class RAWRXD_BOT {
     private HardwareMap hardwareMap;
 
 
-    public BNO055IMU imu = null;
+    public IMU imu = null;
 
     //
     //DRIVE RELATED VARS
@@ -51,9 +53,9 @@ public class RAWRXD_BOT {
 
     private String Phone_Name = "phone";
     public Servo Phone_Servo = null;
-    private double PHONE_POS_INSIDE = 0.4;
-    private double PHONE_POS_FRONT = 0.5;
-    private double PHONE_POST_PICTO = 0.8;
+    private double PHONE_POS_INSIDE = 0;
+    private double PHONE_POS_FRONT = 0.1;
+    private double PHONE_POST_PICTO = 0.25;
     private double PHONE_POST_OUTSIDE = 1;
 
     private String Lift1_Name = "lift1";
@@ -89,13 +91,15 @@ public class RAWRXD_BOT {
     public final double GRAB2_RIGHT_OPEN   = 0.3;
 
 
-    static final double     HEADING_THRESHOLD       = 15 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.05;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.05;     // Larger is more responsive, but also less stable
+    static final double     HEADING_THRESHOLD       = 0.3 ;      // As tight as we can make it with an integer gyro
+    static final double     P_TURN_COEFF            = 0.06 ;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.04;     // Larger is more responsive, but also less stable
 
-    private OpMode opMode;
+    private LinearOpMode opMode;
 
-    public RAWRXD_BOT(HardwareMap _hwd, OpMode parent){
+    private ElapsedTime elapsedTime;
+
+    public RAWRXD_BOT(HardwareMap _hwd, LinearOpMode parent){
         hardwareMap = _hwd;
         opMode = parent;
 
@@ -103,16 +107,9 @@ public class RAWRXD_BOT {
 
     public void Init(){
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = new IMU();
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        imu.initialize(parameters);
+        imu.InitIMU(hardwareMap,"imu");
 
 
         Drive_Left_Motor  = hardwareMap.dcMotor.get(Drive_Left_Name);
@@ -150,13 +147,13 @@ public class RAWRXD_BOT {
         Grab_Right_Servo = hardwareMap.servo.get(Grab_Right_Name);
         Grab2_Right_Servo = hardwareMap.servo.get(Grab2_Right_Name);
 
+        SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        while(!imu.isGyroCalibrated()){
-            opMode.telemetry.addData("IMU Calibrating", imu.getSystemStatus());
-            opMode.telemetry.update();
+        while(!imu.imu.isGyroCalibrated()){
+            opMode.telemetry.addData("IMU", imu.imu.getSystemStatus());
         }
 
-        SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elapsedTime = new ElapsedTime();
     }
 
     public void SetAllMotorsToMode(DcMotor.RunMode mode){
@@ -194,6 +191,173 @@ public class RAWRXD_BOT {
         while(AreMotorsBusy()){}
 
         SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void gyroDrive ( double speed,
+                            double distance,
+                            double angle) {
+
+        int     newLeftTarget;
+        int     newRightTarget;
+        int     newLeftTarget2;
+        int     newRightTarget2;
+        int     moveCounts;
+        double  max;
+        double  error;
+        double  steer;
+        double  leftSpeed;
+        double  rightSpeed;
+
+        // Ensure that the opmode is still active
+        if (opMode.opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            moveCounts = -(int)distance;
+            newLeftTarget = Drive_Left_Motor.getCurrentPosition() + moveCounts;
+            newRightTarget = Drive_Right_Motor.getCurrentPosition() + moveCounts;
+
+            newLeftTarget2 = Drive_Left_Motor2.getCurrentPosition() + moveCounts;
+            newRightTarget2 = Drive_Right_Motor2.getCurrentPosition() + moveCounts;
+
+            // Set Target and Turn On RUN_TO_POSITION
+            Drive_Left_Motor.setTargetPosition(newLeftTarget);
+            Drive_Right_Motor.setTargetPosition(newRightTarget);
+
+            Drive_Left_Motor2.setTargetPosition(newLeftTarget2);
+            Drive_Right_Motor2.setTargetPosition(newRightTarget2);
+
+            SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            Drive_Left_Motor.setPower(speed);
+            Drive_Right_Motor.setPower(speed);
+            Drive_Left_Motor2.setPower(speed);
+            Drive_Right_Motor2.setPower(speed);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opMode.opModeIsActive() && AreMotorsBusy()){
+
+                // adjust relative speed based on heading error.
+                error = imu.getError(angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
+                opMode.telemetry.addData("ERROR", error);
+                opMode.telemetry.addData("Steer", steer);
+                opMode.telemetry.update();
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    steer *= -1.0;
+
+                leftSpeed = speed - steer;
+                rightSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                if (max > 1.0)
+                {
+                    leftSpeed /= max;
+                    rightSpeed /= max;
+                }
+
+                Drive_Left_Motor.setPower(leftSpeed);
+                Drive_Left_Motor2.setPower(leftSpeed);
+
+                Drive_Right_Motor.setPower(rightSpeed);
+                Drive_Right_Motor2.setPower(rightSpeed);
+
+            }
+
+            // Stop all motion;
+            Drive_Left_Motor.setPower(0);
+            Drive_Left_Motor2.setPower(0);
+
+            Drive_Right_Motor.setPower(0);
+            Drive_Right_Motor2.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void WaitForTime(double time){
+        elapsedTime.reset();
+        elapsedTime.startTime();
+
+        while(elapsedTime.seconds() < time){
+
+        }
+
+
+    }
+
+    public void gyroHold( double speed, double angle, double holdTime) {
+
+
+
+        // keep looping while we have time remaining.
+        elapsedTime.reset();
+        while (opMode.opModeIsActive() && (elapsedTime.time() < holdTime)) {
+            // Update telemetry & Allow time for other processes to run.
+            onHeading(speed, angle, P_TURN_COEFF);
+            opMode.telemetry.update();
+        }
+
+        // Stop all motion;
+        Drive_Left_Motor.setPower(0);
+        Drive_Left_Motor2.setPower(0);
+
+        Drive_Right_Motor.setPower(0);
+        Drive_Right_Motor2.setPower(0);
+    }
+
+    public void gyroTurn (  double speed, double angle) {
+
+        // keep looping while we are still active, and not on heading.
+        while (opMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+            // Update telemetry & Allow time for other processes to run.
+
+        }
+    }
+
+    boolean onHeading(double speed, double angle, double PCoeff) {
+        double   error ;
+        double   steer ;
+        boolean  onTarget = false ;
+        double leftSpeed;
+        double rightSpeed;
+
+        // determine turn power based on +/- error
+        error = imu.getError(angle);
+
+        if (Math.abs(error) <= HEADING_THRESHOLD) {
+            steer = 0.0;
+            leftSpeed  = 0.0;
+            rightSpeed = 0.0;
+            onTarget = true;
+        }
+        else {
+            steer = getSteer(error, PCoeff);
+            leftSpeed  = speed * steer;
+            rightSpeed   = -leftSpeed;
+        }
+
+        // Send desired speeds to motors.
+        Drive_Left_Motor.setPower(leftSpeed);
+        Drive_Left_Motor2.setPower(leftSpeed);
+
+        Drive_Right_Motor.setPower(rightSpeed);
+        Drive_Right_Motor2.setPower(rightSpeed);
+
+        // Display it for the driver.
+        opMode.telemetry.addData("Target", "%5.2f", angle);
+        opMode.telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+        opMode.telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+        opMode.telemetry.update();
+
+        return onTarget;
+    }
+    private double getSteer(double error, double PCoeff) {
+        return Range.clip(error * PCoeff, -1, 1);
     }
 
     // Phone Settings

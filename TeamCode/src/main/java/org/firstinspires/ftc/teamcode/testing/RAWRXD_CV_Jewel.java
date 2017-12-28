@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.io.IOException;
 
 
-@Autonomous(name="DogeCV Jewel Detector", group="testing")
+@Autonomous(name="DogeCV Jewel Detector", group="Testing")
 
 public class RAWRXD_CV_Jewel extends OpMode
 {
@@ -42,7 +42,7 @@ public class RAWRXD_CV_Jewel extends OpMode
         jewelDetector.maxDiffrence = 15;
         jewelDetector.ratioWeight = 15;
         jewelDetector.minArea = 700;
-
+        jewelDetector.rotateMat = true;
         jewelDetector.enable();
 
 

@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.lib.auto.progressors.TimeProgressor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Task Auto Test 1", group="testing")
+@Autonomous(name="Task Auto Test 1", group="Testing")
 
 
 public class RAWRXD_TaskAuto_Test1 extends LinearOpMode {

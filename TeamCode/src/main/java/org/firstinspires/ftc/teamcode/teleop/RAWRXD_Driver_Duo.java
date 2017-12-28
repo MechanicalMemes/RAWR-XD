@@ -76,7 +76,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXD_BOT(hardwareMap, this);
+        bot = new RAWRXD_BOT(hardwareMap, null);
         controller = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
         bot.Init();
@@ -103,7 +103,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     public void start() {
 
         runtime.reset();
-        cryptoboxDetector.enable();
+        //cryptoboxDetector.enable();
     }
 
     /*
@@ -128,24 +128,26 @@ public class RAWRXD_Driver_Duo extends OpMode
 
         bot.LiftPower( gamepad2.left_stick_y);
 
-        if(controller2.AState == Controller.ButtonState.JUST_PRESSED){
+        if(controller2.AState == Controller.ButtonState.PRESSED){
             bot.CloseGrab();
         }
-        if(controller2.BState == Controller.ButtonState.JUST_PRESSED){
+        if(controller2.BState == Controller.ButtonState.PRESSED){
             bot.OpenGrab();
         }
 
-        if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED){
+        if(controller2.XState == Controller.ButtonState.PRESSED){
+            bot.MidGrab();
+        }
+
+
+        if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED && Sensitivity < 100){
             Sensitivity += 20;
         }
 
-        if(controller.DPadDown == Controller.ButtonState.JUST_PRESSED){
+        if(controller.DPadDown == Controller.ButtonState.JUST_PRESSED && Sensitivity > 0){
             Sensitivity -= 20;
         }
 
-        if(controller2.XState == Controller.ButtonState.JUST_PRESSED){
-            bot.MidGrab();
-        }
 
 
     }

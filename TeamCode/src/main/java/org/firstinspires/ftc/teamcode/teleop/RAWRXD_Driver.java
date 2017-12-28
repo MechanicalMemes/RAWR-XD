@@ -71,7 +71,7 @@ public class RAWRXD_Driver extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXD_BOT(hardwareMap, this);
+        bot = new RAWRXD_BOT(hardwareMap, null);
         controller = new Controller(gamepad1);
         bot.Init();
 

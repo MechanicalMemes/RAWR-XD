@@ -1,4 +1,5 @@
 package com.disnodeteam.dogecv.math;
+
 import org.opencv.core.Point;
 
 public class Line implements Comparable<Line> {

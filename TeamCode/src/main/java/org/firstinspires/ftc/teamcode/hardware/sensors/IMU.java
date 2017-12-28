@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 public class IMU {
-    BNO055IMU imu;
+    public BNO055IMU imu;
 
     public void InitIMU(HardwareMap hwMap, String name){
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

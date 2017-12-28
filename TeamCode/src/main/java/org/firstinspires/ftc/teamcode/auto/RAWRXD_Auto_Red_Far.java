@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.auto;
 import com.disnodeteam.dogecv.CameraViewDisplay;
+import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,6 +23,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
     private VuforiaHardware vuforia;
     private JewelDetector jewelDetector;
+    private CryptoboxDetector cryptoboxDetector;
 
     @Override
     public void runOpMode() {
@@ -34,14 +36,19 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
         bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         jewelDetector = new JewelDetector();
-
-
+        jewelDetector.downScaleFactor = 0.4;
+        jewelDetector.rotateMat = true;
+        cryptoboxDetector = new CryptoboxDetector();
 
         vuforia = new VuforiaHardware();
         vuforia.Init(hardwareMap);
+
+        cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         while(!isStarted() && !isStopRequested()){
             vuforia.Loop();
+            telemetry.addData("Vuforia", vuforia.getVuMark().toString());
+            telemetry.update();
         }
 
 
@@ -57,60 +64,95 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             jewelDetector.enable();
 
 
-            bot.SetPhoneOutside();
+            //bot.SetPhoneOutside();
             bot.CloseGrab();
-            runtime.reset();
-            while(runtime.seconds() < 0.5){
 
-            }
+            bot.WaitForTime(0.3);
+
             bot.LiftPower(-1);
-            runtime.reset();
-            while(runtime.seconds() < 0.3){
 
-            }
+            bot.WaitForTime(0.5);
+
             bot.LiftPower(0);
 
+            bot.WaitForTime(0.7);
+
             switch (jewelDetector.getLastOrder()){
-                case BLUE_RED:
-                   bot.EncoderDrive(-500,-500,0.7);
-                   bot.EncoderDrive(500,500,0.5);
+                case RED_BLUE:
+                   bot.EncoderDrive(-100,-100,0.2);
+                   bot.WaitForTime(0.3);
+                   bot.EncoderDrive(100,100,0.5);
 
             }
-            
-            while(runtime.seconds() < 0.2){
-            }
 
+            jewelDetector.disable();
+            cryptoboxDetector.enable();
+
+            bot.WaitForTime(0.2);
+
+            bot.gyroDrive(0.7,2000,0);
 
             switch(vuforia.getVuMark()){
                 case UNKNOWN:
-                    bot.EncoderDrive(2000,2000,0.6);
+                    bot.gyroDrive(1.0,1000,0);
+
                     break;
                 case LEFT:
-                    bot.EncoderDrive(3000,3000,0.6);
+                    bot.gyroDrive(1.0,2250,0);
+
                     break;
 
                 case CENTER:
-                    bot.EncoderDrive(2000,2000,0.6);
+                    bot.gyroDrive(1.0,1000,0);
+
                     break;
 
                 case RIGHT:
-                    bot.EncoderDrive(1000,1000,0.6);
+                    bot.gyroDrive(1.0,500,0);
+
                     break;
             }
+            bot.WaitForTime(0.2);
+            bot.gyroTurn(0.8,270);
 
-            while(runtime.seconds() < 0.2){
-
-            }
-            bot.EncoderDrive(1600,-1600,0.5);
-
-            bot.EncoderDrive(1300,1300,0.2);
-
+            bot.gyroDrive(0.4,700,270);
+            bot.LiftPower(1);
+            bot.WaitForTime(0.45);
+            bot.LiftPower(0);
             bot.OpenGrab();
 
-            while(runtime.seconds() < 0.1){
-            }
+            bot.WaitForTime(0.2);
 
-            bot.EncoderDrive(-1000,-1000,0.3);
+            bot.gyroDrive(0.2,-1000,270);
+            bot.gyroTurn(1,90);
+            runtime.reset();
+
+            bot.LiftPower(1);
+            bot.WaitForTime(0.420);
+            bot.LiftPower(0);
+            bot.gyroDrive(1,3000,90);
+
+            bot.CloseGrab();
+
+            bot.WaitForTime(0.3);
+
+            bot.LiftPower(-1);
+            bot.WaitForTime(0.8);
+            bot.LiftPower(0);
+
+            bot.WaitForTime(0.2);
+
+
+            bot.gyroDrive(0.3,-1000,90);
+
+            bot.gyroTurn(0.8,270);
+
+            bot.gyroDrive(1.0,3000,270);
+            bot.gyroDrive(0.25,500,270);
+
+            bot.OpenGrab();
+            bot.WaitForTime(0.4);
+            bot.gyroDrive(0.25,-800,270);
 
         }
     }
