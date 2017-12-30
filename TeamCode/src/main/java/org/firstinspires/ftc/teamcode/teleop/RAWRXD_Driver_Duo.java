@@ -68,7 +68,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     private double Sensitivity = 1.0;
     private Controller controller = null;
     private Controller controller2 = null;
-    private CryptoboxDetector_Old cryptoboxDetectorOld;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -80,9 +80,7 @@ public class RAWRXD_Driver_Duo extends OpMode
         controller = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
         bot.Init();
-        cryptoboxDetectorOld = new CryptoboxDetector_Old();
-        cryptoboxDetectorOld.rotateMat = true;
-        cryptoboxDetectorOld.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+
 
     }
 
@@ -118,7 +116,7 @@ public class RAWRXD_Driver_Duo extends OpMode
         controller2.Update();
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("GyroMode", gyroMode);
+
         telemetry.addData("Sensitivity",  Sensitivity);
 
         bot.DriveManual(gamepad1.left_stick_y, gamepad1.right_stick_y, Sensitivity);
@@ -157,7 +155,7 @@ public class RAWRXD_Driver_Duo extends OpMode
      */
     @Override
     public void stop() {
-        cryptoboxDetectorOld.disable();
+
     }
 
 }

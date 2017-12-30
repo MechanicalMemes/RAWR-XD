@@ -150,7 +150,9 @@ public class RAWRXD_BOT {
         SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while(!imu.imu.isGyroCalibrated()){
-            opMode.telemetry.addData("IMU", imu.imu.getSystemStatus());
+            if(opMode != null){
+                opMode.telemetry.addData("IMU", imu.imu.getSystemStatus());
+            }
         }
 
         elapsedTime = new ElapsedTime();
@@ -257,6 +259,13 @@ public class RAWRXD_BOT {
                 {
                     leftSpeed /= max;
                     rightSpeed /= max;
+                }
+
+                double distanceLeft = Drive_Left_Motor.getCurrentPosition();
+
+                if(distanceLeft / distance > 0.9){
+                    leftSpeed *= 0.5;
+                    rightSpeed *= 0.5;
                 }
 
                 Drive_Left_Motor.setPower(leftSpeed);

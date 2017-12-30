@@ -70,11 +70,11 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
             bot.LiftPower(-1);
 
-            bot.WaitForTime(0.5);
+            bot.WaitForTime(0.35);
 
             bot.LiftPower(0);
 
-            bot.WaitForTime(0.7);
+            bot.WaitForTime(0.4);
 
             switch (jewelDetector.getLastOrder()){
                 case RED_BLUE:
@@ -87,9 +87,8 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             jewelDetector.disable();
             cryptoboxDetectorOld.enable();
 
-            bot.WaitForTime(0.2);
 
-            bot.gyroDrive(0.7,2000,0);
+            bot.gyroDrive(0.5,1900,  10);
 
             switch(vuforia.getVuMark()){
                 case UNKNOWN:
@@ -111,29 +110,26 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
                     break;
             }
-            bot.WaitForTime(0.2);
-            bot.gyroTurn(0.8,270);
+
+            bot.gyroTurn(1,270);
 
             bot.gyroDrive(0.4,700,270);
-            bot.LiftPower(1);
-            bot.WaitForTime(0.45);
-            bot.LiftPower(0);
+
             bot.OpenGrab();
 
-            bot.WaitForTime(0.2);
 
-            bot.gyroDrive(0.2,-1000,270);
+            bot.gyroDrive(0.5,-1000,270);
             bot.gyroTurn(1,90);
             runtime.reset();
 
             bot.LiftPower(1);
-            bot.WaitForTime(0.420);
+            bot.WaitForTime(0.30);
             bot.LiftPower(0);
             bot.gyroDrive(1,3000,90);
 
             bot.CloseGrab();
 
-            bot.WaitForTime(0.3);
+            bot.WaitForTime(0.1);
 
             bot.LiftPower(-1);
             bot.WaitForTime(0.8);
@@ -142,12 +138,12 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             bot.WaitForTime(0.2);
 
 
-            bot.gyroDrive(0.3,-1000,90);
+            bot.gyroDrive(1,-1000,90);
 
-            bot.gyroTurn(0.8,270);
+            bot.gyroTurn(1,260);
 
-            bot.gyroDrive(1.0,3000,270);
-            bot.gyroDrive(0.25,500,270);
+            bot.gyroDrive(1,3000,260);
+            bot.gyroDrive(1,500,270);
 
             bot.OpenGrab();
             bot.WaitForTime(0.4);
