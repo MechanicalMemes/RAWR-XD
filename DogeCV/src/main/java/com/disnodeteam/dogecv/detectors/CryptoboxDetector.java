@@ -310,18 +310,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
       //  Imgproc.cvtColor(white, white, Imgproc.COLOR_RGB2HSV);
 
 
-       // Log.d("DogeCV","X1: " + Double.toString(pos[0]));
-       // Log.d("DogeCV","Y1: " + Double.toString(pos[1]));
-       // Log.d("DogeCV","X2: " + Double.toString(pos[2]));
-       // Log.d("DogeCV","Y2: " + Double.toString(pos[3]));
-       /// Log.d("DogeCV","Angle: " + Double.toString(180*Math.atan2(pos[3]-pos[1], pos[2]-pos[0])/Math.PI));
-       // pos = getPosition(columns.get(1), columns.get(2), workingMat.size(), 1000, 960, 540);
-       // Log.d("DogeCV","X1: " + Double.toString(pos[0]));
-        ///Log.d("DogeCV","Y1: " + Double.toString(pos[1]));
-       // Log.d("DogeCV","X2: " + Double.toString(pos[2]));
-        ////Log.d("DogeCV","Y2: " + Double.toString(pos[3]));
-        //Log.d("DogeCV","Angle: " + Double.toString(180*Math.atan2(pos[3]-pos[1], pos[2]-pos[0])/Math.PI));
-
         Imgproc.putText(rgba,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
 
         returnMats = new Mat[]{rgba,mask };
