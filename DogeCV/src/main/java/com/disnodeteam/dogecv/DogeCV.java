@@ -1,5 +1,7 @@
 package com.disnodeteam.dogecv;
 
+import android.util.Log;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -22,6 +24,9 @@ public class DogeCV {
         for(int i=0;i<channels.size();i++){
             channels.get(i).release();
         }
+
+        input.release();
+
     }
 
     public static void leviRedFilter (Mat input, Mat mask, double threshold){

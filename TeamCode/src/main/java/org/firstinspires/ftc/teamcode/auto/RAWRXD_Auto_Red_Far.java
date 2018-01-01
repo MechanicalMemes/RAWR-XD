@@ -1,7 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.auto;
 import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.detectors.legacy.CryptoboxDetector_Old;
+import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,7 +22,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
     private VuforiaHardware vuforia;
     private JewelDetector jewelDetector;
-    private CryptoboxDetector_Old cryptoboxDetectorOld;
+    private CryptoboxDetector cryptoboxDetectorOld;
 
     @Override
     public void runOpMode() {
@@ -37,7 +37,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
         jewelDetector = new JewelDetector();
         jewelDetector.downScaleFactor = 0.4;
         jewelDetector.rotateMat = true;
-        cryptoboxDetectorOld = new CryptoboxDetector_Old();
+        cryptoboxDetectorOld = new CryptoboxDetector();
 
         vuforia = new VuforiaHardware();
         vuforia.Init(hardwareMap);

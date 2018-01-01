@@ -2,6 +2,7 @@ package com.disnodeteam.dogecv.detectors;
 
 import android.util.Log;
 
+import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.OpenCVPipeline;
 import com.disnodeteam.dogecv.math.Line;
 import com.disnodeteam.dogecv.math.Lines;
@@ -54,14 +55,14 @@ public class CryptoboxDetector extends OpenCVPipeline {
     private Mat display = null;
 
     private Size newSize = new Size();
-    private Mat[] returnMats;
+
 
     private List<List<Point>> trackables = new ArrayList<>(3);
     List<Point> avgPoints = new ArrayList<>();
     Point fullAvgPoint = new Point();
 
     @Override
-    public Mat[] processFrame(Mat rgba, Mat gray) {
+    public Mat processFrame(Mat rgba, Mat gray) {
         downScaleFactor    = 0.5;
         Size initSize= rgba.size();
         newSize  = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
@@ -79,18 +80,18 @@ public class CryptoboxDetector extends OpenCVPipeline {
         switch(detectionMode){
             case RED:
                 Mat redMask = workingMat.clone();
-                getRedMask(redMask);
+                DogeCV.leviRedFilter(redMask, mask);
                 redMask.release();
                 break;
             case BLUE:
                 Mat blueMask = workingMat.clone();
-                getBlueMask(blueMask);
+                DogeCV.leviRedFilter(blueMask, mask);
                 blueMask.release();
                 break;
         }
 
 
-        display = new Mat(mask.height(), mask.width(), CvType.CV_8UC1);
+        //display = new Mat(mask.height(), mask.width(), CvType.CV_8UC1);
         ArrayList<Line> lines = (ArrayList<Line>) Lines.getOpenCvLines(mask, 1, 55);
         lines = (ArrayList<Line>) Lines.linearExtend(lines, 4, newSize);
         //lines = Lines.mergeLines(lines, 13, 300, 6);
@@ -120,13 +121,7 @@ public class CryptoboxDetector extends OpenCVPipeline {
             CryptoBoxDetected = false;
             ColumnDetected = false;
 
-            returnMats = new Mat[]{workingMat,mask };
-
-            for(int i=0;i<returnMats.length;i++){
-                Imgproc.resize(returnMats[i],returnMats[i],initSize);
-
-            }
-            return returnMats;
+            return rgba;
         }
 
         Line left = linesVertical.get(0);
@@ -245,13 +240,8 @@ public class CryptoboxDetector extends OpenCVPipeline {
             trackables = new ArrayList<>();
             CryptoBoxDetected = false;
             ColumnDetected = false;
-            returnMats = new Mat[]{rgba,mask };
 
-            for(int i=0;i<returnMats.length;i++){
-                Imgproc.resize(returnMats[i],returnMats[i],initSize);
-
-            }
-            return returnMats;
+            return rgba;
         }
 
 
@@ -312,35 +302,13 @@ public class CryptoboxDetector extends OpenCVPipeline {
 
         Imgproc.putText(rgba,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
 
-        returnMats = new Mat[]{rgba,mask };
 
-        for(int i=0;i<returnMats.length;i++){
-            Imgproc.resize(returnMats[i],returnMats[i],initSize);
-
-        }
-        return returnMats;
+        return rgba;
 
 
 
     }
 
-    public void getRedMask(Mat input){
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2Lab);
-        Imgproc.GaussianBlur(input,input,new Size(3,3),0);
-        List<Mat> channels = new ArrayList<Mat>();
-        Core.split(input, channels);
-        Imgproc.threshold(channels.get(1), mask, 164.0, 255, Imgproc.THRESH_BINARY);
-    }
-
-    public void getBlueMask(Mat input){
-
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YUV);
-        Imgproc.GaussianBlur(input,input,new Size(3,3),0);
-        List<Mat> channels = new ArrayList<>();
-        Core.split(input, channels);
-        Imgproc.threshold(channels.get(1), mask, 145.0, 255, Imgproc.THRESH_BINARY);
-
-    }
 
 
     public Point drawSlot(int slot, List<Rect> boxes){

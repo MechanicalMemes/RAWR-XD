@@ -67,7 +67,7 @@ public class JewelDetector extends OpenCVPipeline {
     private Size newSize = new Size();
 
     @Override
-    public  Mat[] processFrame(Mat rgba, Mat gray) {
+    public Mat processFrame(Mat rgba, Mat gray) {
 
         Size initSize= rgba.size();
         newSize  = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
@@ -275,19 +275,13 @@ public class JewelDetector extends OpenCVPipeline {
         Imgproc.putText(workingMat,"Result: " + lastOrder.toString(),new Point(10,newSize.height - 30),0,1, new Scalar(255,255,0),1);
         Imgproc.putText(workingMat,"Current Track: " + currentOrder.toString(),new Point(10,newSize.height - 10),0,0.5, new Scalar(255,255,255),1);
 
-
-
-        Mat[] returnMats = {workingMat,maskRed,maskBlue};
-
-        for(Mat mat: returnMats){
-            Imgproc.resize(mat,mat,initSize);
-        }
+        Imgproc.resize(workingMat,workingMat,initSize);
 
         redConvert.release();
         blueConvert.release();
         Imgproc.putText(workingMat,"DogeCV JewelV1: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
 
-        return returnMats;
+        return workingMat;
     }
 
     private void getRedMask(Mat input){

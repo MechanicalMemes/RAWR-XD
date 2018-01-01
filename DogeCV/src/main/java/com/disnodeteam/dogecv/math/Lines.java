@@ -144,6 +144,10 @@ public class Lines {
             line = new Line(new Point((int)line.x1*scale, (int) line.y1*scale), new Point((int)line.x2*scale, (int)line.y2*scale));
             if(line.length() > minLength) lines.add(line);
         }
+
+        raw.release();
+        linesM1.release();
+
         return lines;
     }
 

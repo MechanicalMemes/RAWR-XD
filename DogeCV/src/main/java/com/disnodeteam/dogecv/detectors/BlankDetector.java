@@ -10,7 +10,7 @@ import org.opencv.core.Mat;
 
 public class BlankDetector extends OpenCVPipeline {
     @Override
-    public Mat[] processFrame(Mat rgba, Mat gray) {
-        return new Mat[]{rgba,gray};
+    public Mat processFrame(Mat rgba, Mat gray) {
+        return rgba;
     }
 }
