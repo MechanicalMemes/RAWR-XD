@@ -31,9 +31,12 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.*;
+import com.qualcomm.ftcrobotcontroller.FieldPositonData;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.lang.reflect.Field;
 
 
 /**
@@ -65,6 +68,11 @@ public class RAWRXD_CV_Crypto_Red extends OpMode
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
+
+        switch (FieldPositonData.fieldPostion){
+            case RED_BOTTOM:
+                break;
+        }
 
 
         cryptoboxDetector = new CryptoboxDetector();

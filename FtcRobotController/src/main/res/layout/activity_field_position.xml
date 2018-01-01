@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.qualcomm.ftcrobotcontroller.FieldPositionActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:text="Select Field Position"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            android:gravity="center"
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="Currently Selected:"
+                android:textSize="18sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/textView_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="None"
+                android:textColor="@color/active_button_green"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/button_blue_top"
+            android:layout_alignTop="@+id/imageView"
+            android:layout_marginTop="10dp"
+            android:text="Use DogeCV For Crypto Line-Up" />
+
+        <TextView
+            android:id="@+id/textView_quality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Speed" />
+
+        <SeekBar
+            android:id="@+id/seekBar_quality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:max="4"
+            android:progress="2"
+            android:tag="Quality" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/field" />
+
+            <Button
+                android:id="@+id/button_red_top"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/button_blue_top"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/button_blue_top"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_above="@+id/button_blue_bottom"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="88dp"
+                android:layout_marginStart="17dp"
+                android:background="@android:color/transparent"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/button_blue_bottom"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/button_blue_top"
+                android:layout_marginBottom="41dp"
+                android:background="@android:color/transparent"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/button_red_bottom"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignBottom="@+id/button_blue_bottom"
+                android:layout_alignStart="@+id/button_red_top"
+                android:layout_marginBottom="13dp"
+                android:background="@android:color/transparent"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/button_set"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/textView_selected"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:text="Set Position"
+            tools:layout_editor_absoluteX="147dp"
+            tools:layout_editor_absoluteY="592dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

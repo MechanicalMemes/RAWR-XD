@@ -8,6 +8,7 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 19
+
     }
 
     compileSdkVersion 23
@@ -23,10 +24,14 @@ repositories {
     flatDir {
         dirs '../libs'
     }
+
+    jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 apply from: 'build.release.gradle'
 
 dependencies {
     implementation project(':DogeLogger')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }

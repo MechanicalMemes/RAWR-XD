@@ -46,7 +46,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -72,6 +71,7 @@ import com.qualcomm.ftccommon.configuration.EditParameters;
 import com.qualcomm.ftccommon.configuration.FtcLoadFileActivity;
 import com.qualcomm.ftccommon.configuration.RobotConfigFile;
 import com.qualcomm.ftccommon.configuration.RobotConfigFileManager;
+import com.qualcomm.ftcrobotcontroller.FieldPositionActivity;
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.hardware.HardwareFactory;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
@@ -113,6 +113,7 @@ public class FtcRobotControllerActivity extends Activity
 
   private static final int REQUEST_CONFIG_WIFI_CHANNEL = 1;
   private static final int NUM_GAMEPADS = 2;
+    private static final int FIELD_POSITION_CODE = 415;
 
   protected WifiManager.WifiLock wifiLock;
   protected RobotConfigFileManager cfgFileMgr;
@@ -504,6 +505,11 @@ public class FtcRobotControllerActivity extends Activity
       startActivity(intent);
       return true;
     }
+    else if (id == R.id.action_field) {
+      Intent intent = new Intent(AppUtil.getDefContext(), FieldPositionActivity.class);
+      startActivityForResult(intent, FIELD_POSITION_CODE);
+      return true;
+    }
     else if (id == R.id.action_exit_app) {
       finish();
       return true;
@@ -523,6 +529,10 @@ public class FtcRobotControllerActivity extends Activity
     if (request == REQUEST_CONFIG_WIFI_CHANNEL) {
       if (result == RESULT_OK) {
         AppUtil.getInstance().showToast(UILocation.BOTH, context, context.getString(R.string.toastWifiConfigurationComplete));
+      }
+    }else if (request == FIELD_POSITION_CODE){
+      if(result == RESULT_OK){
+        AppUtil.getInstance().showToast(UILocation.BOTH, context, "Position Set");
       }
     }
     // was some historical confusion about launch codes here, so we err safely
