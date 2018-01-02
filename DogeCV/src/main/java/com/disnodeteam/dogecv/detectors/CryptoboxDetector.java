@@ -2,7 +2,7 @@ package com.disnodeteam.dogecv.detectors;
 
 import android.util.Log;
 
-import com.disnodeteam.dogecv.DogeCV;
+
 import com.disnodeteam.dogecv.OpenCVPipeline;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.disnodeteam.dogecv.filters.LeviColorFilter;
@@ -10,8 +10,6 @@ import com.disnodeteam.dogecv.math.Line;
 import com.disnodeteam.dogecv.math.Lines;
 import com.disnodeteam.dogecv.math.MathFTC;
 import com.disnodeteam.dogecv.math.Points;
-import com.disnodeteam.dogelogger.DogeLogger;
-
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -300,7 +298,7 @@ public class CryptoboxDetector extends OpenCVPipeline {
         //  Imgproc.cvtColor(white, white, Imgproc.COLOR_RGB2HSV);
 
 
-        Imgproc.putText(rgba,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.8,new Scalar(0,255,255),2);
+        Imgproc.putText(rgba,"DogeCV 1.1 Crypto: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,30),0,1.2,new Scalar(0,255,255),2);
 
 
 

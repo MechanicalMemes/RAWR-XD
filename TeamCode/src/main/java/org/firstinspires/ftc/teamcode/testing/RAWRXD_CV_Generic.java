@@ -59,7 +59,10 @@ public class RAWRXD_CV_Generic extends OpMode
     public void loop() {
 
 
-
+        if(genericDetector.getFound() == true){
+            telemetry.addData("Location", genericDetector.getLocation().toString());
+            telemetry.addData("Rect", genericDetector.getRect().toString());
+        }
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
     }

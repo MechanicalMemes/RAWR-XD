@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.*;
+import com.disnodeteam.dogecv.filters.LeviColorFilter;
 import com.qualcomm.ftcrobotcontroller.FieldPositonData;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -83,6 +84,8 @@ public class RAWRXD_CV_Crypto_Red extends OpMode
         cryptoboxDetector.speed = CryptoboxDetector.CryptoboxSpeed.BALANCED;
         cryptoboxDetector.trackableMemory = 5;
         cryptoboxDetector.rotateMat = false;
+
+
 
         //Optional Test Code to load images via Drawables
         //cryptoboxDetector.useImportedImage = true;

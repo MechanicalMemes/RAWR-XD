@@ -35,9 +35,6 @@ public class GenericDetector extends OpenCVPipeline {
         VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
     }
 
-    public enum GenericFilterMode {
-        HSV_RANGE, LEVI_BLUE, LEVI_RED
-    }
 
     public GenericDetectionMode detectionMode = GenericDetectionMode.MAX_AREA;
     public double downScaleFactor = 0.4;
@@ -55,8 +52,10 @@ public class GenericDetector extends OpenCVPipeline {
     public boolean debugContours = false;
     public boolean stretch = false;
     public Size stretchKernal = new Size(10,10);
-    private Point resultLocation = new Point();
 
+    private Point resultLocation = null;
+    private Rect resultRect = null;
+    private boolean resultFound = false;
     private Mat workingMat = new Mat();
     private Mat blurredMat = new Mat();
     private Mat mask = new Mat();
@@ -83,7 +82,6 @@ public class GenericDetector extends OpenCVPipeline {
         }
 
         Mat preConvert = workingMat.clone();
-
         colorFilter.process(preConvert,mask);
 
         if(stretch){
@@ -94,7 +92,7 @@ public class GenericDetector extends OpenCVPipeline {
 
         Imgproc.findContours(mask, contours, hiarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.drawContours(workingMat, contours, -1, new Scalar(230, 70, 70), 2);
-        Rect chosenRedRect = null;
+        Rect chosenRect = null;
         double chosenScore = Integer.MAX_VALUE;
 
         MatOfPoint2f approxCurve = new MatOfPoint2f();
@@ -151,35 +149,54 @@ public class GenericDetector extends OpenCVPipeline {
             // Think of diffrence as score. 0 = perfect
             if (finalDiffrence < chosenScore && finalDiffrence < maxDiffrence && area > minArea) {
                 chosenScore = finalDiffrence;
-                chosenRedRect = rect;
+                chosenRect = rect;
             }
 
             if (debugContours && area > 100) {
                 Imgproc.circle(workingMat, centerPoint, 3, new Scalar(0, 255, 255), 3);
-                Imgproc.putText(workingMat, "Area: " + area, centerPoint, 0, 0.5, new Scalar(0, 255, 255));
+                Imgproc.putText(workingMat, "Area: " +  String.format("%.1f", area), centerPoint, 0, 0.5, new Scalar(0, 255, 255));
             }
 
         }
 
-        if (chosenRedRect != null) {
+        if (chosenRect != null) {
             Imgproc.rectangle(workingMat,
-                    new Point(chosenRedRect.x, chosenRedRect.y),
-                    new Point(chosenRedRect.x + chosenRedRect.width, chosenRedRect.y + chosenRedRect.height),
+                    new Point(chosenRect.x, chosenRect.y),
+                    new Point(chosenRect.x + chosenRect.width, chosenRect.y + chosenRect.height),
                     new Scalar(0, 255, 0), 3);
 
             Imgproc.putText(workingMat,
-                    "Result: " + String.format("%f2", chosenScore),
-                    new Point(chosenRedRect.x - 5, chosenRedRect.y - 10),
+                    "Result: " + String.format("%.2f", chosenScore),
+                    new Point(chosenRect.x - 5, chosenRect.y - 10),
                     Core.FONT_HERSHEY_PLAIN,
                     1.3,
                     new Scalar(0, 255, 0),
                     2);
+            Point centerPoint = new Point(chosenRect.x + (chosenRect.width / 2), chosenRect.y + (chosenRect.height / 2));
+            resultRect = chosenRect;
+            resultLocation = centerPoint;
+            resultFound = true;
+        }else{
+            resultFound = false;
+            resultRect = null;
+            resultLocation = null;
         }
         Imgproc.resize(workingMat, workingMat, initSize);
 
         preConvert.release();
-        Imgproc.putText(workingMat, "DogeCV Generic: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString(), new Point(5, 15), 0, 1, new Scalar(0, 255, 255), 2);
+        Imgproc.putText(workingMat, "DogeCV v1.1 Generic: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString(), new Point(5, 30), 0, 1.2, new Scalar(0, 255, 255), 2);
 
         return workingMat;
+    }
+
+    public Rect getRect() {
+        return resultRect;
+    }
+
+    public Point getLocation(){
+        return resultLocation;
+    }
+    public boolean getFound(){
+        return resultFound;
     }
 }

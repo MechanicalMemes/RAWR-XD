@@ -242,7 +242,7 @@ public class JewelDetector extends OpenCVPipeline {
                     new Scalar(255, 0, 0), 2);
 
             Imgproc.putText(workingMat,
-                    "Red: " + chosenRedScore,
+                    "Red: " + String.format("%.2f", chosenRedScore),
                     new Point(chosenRedRect.x - 5, chosenRedRect.y - 10),
                     Core.FONT_HERSHEY_PLAIN,
                     1.3,
@@ -257,7 +257,7 @@ public class JewelDetector extends OpenCVPipeline {
                     new Scalar(0, 0, 255), 2);
 
             Imgproc.putText(workingMat,
-                    "Blue: " + chosenRedScore,
+                    "Blue: " + String.format("%.2f", chosenBlueScore),
                     new Point(chosenBlueRect.x - 5, chosenBlueRect.y - 10),
                     Core.FONT_HERSHEY_PLAIN,
                     1.3,
@@ -284,7 +284,7 @@ public class JewelDetector extends OpenCVPipeline {
 
         redConvert.release();
         blueConvert.release();
-        Imgproc.putText(workingMat,"DogeCV JewelV1: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
+        Imgproc.putText(workingMat,"DogeCV 1.1 Jewel: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,30),0,1.2,new Scalar(0,255,255),2);
 
         return workingMat;
     }
