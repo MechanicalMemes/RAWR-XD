@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.OpenCVPipeline;
+import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
+import com.disnodeteam.dogecv.filters.LeviColorFilter;
 import com.disnodeteam.dogecv.math.Line;
 import com.disnodeteam.dogecv.math.Lines;
 import com.disnodeteam.dogecv.math.MathFTC;
@@ -43,6 +45,8 @@ public class CryptoboxDetector extends OpenCVPipeline {
     public int                    centerOffset       = 0;
     public boolean                debugShowMask      = true;
     public int                    trackableMemory    = 5;
+    public DogeCVColorFilter      colorFilterRed     = new LeviColorFilter(LeviColorFilter.ColorPreset.RED);
+    public DogeCVColorFilter      colorFilterBlue    = new LeviColorFilter(LeviColorFilter.ColorPreset.BLUE);
 
 
     private boolean CryptoBoxDetected = false;
@@ -51,9 +55,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
 
     private Mat workingMat = new Mat();
     private Mat mask = new Mat();
-    private Mat white = new Mat();
-    private Mat display = null;
-
     private Size newSize = new Size();
 
 
@@ -80,16 +81,15 @@ public class CryptoboxDetector extends OpenCVPipeline {
         switch(detectionMode){
             case RED:
                 Mat redMask = workingMat.clone();
-                DogeCV.leviRedFilter(redMask, mask);
+                colorFilterRed.process(redMask, mask);
                 redMask.release();
                 break;
             case BLUE:
                 Mat blueMask = workingMat.clone();
-                DogeCV.leviRedFilter(blueMask, mask);
+                colorFilterBlue.process(blueMask, mask);
                 blueMask.release();
                 break;
         }
-
 
         //display = new Mat(mask.height(), mask.width(), CvType.CV_8UC1);
         ArrayList<Line> lines = (ArrayList<Line>) Lines.getOpenCvLines(mask, 1, 55);
@@ -185,7 +185,7 @@ public class CryptoboxDetector extends OpenCVPipeline {
             while (y < mask.height() && y < max && count < 10) {
                 if(mask.get(y, (int) center.x)[0] > 0 || mask.get(y, minX)[0] > 0 || mask.get(y, maxX)[0] > 0) {
                     count++;
-                   // Imgproc.circle(rgba, new Point(2*center.x, 2*y), 10, new Scalar(255,255,255), 6);
+                    // Imgproc.circle(rgba, new Point(2*center.x, 2*y), 10, new Scalar(255,255,255), 6);
                 } else {
                     //Imgproc.circle(rgba, new Point(2*center.x, 2*y), 10, new Scalar(30,30,200), 6);
                 }
@@ -277,9 +277,9 @@ public class CryptoboxDetector extends OpenCVPipeline {
             }
 
             Point avgPoint = Points.getMeanPoint(trackables.get(i));
-            Imgproc.putText(rgba,"Col #" + i, new Point(avgPoint.x, avgPoint.y - 15), 0, 2, new Scalar(0,255,255), 2);
+            Imgproc.putText(rgba,"Col #" + i, new Point(avgPoint.x, avgPoint.y - 15), 0, 1.5, new Scalar(0,255,255), 2);
             //DogeLogger.LogVar("Col-"+i, avgPoint.toString());
-            Imgproc.circle(rgba,avgPoint, 15,new Scalar(255,0,0),6);
+            Imgproc.circle(rgba,avgPoint, 15,new Scalar(0,255,0),6);
             avgPoints.add(avgPoint);
 
             CryptoBoxPositions[i] = (int)avgPoint.x;
@@ -292,15 +292,16 @@ public class CryptoboxDetector extends OpenCVPipeline {
         ColumnDetected = true;
         Point newFull =  Points.getMeanPoint(avgPoints);
         Line newFullLine = new Line(newFull, fullAvgPoint);
-        if(newFullLine.length() > 150){
+        if(newFullLine.length() > 75){
             trackables = new ArrayList<>();
             Log.d("DogeCV", "RESETTING TRACKABLE!");
         }
         fullAvgPoint = newFull;
-      //  Imgproc.cvtColor(white, white, Imgproc.COLOR_RGB2HSV);
+        //  Imgproc.cvtColor(white, white, Imgproc.COLOR_RGB2HSV);
 
 
-        Imgproc.putText(rgba,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.6,new Scalar(0,255,255),2);
+        Imgproc.putText(rgba,"DogeCV CryptoV2: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,15),0,0.8,new Scalar(0,255,255),2);
+
 
 
         return rgba;

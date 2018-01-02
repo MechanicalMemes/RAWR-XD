@@ -36,6 +36,7 @@ public class RAWRXD_CV_Jewel extends OpMode
 
         //Jewel Detector Settings
         jewelDetector.areaWeight = 0.02;
+        jewelDetector.downScaleFactor = 0.5;
         jewelDetector.detectionMode = JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
         //jewelDetector.perfectArea = 6500; <- Needed for PERFECT_AREA
         jewelDetector.debugContours = true;

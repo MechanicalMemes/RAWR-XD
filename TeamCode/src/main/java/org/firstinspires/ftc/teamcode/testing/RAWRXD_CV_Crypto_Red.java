@@ -104,7 +104,7 @@ public class RAWRXD_CV_Crypto_Red extends OpMode
 
 
     }
-
+    int colCount = 0;
     @Override
     public void loop() {
 
@@ -117,6 +117,8 @@ public class RAWRXD_CV_Crypto_Red extends OpMode
         telemetry.addData("Column Left ",  cryptoboxDetector.getCryptoBoxLeftPosition());
         telemetry.addData("Column Center ",  cryptoboxDetector.getCryptoBoxCenterPosition());
         telemetry.addData("Column Right ",  cryptoboxDetector.getCryptoBoxRightPosition());
+
+
 
 
     }

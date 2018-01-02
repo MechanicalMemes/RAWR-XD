@@ -119,12 +119,12 @@ public class Lines {
     }
 
     //Multiple Lines
-
+    static LineSegmentDetector detector = Imgproc.createLineSegmentDetector(Imgproc.LSD_REFINE_STD, 0.8, 0.6,2.0, 22.5, 0, 0.7, 32);
     public static List<Line> getOpenCvLines(Mat original, int scale, double minLength) {
         Mat raw = new Mat();
-        Imgproc.resize(original, raw, new Size((int) (original.size().width/scale), (int) (original.size().height/scale)));
+        Imgproc.resize(original.clone(), raw, new Size((int) (original.size().width/scale), (int) (original.size().height/scale)));
         if(raw.channels() > 1) {
-            Imgproc.cvtColor(raw, raw, Imgproc.COLOR_BGR2GRAY);
+            Imgproc.cvtColor(raw, raw, Imgproc.COLOR_RGB2GRAY);
         }
         Imgproc.equalizeHist(raw, raw);
         Imgproc.blur(raw, raw, new Size(3,3));
@@ -133,7 +133,7 @@ public class Lines {
         //LineSegmentDetector detector = Imgproc.createLineSegmentDetector(Imgproc.LSD_REFINE_ADV, 0.6, 0.3, 2.6, 22.5, 0, 0.3,256);
         //LineSegmentDetector detector = Imgproc.createLineSegmentDetector(Imgproc.LSD_REFINE_STD, 0.5, 0.4,2.0, 19.5, 0, 0.6, 32);
         //Reference for final glyph detection
-        LineSegmentDetector detector = Imgproc.createLineSegmentDetector(Imgproc.LSD_REFINE_STD, 0.8, 0.6,2.0, 22.5, 0, 0.7, 32);
+
         detector.detect(raw, linesM1);
         ArrayList<Line> lines = new ArrayList<Line>();
         for (int x = 0; x < linesM1.rows(); x++)  {

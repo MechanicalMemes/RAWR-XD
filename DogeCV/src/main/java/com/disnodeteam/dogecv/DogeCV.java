@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -12,6 +13,18 @@ import java.util.List;
 
 public class DogeCV {
     static List<Mat> channels = new ArrayList<>();
+
+    // HSV Filter
+    public static void hsvFilterRange(Mat input, Mat mask, Scalar perfect, Scalar range){
+        Imgproc.cvtColor(input,input,Imgproc.COLOR_RGB2HSV_FULL);
+        Imgproc.GaussianBlur(input,input,new Size(3,3),0);
+
+        Scalar lower = new Scalar(perfect.val[0] - range.val[0], perfect.val[1] - range.val[1],perfect.val[2] - range.val[2]);
+        Scalar upper = new Scalar(perfect.val[0] + range.val[0], perfect.val[1] + range.val[1],perfect.val[2] + range.val[2]);
+        Core.inRange(input,lower,upper,mask);
+        input.release();
+    }
+
     // RED FILTER
     public static void leviRedFilter (Mat input, Mat mask){
 
