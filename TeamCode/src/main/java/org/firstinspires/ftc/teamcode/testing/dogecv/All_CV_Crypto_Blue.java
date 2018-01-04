@@ -27,10 +27,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode.testing.dogecv;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.detectors.BlankDetector;
+import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -50,15 +50,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DogeCV Blank", group="Testing")
+@Autonomous(name="DogeCV Cryptobox Blue", group="Testing")
 
-public class RAWRXD_CV_Blank extends OpMode
+public class All_CV_Crypto_Blue extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    private BlankDetector blankDetector = null;
+    private CryptoboxDetector cryptoboxDetector = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -67,11 +67,18 @@ public class RAWRXD_CV_Blank extends OpMode
         telemetry.addData("Status", "Initialized");
 
 
-        blankDetector = new BlankDetector();
-        blankDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        cryptoboxDetector = new CryptoboxDetector();
+        cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
+        cryptoboxDetector.downScaleFactor = 0.4;
+        cryptoboxDetector.detectionMode = CryptoboxDetector.CryptoboxDetectionMode.BLUE;
+        cryptoboxDetector.speed = CryptoboxDetector.CryptoboxSpeed.FAST;
 
-        blankDetector.enable();
+        //Optional Test Code to load images via Drawables
+        //cryptoboxDetector.useImportedImage = true;
+        //cryptoboxDetector.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv4);
+
+        cryptoboxDetector.enable();
 
 
     }
@@ -94,7 +101,12 @@ public class RAWRXD_CV_Blank extends OpMode
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("isCryptoBoxDetected", cryptoboxDetector.isCryptoBoxDetected());
+        telemetry.addData("isColumnDetected ",  cryptoboxDetector.isColumnDetected());
 
+        telemetry.addData("Column Left ",  cryptoboxDetector.getCryptoBoxLeftPosition());
+        telemetry.addData("Column Center ",  cryptoboxDetector.getCryptoBoxCenterPosition());
+        telemetry.addData("Column Right ",  cryptoboxDetector.getCryptoBoxRightPosition());
 
 
     }
@@ -104,7 +116,7 @@ public class RAWRXD_CV_Blank extends OpMode
      */
     @Override
     public void stop() {
-        blankDetector.disable();
+        cryptoboxDetector.disable();
     }
 
 }

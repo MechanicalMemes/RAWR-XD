@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode.testing.dogecv;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.GenericDetector;
@@ -16,7 +16,7 @@ import org.opencv.core.Size;
 
 @Autonomous(name="DogeCV Generic Detector", group="DogeCV")
 
-public class RAWRXD_CV_Generic extends OpMode
+public class All_CV_Generic extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

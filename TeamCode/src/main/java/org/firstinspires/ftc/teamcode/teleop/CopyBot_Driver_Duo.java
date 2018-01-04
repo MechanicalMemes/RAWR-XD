@@ -34,7 +34,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.control.Controller;
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
+import org.firstinspires.ftc.teamcode.hardware.bots.CopyBotaBot;
+
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -43,27 +44,27 @@ import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
  * When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
  *
- * This particular OpMode just executes a basic Tank DriveManual Teleop for a two wheeled robot
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
  * It includes all the skeletal structure that all iterative OpModes contain.
  *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWRXD Drive - Single", group="RAWRXD")
+@TeleOp(name="CopyBota Drive - Duo", group="CopyBota")
 
-public class RAWRXD_Driver extends OpMode
+public class CopyBot_Driver_Duo extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private RAWRXDBot bot = null;
+    private CopyBotaBot bot = null;
 
     private boolean gyroMode = false;
 
     private double Sensitivity = 1.0;
     private Controller controller = null;
-
+    private Controller controller2 = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -71,8 +72,9 @@ public class RAWRXD_Driver extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXDBot(hardwareMap, null);
+        bot = new CopyBotaBot(hardwareMap);
         controller = new Controller(gamepad1);
+        controller2 = new Controller(gamepad2);
         bot.Init();
 
     }
@@ -105,31 +107,35 @@ public class RAWRXD_Driver extends OpMode
     public void loop() {
 
         controller.Update();
-
+        controller2.Update();
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("GyroMode", gyroMode);
         telemetry.addData("Sensitivity",  Sensitivity);
 
-        bot.DriveManual(gamepad1.left_stick_y, gamepad1.right_stick_y, Sensitivity);
+        bot.Drive(-gamepad1.left_stick_x, gamepad1.left_stick_y,gamepad1.right_stick_x, Sensitivity);
+
+        bot.Help_Motor.setPower(gamepad1.left_trigger);
 
 
-        if(gamepad1.dpad_up){
-            liftVal = -1;
-        }else if(gamepad1.dpad_down){
-            liftVal = 1;
-        }else{
-            liftVal = 0;
+
+        bot.LiftOverride(gamepad2.left_stick_y);
+
+        if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED){
+            Sensitivity += 0.15;
         }
 
-        bot.LiftPower(liftVal);
+        if(controller.DPadDown == Controller.ButtonState.JUST_PRESSED){
+            Sensitivity -= 0.15;
+        }
 
-        if(controller.AState == Controller.ButtonState.JUST_PRESSED){
+        if(controller2.AState == Controller.ButtonState.JUST_PRESSED){
             bot.CloseGrab();
         }
-        if(controller.BState == Controller.ButtonState.JUST_PRESSED){
+        if(controller2.BState == Controller.ButtonState.JUST_PRESSED){
             bot.OpenGrab();
         }
+
 
 
     }

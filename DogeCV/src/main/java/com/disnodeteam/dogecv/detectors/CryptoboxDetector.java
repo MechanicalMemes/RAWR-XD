@@ -50,6 +50,7 @@ public class CryptoboxDetector extends OpenCVPipeline {
     private boolean CryptoBoxDetected = false;
     private boolean ColumnDetected = false;
     private int[] CryptoBoxPositions = new int[3];
+    private int  closestPos = -1;
 
     private Mat workingMat = new Mat();
     private Mat mask = new Mat();
@@ -287,6 +288,15 @@ public class CryptoboxDetector extends OpenCVPipeline {
             CryptoBoxDetected = true;
         }
 
+        closestPos = Integer.MAX_VALUE;
+
+
+        for(int res : CryptoBoxPositions){
+            if(Math.abs((newSize.width / 2)-res) < closestPos){
+                closestPos = res;
+            }
+        }
+
         ColumnDetected = true;
         Point newFull =  Points.getMeanPoint(avgPoints);
         Line newFullLine = new Line(newFull, fullAvgPoint);
@@ -364,6 +374,9 @@ public class CryptoboxDetector extends OpenCVPipeline {
         return ColumnDetected;
     }
 
+    public int getClosestPos() {
+        return closestPos;
+    }
 
     public Size getFrameSize() {
         return newSize;

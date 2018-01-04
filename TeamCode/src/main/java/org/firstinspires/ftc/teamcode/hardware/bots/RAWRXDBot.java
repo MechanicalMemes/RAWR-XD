@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware.bots;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,16 +8,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.hardware.sensors.IMU;
 
 /**
  * Created by Alex on 11/3/2017.
  */
 
-public class RAWRXD_BOT {
+public class RAWRXDBot {
     private HardwareMap hardwareMap;
 
 
@@ -99,7 +93,7 @@ public class RAWRXD_BOT {
 
     private ElapsedTime elapsedTime;
 
-    public RAWRXD_BOT(HardwareMap _hwd, LinearOpMode parent){
+    public RAWRXDBot(HardwareMap _hwd, LinearOpMode parent){
         hardwareMap = _hwd;
         opMode = parent;
 
@@ -130,7 +124,8 @@ public class RAWRXD_BOT {
         Drive_Left_Motor2.setZeroPowerBehavior(DriveZeroPower);
         Drive_Right_Motor2.setZeroPowerBehavior(DriveZeroPower);
 
-        SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetDriveMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetLiftMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         Phone_Servo = hardwareMap.servo.get(Phone_Name);
 
@@ -147,7 +142,8 @@ public class RAWRXD_BOT {
         Grab_Right_Servo = hardwareMap.servo.get(Grab_Right_Name);
         Grab2_Right_Servo = hardwareMap.servo.get(Grab2_Right_Name);
 
-        SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        SetDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        SetLiftMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while(!imu.imu.isGyroCalibrated()){
             if(opMode != null){
@@ -158,12 +154,18 @@ public class RAWRXD_BOT {
         elapsedTime = new ElapsedTime();
     }
 
-    public void SetAllMotorsToMode(DcMotor.RunMode mode){
+    public void SetDriveMotorMode(DcMotor.RunMode mode){
         Drive_Left_Motor.setMode(mode);
         Drive_Left_Motor2.setMode(mode);
         Drive_Right_Motor.setMode(mode);
         Drive_Right_Motor2.setMode(mode);
     }
+
+    public void SetLiftMode(DcMotor.RunMode mode){
+        Lift1_Motor.setMode(mode);
+        Lift2_Motor.setMode(mode);
+    }
+
 
     public boolean AreMotorsBusy(){
         return (Drive_Left_Motor.isBusy() && Drive_Left_Motor2.isBusy() && Drive_Right_Motor.isBusy() && Drive_Right_Motor2.isBusy());
@@ -178,7 +180,7 @@ public class RAWRXD_BOT {
     }
 
     public void EncoderDrive(int LeftVal, int RightVal, double speed){
-        SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SetDriveMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         Drive_Left_Motor.setTargetPosition(-LeftVal);
         Drive_Left_Motor2.setTargetPosition(-LeftVal);
@@ -192,7 +194,7 @@ public class RAWRXD_BOT {
 
         while(AreMotorsBusy()){}
 
-        SetAllMotorsToMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetDriveMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void gyroDrive ( double speed,
@@ -228,7 +230,7 @@ public class RAWRXD_BOT {
             Drive_Left_Motor2.setTargetPosition(newLeftTarget2);
             Drive_Right_Motor2.setTargetPosition(newRightTarget2);
 
-            SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+            SetDriveMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
@@ -284,7 +286,101 @@ public class RAWRXD_BOT {
             Drive_Right_Motor2.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            SetAllMotorsToMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            SetDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void gyroDrive ( double speed,
+                            double distance,
+                            double angle,
+                            double error) {
+
+        int     newLeftTarget;
+        int     newRightTarget;
+        int     newLeftTarget2;
+        int     newRightTarget2;
+        int     moveCounts;
+        double  max;
+
+        double  steer;
+        double  leftSpeed;
+        double  rightSpeed;
+
+        // Ensure that the opmode is still active
+        if (opMode.opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            moveCounts = (int)distance;
+            newLeftTarget = Drive_Left_Motor.getCurrentPosition() + moveCounts;
+            newRightTarget = Drive_Right_Motor.getCurrentPosition() + moveCounts;
+
+            newLeftTarget2 = Drive_Left_Motor2.getCurrentPosition() + moveCounts;
+            newRightTarget2 = Drive_Right_Motor2.getCurrentPosition() + moveCounts;
+
+            // Set Target and Turn On RUN_TO_POSITION
+            Drive_Left_Motor.setTargetPosition(newLeftTarget);
+            Drive_Right_Motor.setTargetPosition(newRightTarget);
+
+            Drive_Left_Motor2.setTargetPosition(newLeftTarget2);
+            Drive_Right_Motor2.setTargetPosition(newRightTarget2);
+
+            SetDriveMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            Drive_Left_Motor.setPower(speed);
+            Drive_Right_Motor.setPower(speed);
+            Drive_Left_Motor2.setPower(speed);
+            Drive_Right_Motor2.setPower(speed);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opMode.opModeIsActive() && AreMotorsBusy() && !opMode.isStopRequested()){
+
+                // adjust relative speed based on heading error.
+
+                steer = getSteer(error, P_DRIVE_COEFF);
+                opMode.telemetry.addData("ERROR", error);
+                opMode.telemetry.addData("Steer", steer);
+                opMode.telemetry.update();
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    steer *= -1.0;
+
+                leftSpeed = speed + steer;
+                rightSpeed = speed - steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                if (max > 1.0)
+                {
+                    leftSpeed /= max;
+                    rightSpeed /= max;
+                }
+
+                double distanceLeft = Drive_Left_Motor.getCurrentPosition();
+
+                if(distanceLeft / distance > 0.9){
+                    leftSpeed *= 0.5;
+                    rightSpeed *= 0.5;
+                }
+
+                Drive_Left_Motor.setPower(leftSpeed);
+                Drive_Left_Motor2.setPower(leftSpeed);
+
+                Drive_Right_Motor.setPower(rightSpeed);
+                Drive_Right_Motor2.setPower(rightSpeed);
+
+            }
+
+            // Stop all motion;
+            Drive_Left_Motor.setPower(0);
+            Drive_Left_Motor2.setPower(0);
+
+            Drive_Right_Motor.setPower(0);
+            Drive_Right_Motor2.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            SetDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -305,9 +401,9 @@ public class RAWRXD_BOT {
 
         // keep looping while we have time remaining.
         elapsedTime.reset();
-        while (opMode.opModeIsActive() && (elapsedTime.time() < holdTime)) {
+        while (opMode.opModeIsActive() && (elapsedTime.time() < holdTime)  && !opMode.isStopRequested()) {
             // Update telemetry & Allow time for other processes to run.
-            onHeading(speed, angle, P_TURN_COEFF);
+            onHeading(speed, angle, P_TURN_COEFF,  imu.getError(angle));
             opMode.telemetry.update();
         }
 
@@ -322,21 +418,20 @@ public class RAWRXD_BOT {
     public void gyroTurn (  double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
-        while (opMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+        while (opMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF, imu.getError(angle))  && !opMode.isStopRequested()){
             // Update telemetry & Allow time for other processes to run.
 
         }
     }
 
-    boolean onHeading(double speed, double angle, double PCoeff) {
-        double   error ;
+    boolean onHeading(double speed, double angle, double PCoeff, double error) {
+
         double   steer ;
         boolean  onTarget = false ;
         double leftSpeed;
         double rightSpeed;
 
         // determine turn power based on +/- error
-        error = imu.getError(angle);
 
         if (Math.abs(error) <= HEADING_THRESHOLD) {
             steer = 0.0;
@@ -389,8 +484,48 @@ public class RAWRXD_BOT {
     // Lift Settings
 
     public void LiftPower(double power){
+        if(Lift1_Motor.getCurrentPosition() <= 0 || Lift2_Motor.getCurrentPosition() <= 0){
+            return;
+        }
+
         Lift1_Motor.setPower(power);
         Lift2_Motor.setPower(power);
+    }
+
+    public void LiftToPosition(int position){
+        SetLiftMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Lift1_Motor.setTargetPosition(position);
+        Lift2_Motor.setTargetPosition(position);
+
+        Lift1_Motor.setPower(1.0);
+        Lift2_Motor.setPower(1.0);
+
+        while(Lift1_Motor.isBusy() && Lift2_Motor.isBusy()  && !opMode.isStopRequested()){
+            if(Lift1_Motor.getCurrentPosition() <= 0 || Lift2_Motor.getCurrentPosition() <= 0){
+                return;
+            }
+            opMode.telemetry.addData("Lift Position: ", Lift1_Motor.getCurrentPosition() + " & " + Lift2_Motor.getCurrentPosition());
+            opMode.telemetry.update();
+        }
+        Lift1_Motor.setPower(0);
+        Lift2_Motor.setPower(0);
+    }
+
+    public void LiftToPositionLoop(int position){
+        if(Lift1_Motor.getCurrentPosition() <= 0 || Lift2_Motor.getCurrentPosition() <= 0){
+            return;
+        }
+        SetLiftMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Lift1_Motor.setTargetPosition(position);
+        Lift2_Motor.setTargetPosition(position);
+
+        Lift1_Motor.setPower(1.0);
+        Lift2_Motor.setPower(1.0);
+
+        if(!Lift1_Motor.isBusy() && !Lift2_Motor.isBusy()){
+            Lift1_Motor.setPower(0);
+            Lift2_Motor.setPower(0);
+        }
     }
 
     // Grabbers

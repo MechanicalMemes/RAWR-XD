@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.control.Controller;
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -50,14 +50,14 @@ import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="RAWRXD Drive - Duo", group="Comp")
+@TeleOp(name="RAWRXD Drive - Duo", group="RAWRXD")
 
 public class RAWRXD_Driver_Duo extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private RAWRXD_BOT bot = null;
+    private RAWRXDBot bot = null;
 
     private boolean gyroMode = false;
 
@@ -74,7 +74,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXD_BOT(hardwareMap, null);
+        bot = new RAWRXDBot(hardwareMap, null);
         controller = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
         bot.Init();

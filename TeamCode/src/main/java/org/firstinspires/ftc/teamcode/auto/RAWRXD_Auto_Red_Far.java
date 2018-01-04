@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
 import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 
 
@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private RAWRXD_BOT bot = null;
+    private RAWRXDBot bot = null;
 
     private VuforiaHardware vuforia;
     private JewelDetector jewelDetector;
@@ -28,11 +28,11 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXD_BOT(hardwareMap, this);
+        bot = new RAWRXDBot(hardwareMap, this);
         bot.Init();
         bot.SetPhonePicto();
 
-        bot.SetAllMotorsToMode(DcMotor.RunMode.RUN_TO_POSITION);
+        bot.SetDriveMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         jewelDetector = new JewelDetector();
         jewelDetector.downScaleFactor = 0.4;
@@ -66,13 +66,9 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             //bot.SetPhoneOutside();
             bot.CloseGrab();
 
-            bot.WaitForTime(0.3);
+            bot.WaitForTime(0.2);
 
-            bot.LiftPower(-1);
-
-            bot.WaitForTime(0.35);
-
-            bot.LiftPower(0);
+            bot.LiftToPosition(600);
 
             bot.WaitForTime(0.4);
 
@@ -122,18 +118,14 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
             bot.gyroTurn(1,90);
             runtime.reset();
 
-            bot.LiftPower(1);
-            bot.WaitForTime(0.30);
-            bot.LiftPower(0);
+            bot.LiftToPosition(0);
             bot.gyroDrive(1,3000,90);
 
             bot.CloseGrab();
 
             bot.WaitForTime(0.1);
 
-            bot.LiftPower(-1);
-            bot.WaitForTime(0.8);
-            bot.LiftPower(0);
+            bot.LiftToPosition(1200);
 
             bot.WaitForTime(0.2);
 

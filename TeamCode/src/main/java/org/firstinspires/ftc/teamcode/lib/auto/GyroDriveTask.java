@@ -1,18 +1,15 @@
 package org.firstinspires.ftc.teamcode.lib.auto;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXD_BOT;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
 
 /**
  * Created by Victo on 12/31/2017.
  */
 
 public class GyroDriveTask extends DogeAutoTask {
-    private RAWRXD_BOT bot;
+    private RAWRXDBot bot;
 
-    public GyroDriveTask(RAWRXD_BOT botHardware){
+    public GyroDriveTask(RAWRXDBot botHardware){
         bot = botHardware;
     }
 

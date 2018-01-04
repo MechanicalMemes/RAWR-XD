@@ -9,21 +9,17 @@ import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class FieldPositionActivity extends Activity {
-    public enum FieldPostion {
-        BLUE_TOP,
-        BLUE_BOTTOM,
-        RED_TOP,
-        RED_BOTTOM
-    }
 
-    private FieldPostion chosenPositon = FieldPostion.BLUE_TOP;
+
     private TextView chosenText;
     private TextView qualityText;
-
+    private CheckBox dogeCvAlign;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,40 +35,40 @@ public class FieldPositionActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("POSITION", chosenPositon);
+                resultIntent.putExtra("POSITION", FieldPositonData.fieldPostion);
                 setResult(Activity.RESULT_OK,resultIntent);
                 finish();
 
             }
         });
-
+        dogeCvAlign = (CheckBox) findViewById(R.id.checkBox_DogeCV);
         chosenText = (TextView) findViewById(R.id.textView_selected);
         qualityText = (TextView)findViewById(R.id.textView_quality);
         buttonRedBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chosenPositon = FieldPostion.RED_BOTTOM;
+                FieldPositonData.fieldPostion = FieldPositonData.FieldPostion.RED_BOTTOM;
                 updateChosenText();
             }
         });
         buttonRedTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chosenPositon = FieldPostion.RED_TOP;
+                FieldPositonData.fieldPostion = FieldPositonData.FieldPostion.RED_TOP;
                 updateChosenText();
             }
         });
         buttonBlueTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chosenPositon = FieldPostion.BLUE_TOP;
+                FieldPositonData.fieldPostion = FieldPositonData.FieldPostion.BLUE_TOP;
                 updateChosenText();
             }
         });
         buttonBlueBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chosenPositon = FieldPostion.BLUE_BOTTOM;
+                FieldPositonData.fieldPostion = FieldPositonData.FieldPostion.BLUE_BOTTOM;
                 updateChosenText();
             }
         });
@@ -81,28 +77,8 @@ public class FieldPositionActivity extends Activity {
         qualitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                switch (i){
-                    case 0:
-                        qualityText.setText("VERY FAST");
-                        qualityText.setTextColor(Color.RED);
-                        break;
-                    case 1:
-                        qualityText.setText("FAST");
-                        qualityText.setTextColor(Color.YELLOW);
-                        break;
-                    case 2:
-                        qualityText.setText("BALANCED :)");
-                        qualityText.setTextColor(Color.GREEN);
-                        break;
-                    case 3:
-                        qualityText.setText("SLOW");
-                        qualityText.setTextColor(Color.YELLOW);
-                        break;
-                    case 4:
-                        qualityText.setText("VERY SLOW");
-                        qualityText.setTextColor(Color.RED);
-                        break;
-                }
+                FieldPositonData.speed = i;
+                updateSpeedText();
             }
 
             @Override
@@ -116,14 +92,23 @@ public class FieldPositionActivity extends Activity {
             }
         });
 
+        dogeCvAlign.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                FieldPositonData.dogeCVCrypto = b;
+
+            }
+        });
+
+        updateChosenText();
+        updateSpeedText();
+        updateDogeCV();
     }
 
 
-    @SuppressLint("ResourceAsColor")
     private void updateChosenText(){
 
-        FieldPositonData.fieldPostion = chosenPositon;
-        switch(chosenPositon){
+        switch(FieldPositonData.fieldPostion){
             case RED_BOTTOM:
                 chosenText.setText("Red Bottom");
                 chosenText.setTextColor(Color.RED);
@@ -145,7 +130,33 @@ public class FieldPositionActivity extends Activity {
 
     }
 
-    public FieldPostion getChosenPositon() {
-        return chosenPositon;
+    private void updateSpeedText(){
+        switch (FieldPositonData.speed){
+            case 0:
+                qualityText.setText("VERY FAST");
+                qualityText.setTextColor(Color.RED);
+                break;
+            case 1:
+                qualityText.setText("FAST");
+                qualityText.setTextColor(Color.YELLOW);
+                break;
+            case 2:
+                qualityText.setText("BALANCED :)");
+                qualityText.setTextColor(Color.GREEN);
+                break;
+            case 3:
+                qualityText.setText("SLOW");
+                qualityText.setTextColor(Color.YELLOW);
+                break;
+            case 4:
+                qualityText.setText("VERY SLOW");
+                qualityText.setTextColor(Color.RED);
+                break;
+        }
     }
+
+    private void updateDogeCV(){
+        dogeCvAlign.setChecked(FieldPositonData.dogeCVCrypto);
+    }
+
 }

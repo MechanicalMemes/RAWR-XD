@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode.testing.dogecv;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Autonomous(name="DogeCV Glyph Detector", group="Testing")
 
-public class RAWRXD_CV_Glyph extends OpMode
+public class All_CV_Glyph extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
