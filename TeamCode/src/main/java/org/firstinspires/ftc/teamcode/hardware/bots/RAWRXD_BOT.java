@@ -214,7 +214,7 @@ public class RAWRXD_BOT {
         if (opMode.opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            moveCounts = -(int)distance;
+            moveCounts = (int)distance;
             newLeftTarget = Drive_Left_Motor.getCurrentPosition() + moveCounts;
             newRightTarget = Drive_Right_Motor.getCurrentPosition() + moveCounts;
 
@@ -250,8 +250,8 @@ public class RAWRXD_BOT {
                 if (distance < 0)
                     steer *= -1.0;
 
-                leftSpeed = speed - steer;
-                rightSpeed = speed + steer;
+                leftSpeed = speed + steer;
+                rightSpeed = speed - steer;
 
                 // Normalize speeds if either one exceeds +/- 1.0;
                 max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
@@ -346,8 +346,8 @@ public class RAWRXD_BOT {
         }
         else {
             steer = getSteer(error, PCoeff);
-            leftSpeed  = speed * steer;
-            rightSpeed   = -leftSpeed;
+            rightSpeed  = speed * steer;
+            leftSpeed   = -rightSpeed;
         }
 
         // Send desired speeds to motors.

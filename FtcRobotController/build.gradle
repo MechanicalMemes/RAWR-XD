@@ -33,5 +33,5 @@ apply from: 'build.release.gradle'
 
 dependencies {
     implementation project(':DogeLogger')
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
 }

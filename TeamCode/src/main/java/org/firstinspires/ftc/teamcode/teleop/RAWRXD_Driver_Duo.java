@@ -117,12 +117,12 @@ public class RAWRXD_Driver_Duo extends OpMode
 
         telemetry.addData("Sensitivity",  Sensitivity);
 
-        bot.DriveManual(gamepad1.left_stick_y, gamepad1.right_stick_y, Sensitivity);
+        bot.DriveManual(-gamepad1.left_stick_y, -gamepad1.right_stick_y, Sensitivity);
 
 
 
 
-        bot.LiftPower( gamepad2.left_stick_y);
+        bot.LiftPower(-gamepad2.left_stick_y);
 
         if(controller2.AState == Controller.ButtonState.PRESSED){
             bot.CloseGrab();
@@ -136,15 +136,13 @@ public class RAWRXD_Driver_Duo extends OpMode
         }
 
 
-        if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED && Sensitivity < 100){
-            Sensitivity += 20;
+        if(gamepad1.left_trigger > 0.1 || gamepad1.left_bumper){
+            Sensitivity = 0.25;
+        }else if(gamepad1.right_trigger > 0.1 || gamepad1.right_bumper){
+            Sensitivity = 0.5;
+        }else{
+            Sensitivity = 1.0;
         }
-
-        if(controller.DPadDown == Controller.ButtonState.JUST_PRESSED && Sensitivity > 0){
-            Sensitivity -= 20;
-        }
-
-
 
     }
 
