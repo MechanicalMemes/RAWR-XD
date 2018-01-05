@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.testing.dogecv;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -50,8 +51,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DogeCV Cryptobox Blue", group="Testing")
-
+@Autonomous(name="DogeCV Cryptobox Blue", group="DOGECV")
+@Disabled
 public class All_CV_Crypto_Blue extends OpMode
 {
     // Declare OpMode members.

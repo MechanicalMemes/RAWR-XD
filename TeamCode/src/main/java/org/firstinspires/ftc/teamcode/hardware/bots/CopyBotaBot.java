@@ -47,17 +47,21 @@ public class CopyBotaBot {
     private Servo  Right_Grab_Servo = null;
 
 
-    private double LEFT_GRAB_OPEN = 0.3;
+    private double LEFT_GRAB_OPEN = 0.5;
+    private double LEFT_GRAB_MIDDLE = 0.7;
     private double LEFT_GRAB_CLOSE = 0.9;
 
     private double LEFT2_GRAB_OPEN = 0.7;
-    private double LEFT2_GRAB_CLOSE = 0.1;
+    private double LEFT2_GRAB_MIDDLE = 0.5;
+    private double LEFT2_GRAB_CLOSE = 0.3;
 
 
     private double RIGHT_GRAB_OPEN = 0.7;
-    private double RIGHT_GRAB_CLOSE = 0.1 ;
+    private double RIGHT_GRAB_MIDDLE =  0.5;
+    private double RIGHT_GRAB_CLOSE = 0.3 ;
 
-    private double RIGHT2_GRAB_OPEN = 0.3;
+    private double RIGHT2_GRAB_OPEN = 0.5;
+    private double RIGHT2_GRAB_MIDDLE = 0.7;
     private double RIGHT2_GRAB_CLOSE = 0.9;
 
     private String Left2_Grab_Name  = "lg2";
@@ -135,14 +139,18 @@ public class CopyBotaBot {
         Lift_Motor.setPower(val);
     }
 
-
-
-
     public void OpenGrab(){
-         Left_Grab_Servo.setPosition(LEFT_GRAB_OPEN);
+        Left_Grab_Servo.setPosition(LEFT_GRAB_OPEN);
         Right_Grab_Servo.setPosition(RIGHT_GRAB_OPEN);
         Left2_Grab_Servo.setPosition(LEFT2_GRAB_OPEN);
         Right2_Grab_Servo.setPosition(RIGHT2_GRAB_OPEN);
+    }
+
+    public void MiddleGrab(){
+        Left_Grab_Servo.setPosition(LEFT_GRAB_MIDDLE);
+        Right_Grab_Servo.setPosition(RIGHT_GRAB_MIDDLE);
+        Left2_Grab_Servo.setPosition(LEFT2_GRAB_MIDDLE);
+        Right2_Grab_Servo.setPosition(RIGHT2_GRAB_MIDDLE);
     }
 
     public void CloseGrab(){
@@ -150,7 +158,6 @@ public class CopyBotaBot {
         Right_Grab_Servo.setPosition(RIGHT_GRAB_CLOSE);
         Left2_Grab_Servo.setPosition(LEFT2_GRAB_CLOSE);
         Right2_Grab_Servo.setPosition(RIGHT2_GRAB_CLOSE);
-
     }
 
 }

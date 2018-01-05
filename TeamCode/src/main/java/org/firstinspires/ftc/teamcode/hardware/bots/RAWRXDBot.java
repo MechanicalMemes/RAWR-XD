@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.hardware.bots;
 
+import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.sensors.IMU;
 
 /**
@@ -47,9 +50,9 @@ public class RAWRXDBot {
 
     private String Phone_Name = "phone";
     public Servo Phone_Servo = null;
-    private double PHONE_POS_INSIDE = 0;
-    private double PHONE_POS_FRONT = 0.1;
-    private double PHONE_POST_PICTO = 0.25;
+    private double PHONE_POS_INSIDE = 0.25;
+    private double PHONE_POS_FRONT = 0.4;
+    private double PHONE_POST_PICTO = 0.8;
     private double PHONE_POST_OUTSIDE = 1;
 
     private String Lift1_Name = "lift1";
@@ -84,20 +87,27 @@ public class RAWRXDBot {
     public final double GRAB2_RIGHT_MID   = 0.15;
     public final double GRAB2_RIGHT_OPEN   = 0.3;
 
+    private String Jewel_Name = "jewel";
+    public Servo Jewel_Servo = null;
+    public final double JEWEL_DOWN = 0;
+    public final double JEWEL_RIGHT_UP   = 1;
 
-    static final double     HEADING_THRESHOLD       = 0.3 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.06 ;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.04;     // Larger is more responsive, but also less stable
+
+
+    public static final double     HEADING_THRESHOLD       = 0.3 ;      // As tight as we can make it with an integer gyro
+    public static final double     P_TURN_COEFF            = 0.08 ;     // Larger is more responsive, but also less stable
+    public static final double     P_DRIVE_COEFF           = 0.06;     // Larger is more responsive, but also less stable
 
     private LinearOpMode opMode;
-
+    private Telemetry telemetry;
     private ElapsedTime elapsedTime;
 
-    public RAWRXDBot(HardwareMap _hwd, LinearOpMode parent){
+    public RAWRXDBot(HardwareMap _hwd, LinearOpMode parent, Telemetry telemetry){
         hardwareMap = _hwd;
         opMode = parent;
-
+        this.telemetry = telemetry;
     }
+
 
     public void Init(){
 
@@ -125,7 +135,6 @@ public class RAWRXDBot {
         Drive_Right_Motor2.setZeroPowerBehavior(DriveZeroPower);
 
         SetDriveMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SetLiftMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         Phone_Servo = hardwareMap.servo.get(Phone_Name);
 
@@ -136,19 +145,19 @@ public class RAWRXDBot {
 
         Lift1_Motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Lift2_Motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        SetLiftMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Grab_Left_Servo = hardwareMap.servo.get(Grab_Left_Name);
         Grab2_Left_Servo = hardwareMap.servo.get(Grab2_Left_Name);
         Grab_Right_Servo = hardwareMap.servo.get(Grab_Right_Name);
         Grab2_Right_Servo = hardwareMap.servo.get(Grab2_Right_Name);
 
+        Jewel_Servo = hardwareMap.servo.get(Jewel_Name);
+
         SetDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
         SetLiftMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while(!imu.imu.isGyroCalibrated()){
-            if(opMode != null){
-                opMode.telemetry.addData("IMU", imu.imu.getSystemStatus());
-            }
+            telemetry.addData("IMU", imu.imu.getSystemStatus());
         }
 
         elapsedTime = new ElapsedTime();
@@ -211,7 +220,7 @@ public class RAWRXDBot {
         double  steer;
         double  leftSpeed;
         double  rightSpeed;
-
+        angle = -angle;
         // Ensure that the opmode is still active
         if (opMode.opModeIsActive()) {
 
@@ -240,20 +249,20 @@ public class RAWRXDBot {
             Drive_Right_Motor2.setPower(speed);
 
             // keep looping while we are still active, and BOTH motors are running.
-            while (opMode.opModeIsActive() && AreMotorsBusy()){
+            while (opMode.opModeIsActive() && AreMotorsBusy() && !opMode.isStopRequested()){
 
                 // adjust relative speed based on heading error.
                 error = imu.getError(angle);
                 steer = getSteer(error, P_DRIVE_COEFF);
-                opMode.telemetry.addData("ERROR", error);
-                opMode.telemetry.addData("Steer", steer);
-                opMode.telemetry.update();
+                telemetry.addData("ERROR", error);
+                telemetry.addData("Steer", steer);
+                telemetry.update();
                 // if driving in reverse, the motor correction also needs to be reversed
                 if (distance < 0)
                     steer *= -1.0;
 
-                leftSpeed = speed + steer;
-                rightSpeed = speed - steer;
+                rightSpeed = speed + steer;
+                leftSpeed = speed - steer;
 
                 // Normalize speeds if either one exceeds +/- 1.0;
                 max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
@@ -261,13 +270,6 @@ public class RAWRXDBot {
                 {
                     leftSpeed /= max;
                     rightSpeed /= max;
-                }
-
-                double distanceLeft = Drive_Left_Motor.getCurrentPosition();
-
-                if(distanceLeft / distance > 0.9){
-                    leftSpeed *= 0.5;
-                    rightSpeed *= 0.5;
                 }
 
                 Drive_Left_Motor.setPower(leftSpeed);
@@ -290,10 +292,10 @@ public class RAWRXDBot {
         }
     }
 
-    public void gyroDrive ( double speed,
-                            double distance,
-                            double angle,
-                            double error) {
+
+    public void gyroDriveCrpyto (double speed,
+                                 double distance,
+                                 CryptoboxDetector cryptoboxDetector) {
 
         int     newLeftTarget;
         int     newRightTarget;
@@ -337,11 +339,17 @@ public class RAWRXDBot {
             while (opMode.opModeIsActive() && AreMotorsBusy() && !opMode.isStopRequested()){
 
                 // adjust relative speed based on heading error.
+                double error = 0;
+                if(cryptoboxDetector.isColumnDetected()){
+                    error =  cryptoboxDetector.getClosestPos() / 20;
+                    telemetry.addData("error", error);
+                    telemetry.update();
+                }
 
                 steer = getSteer(error, P_DRIVE_COEFF);
-                opMode.telemetry.addData("ERROR", error);
-                opMode.telemetry.addData("Steer", steer);
-                opMode.telemetry.update();
+                telemetry.addData("ERROR", error);
+                telemetry.addData("Steer", steer);
+                telemetry.update();
                 // if driving in reverse, the motor correction also needs to be reversed
                 if (distance < 0)
                     steer *= -1.0;
@@ -359,16 +367,12 @@ public class RAWRXDBot {
 
                 double distanceLeft = Drive_Left_Motor.getCurrentPosition();
 
-                if(distanceLeft / distance > 0.9){
-                    leftSpeed *= 0.5;
-                    rightSpeed *= 0.5;
-                }
 
-                Drive_Left_Motor.setPower(leftSpeed);
-                Drive_Left_Motor2.setPower(leftSpeed);
+                Drive_Left_Motor.setPower(leftSpeed );
+                Drive_Left_Motor2.setPower(leftSpeed );
 
                 Drive_Right_Motor.setPower(rightSpeed);
-                Drive_Right_Motor2.setPower(rightSpeed);
+                Drive_Right_Motor2.setPower(rightSpeed );
 
             }
 
@@ -404,7 +408,7 @@ public class RAWRXDBot {
         while (opMode.opModeIsActive() && (elapsedTime.time() < holdTime)  && !opMode.isStopRequested()) {
             // Update telemetry & Allow time for other processes to run.
             onHeading(speed, angle, P_TURN_COEFF,  imu.getError(angle));
-            opMode.telemetry.update();
+            telemetry.update();
         }
 
         // Stop all motion;
@@ -416,7 +420,7 @@ public class RAWRXDBot {
     }
 
     public void gyroTurn (  double speed, double angle) {
-
+        angle = -angle;
         // keep looping while we are still active, and not on heading.
         while (opMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF, imu.getError(angle))  && !opMode.isStopRequested()){
             // Update telemetry & Allow time for other processes to run.
@@ -453,10 +457,10 @@ public class RAWRXDBot {
         Drive_Right_Motor2.setPower(rightSpeed);
 
         // Display it for the driver.
-        opMode.telemetry.addData("Target", "%5.2f", angle);
-        opMode.telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
-        opMode.telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
-        opMode.telemetry.update();
+        telemetry.addData("Target", "%5.2f", angle);
+        telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+        telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+        telemetry.update();
 
         return onTarget;
     }
@@ -484,10 +488,14 @@ public class RAWRXDBot {
     // Lift Settings
 
     public void LiftPower(double power){
-        if(Lift1_Motor.getCurrentPosition() <= 0 || Lift2_Motor.getCurrentPosition() <= 0){
-            return;
+        if(power < 0){
+            if(Lift1_Motor.getCurrentPosition() <= 10 || Lift2_Motor.getCurrentPosition() <= 10){
+                power = 0;
+            }
         }
-
+        telemetry.addData("LIFT: " , Lift1_Motor.getCurrentPosition());
+        telemetry.addData("POWER: ", power);
+        telemetry.update();
         Lift1_Motor.setPower(power);
         Lift2_Motor.setPower(power);
     }
@@ -504,8 +512,8 @@ public class RAWRXDBot {
             if(Lift1_Motor.getCurrentPosition() <= 0 || Lift2_Motor.getCurrentPosition() <= 0){
                 return;
             }
-            opMode.telemetry.addData("Lift Position: ", Lift1_Motor.getCurrentPosition() + " & " + Lift2_Motor.getCurrentPosition());
-            opMode.telemetry.update();
+            telemetry.addData("Lift Position: ", Lift1_Motor.getCurrentPosition() + " & " + Lift2_Motor.getCurrentPosition());
+            telemetry.update();
         }
         Lift1_Motor.setPower(0);
         Lift2_Motor.setPower(0);
@@ -554,4 +562,11 @@ public class RAWRXDBot {
         Grab2_Left_Servo.setPosition(GRAB2_LEFT_OPEN);
     }
 
+    public void UpJewel(){
+        Jewel_Servo.setPosition(JEWEL_RIGHT_UP);
+    }
+
+    public void DownJewel (){
+        Jewel_Servo.setPosition(JEWEL_DOWN);
+    }
 }

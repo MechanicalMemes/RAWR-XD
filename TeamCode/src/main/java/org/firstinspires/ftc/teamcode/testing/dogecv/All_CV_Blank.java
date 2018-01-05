@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.testing.dogecv;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.BlankDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -50,8 +51,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DogeCV Blank", group="Testing")
-
+@Autonomous(name="DogeCV Blank", group="DOGECV")
+@Disabled
 public class All_CV_Blank extends OpMode
 {
     // Declare OpMode members.

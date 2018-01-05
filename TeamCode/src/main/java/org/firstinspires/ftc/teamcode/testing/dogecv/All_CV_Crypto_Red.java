@@ -54,7 +54,7 @@ import java.lang.reflect.Field;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DogeCV Cryptobox Red", group="Testing")
+@Autonomous(name="DogeCV Cryptobox Red", group="DOGECV")
 
 public class All_CV_Crypto_Red extends OpMode
 {

@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.testing.concepts;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.qualcomm.ftcrobotcontroller.FieldPositonData;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
@@ -10,22 +13,17 @@ import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
 /**
  * Created by Victo on 1/3/2018.
  */
-
-public class RAWRXD_Conc_CryptoAlign extends OpMode {
+@Autonomous(name="Conc Crpyto Align", group="RAWRXD_CONC")
+@Disabled
+public class RAWRXD_Conc_CryptoAlign extends LinearOpMode {
     private CryptoboxDetector cryptoboxDetector = null;
-    private RAWRXDBot bot = new RAWRXDBot(hardwareMap, null);
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+    private RAWRXDBot bot;
+
     @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
-
-        switch (FieldPositonData.fieldPostion){
-            case RED_BOTTOM:
-                break;
-        }
-
+    public void runOpMode() throws InterruptedException {
+        bot = new RAWRXDBot(hardwareMap, this, telemetry);
+        bot.Init();
+        bot.SetPhoneFront();
 
         cryptoboxDetector = new CryptoboxDetector();
         cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
@@ -35,59 +33,22 @@ public class RAWRXD_Conc_CryptoAlign extends OpMode {
         cryptoboxDetector.speed = CryptoboxDetector.CryptoboxSpeed.BALANCED;
         cryptoboxDetector.trackableMemory = 8;
         cryptoboxDetector.rotateMat = false;
-
-
-
-        //Optional Test Code to load images via Drawables
-        //cryptoboxDetector.useImportedImage = true;
-        //cryptoboxDetector.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv4);
-
         cryptoboxDetector.enable();
 
-
-    }
-
-    @Override
-    public void init_loop() {
-        telemetry.addData("Status", "Initialized");
-    }
-
-    @Override
-    public void start() {
+        waitForStart();
 
 
-        double error = 0;
-        if(cryptoboxDetector.isColumnDetected()){
-            error =  cryptoboxDetector.getClosestPos() / 10;
+
+        if(opModeIsActive()){
+
+            bot.gyroDriveCrpyto(0.5,500, cryptoboxDetector);
         }
-        bot.gyroDrive(0.1,1000,0, error);
 
-
-
-    }
-    int colCount = 0;
-    @Override
-    public void loop() {
-
-
-
-        telemetry.addData("isCryptoBoxDetected", cryptoboxDetector.isCryptoBoxDetected());
-        telemetry.addData("isColumnDetected ",  cryptoboxDetector.isColumnDetected());
-
-        telemetry.addData("Column Left ",  cryptoboxDetector.getCryptoBoxLeftPosition());
-        telemetry.addData("Column Center ",  cryptoboxDetector.getCryptoBoxCenterPosition());
-        telemetry.addData("Column Right ",  cryptoboxDetector.getCryptoBoxRightPosition());
-
-
-
-
+        cryptoboxDetector.disable();
     }
 
     /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-        cryptoboxDetector.disable();
-    }
+         * Code to run ONCE when the driver hits INIT
+         */
+
 }

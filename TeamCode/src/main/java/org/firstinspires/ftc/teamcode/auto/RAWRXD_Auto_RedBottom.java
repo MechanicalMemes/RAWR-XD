@@ -25,18 +25,7 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
     public RAWRXD_Auto_RedBottom(DogeAutoOpMode parent) {
         super(parent);
 
-        switch (autoSpeed){
-            case 0:
-                speedMultiplier = 0.25;
-            case 1:
-                speedMultiplier = 0.4;
-            case 2:
-                speedMultiplier = 0.6;
-            case 3:
-                speedMultiplier = 0.8;
-            case 4:
-                speedMultiplier = 1;
-        }
+
     }
 
 
@@ -49,6 +38,9 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
         jewelDetector = new JewelDetector();
         jewelDetector.downScaleFactor = 0.4;
         jewelDetector.rotateMat = true;
+        jewelDetector.areaWeight = 30;
+        jewelDetector.perfectRatio = 1.0;
+        jewelDetector.debugContours = true;
 
         cryptoboxDetector = new CryptoboxDetector();
         cryptoboxDetector.trackableMemory = 8;
@@ -77,81 +69,83 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
         //bot.SetPhoneOutside();
         bot.CloseGrab();
+        bot.DownJewel();
+        bot.SetPhoneOutside();
+        bot.WaitForTime(1.0);
 
-        bot.WaitForTime(0.2);
-
-        bot.LiftToPosition(600);
+        bot.LiftToPosition(800);
 
         bot.WaitForTime(0.4);
 
         switch (jewelDetector.getLastOrder()){
             case RED_BLUE:
-                bot.EncoderDrive(-100,-100,0.2);
+                bot.EncoderDrive(-50,-50,0.2);
                 bot.WaitForTime(0.3);
-                bot.EncoderDrive(100,100,0.5);
+                bot.EncoderDrive(50,50,0.2);
 
         }
 
         jewelDetector.disable();
 
 
-
-        bot.gyroDrive(0.5 * speedMultiplier,1900,  10);
-
+        bot.SetPhoneFront();
+        bot.gyroDrive(0.2 * speedMultiplier,400,  -5);
+        bot.UpJewel();
         switch(vuforia.getVuMark()){
             case UNKNOWN:
-                bot.gyroDrive(1.0 * speedMultiplier,1000,0);
+                bot.gyroDrive(0.6 * speedMultiplier,1000,0);
 
                 break;
             case LEFT:
-                bot.gyroDrive(1.0 * speedMultiplier,2250,0);
+                bot.gyroDrive(0.6 * speedMultiplier,1400,0);
 
                 break;
 
             case CENTER:
-                bot.gyroDrive(1.0 * speedMultiplier,1000,0);
+                bot.gyroDrive(0.6 * speedMultiplier,1100,0);
 
                 break;
 
             case RIGHT:
-                bot.gyroDrive(1.0 * speedMultiplier,500,0);
+                bot.gyroDrive(0.6 * speedMultiplier,800,0);
 
                 break;
         }
 
-        bot.gyroTurn(1 * speedMultiplier,270);
+        bot.gyroTurn(0.6 * speedMultiplier,90);
 
-        bot.gyroDrive(0.4 * speedMultiplier,700,270);
+        bot.gyroDrive(0.4 * speedMultiplier,300,90);
 
         bot.OpenGrab();
 
 
-        bot.gyroDrive(0.5 * speedMultiplier,-1000,270);
-        bot.gyroTurn(1 * speedMultiplier,90);
+        bot.gyroDrive(0.5 * speedMultiplier,-500,90);
+        bot.gyroTurn(0.6 * speedMultiplier,270);
 
-        bot.LiftToPosition(0);
-        bot.gyroDrive(1 * speedMultiplier,3000,90);
+        bot.LiftToPosition(10);
+        bot.gyroDrive(1 * speedMultiplier,1400,270);
 
         bot.CloseGrab();
 
         bot.WaitForTime(0.1);
 
-        bot.LiftToPosition(1200);
+        bot.LiftToPosition(2000);
 
         bot.WaitForTime(0.2);
 
 
-        bot.gyroDrive(1 * speedMultiplier,-1000,90);
+        bot.gyroDrive(0.6 * speedMultiplier,-500,270);
 
-        bot.gyroTurn(1 * speedMultiplier,260);
+        bot.gyroTurn(0.6* speedMultiplier,90);
         cryptoboxDetector.enable();
 
-        bot.gyroDrive(1 * speedMultiplier,3000,260);
-        bot.gyroDrive(1 * speedMultiplier,500,270);
+        bot.gyroDrive(0.8* speedMultiplier,1000,90);
+        bot.gyroDrive(0.1 * speedMultiplier,600,90);
 
         bot.OpenGrab();
         bot.WaitForTime(0.4);
-        bot.gyroDrive(0.25 * speedMultiplier,-800,270);
+        bot.gyroDrive(0.25 * speedMultiplier,-300,90);
+        bot.LiftToPosition(0);
         cryptoboxDetector.disable();
     }
 

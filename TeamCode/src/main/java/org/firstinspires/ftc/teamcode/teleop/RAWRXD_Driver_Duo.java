@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.control.Controller;
@@ -74,11 +75,12 @@ public class RAWRXD_Driver_Duo extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXDBot(hardwareMap, null);
+        bot = new RAWRXDBot(hardwareMap, null, telemetry);
         controller = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
         bot.Init();
-
+        bot.SetLiftMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bot.UpJewel();
 
     }
 
@@ -100,6 +102,8 @@ public class RAWRXD_Driver_Duo extends OpMode
 
         runtime.reset();
         //cryptoboxDetectorOld.enable();
+        bot.SetPhoneFront();
+        bot.UpJewel();
     }
 
     /*

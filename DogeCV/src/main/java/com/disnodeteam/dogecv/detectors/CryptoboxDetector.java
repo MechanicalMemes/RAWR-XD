@@ -292,7 +292,8 @@ public class CryptoboxDetector extends OpenCVPipeline {
 
 
         for(int res : CryptoBoxPositions){
-            if(Math.abs((newSize.width / 2)-res) < closestPos){
+            res = (int)(((newSize.width / 2 )-50)-res);
+            if(Math.abs(res) <  Math.abs(closestPos)){
                 closestPos = res;
             }
         }

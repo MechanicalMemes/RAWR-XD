@@ -4,6 +4,7 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 
 
 @Autonomous(name="RAWR Auto - Red - Far", group="RED AUTO")
-
+@Disabled
 
 public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
@@ -28,7 +29,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXDBot(hardwareMap, this);
+        bot = new RAWRXDBot(hardwareMap, this, telemetry);
         bot.Init();
         bot.SetPhonePicto();
 

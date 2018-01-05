@@ -130,16 +130,17 @@ public class CopyBota_Driver_Single extends OpMode
         if(controller.DPadUp == Controller.ButtonState.JUST_PRESSED){
             Sensitivity += 0.15;
         }
-
         if(controller.DPadRight == Controller.ButtonState.JUST_PRESSED){
             Sensitivity -= 0.15;
         }
-
         if(controller.AState == Controller.ButtonState.JUST_PRESSED){
             bot.CloseGrab();
         }
         if(controller.BState == Controller.ButtonState.JUST_PRESSED){
             bot.OpenGrab();
+        }
+        if(controller.XState == Controller.ButtonState.JUST_PRESSED){
+            bot.MiddleGrab();
         }
 
 

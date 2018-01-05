@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
 
 public abstract class DogeAutoOpMode extends LinearOpMode {
 
-    public RAWRXDBot bot = null;
+    public RAWRXDBot bot;
     public FieldPositonData.FieldPostion fieldPostion;
     public boolean useDogeCV;
     public int autoSpeed;
@@ -22,7 +22,7 @@ public abstract class DogeAutoOpMode extends LinearOpMode {
         autoSpeed = FieldPositonData.speed;
         useDogeCV = FieldPositonData.dogeCVCrypto;
 
-        bot = new RAWRXDBot(hardwareMap, this);
+        bot = new RAWRXDBot(hardwareMap, this,telemetry);
         bot.Init();
     }
 

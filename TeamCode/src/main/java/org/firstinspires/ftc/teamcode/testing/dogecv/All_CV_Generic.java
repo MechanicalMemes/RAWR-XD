@@ -7,6 +7,7 @@ import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.disnodeteam.dogecv.filters.HSVColorFilter;
 import com.disnodeteam.dogecv.filters.LeviColorFilter;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -15,7 +16,7 @@ import org.opencv.core.Size;
 
 
 @Autonomous(name="DogeCV Generic Detector", group="DogeCV")
-
+@Disabled
 public class All_CV_Generic extends OpMode
 {
     // Declare OpMode members.
