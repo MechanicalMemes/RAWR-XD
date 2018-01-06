@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.lib.auto.DogeAutoOpMode;
  * Created by Victo on 1/4/2018.
  */
 
-public class RAWRXD_Auto_RedBottom extends DogeAuto {
+public class RAWRXD_Auto_BlueTopGhetto extends DogeAuto {
 
 
     private VuforiaHardware vuforia;
@@ -24,7 +24,7 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
 
     private double speedMultiplier = 1.0;
-    public RAWRXD_Auto_RedBottom(DogeAutoOpMode parent) {
+    public RAWRXD_Auto_BlueTopGhetto(DogeAutoOpMode parent) {
         super(parent);
 
 
@@ -39,14 +39,9 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
         jewelDetector = new JewelDetector();
         jewelDetector.downScaleFactor = 0.4;
-        jewelDetector.ratioWeight = 30;
+        jewelDetector.areaWeight = 30;
         jewelDetector.perfectRatio = 1.0;
-        jewelDetector.areaWeight = 0.003;
-        jewelDetector.maxDiffrence = 200;
         jewelDetector.debugContours = true;
-        jewelDetector.detectionMode = JewelDetector.JewelDetectionMode.PERFECT_AREA;
-        jewelDetector.perfectArea = 5550;
-
 
         cryptoboxDetector = new CryptoboxDetector();
         cryptoboxDetector.trackableMemory = 8;
@@ -89,7 +84,7 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
         telemetry.addData("Jewel", jewelDetector.getLastOrder().toString());
         telemetry.update();
         switch (jewelDetector.getLastOrder()){
-            case RED_BLUE:
+            case BLUE_RED:
                 bot.gyroDrive(0.2,-70,0);
 
                 bot.UpJewel();
@@ -98,6 +93,7 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
         }
         bot.LiftToPosition(1000);
         jewelDetector.disable();
+
 
         bot.SetPhoneFront();
         bot.gyroDrive(0.2 * speedMultiplier,400,  -5);
@@ -135,12 +131,15 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
         bot.LiftToPosition(10);
         bot.gyroDrive(1 * speedMultiplier,1400,270);
-        bot.WaitForTime(0.3);
+
         bot.CloseGrab();
 
         bot.WaitForTime(0.1);
 
         bot.LiftToPosition(3000);
+
+        bot.WaitForTime(0.2);
+
 
         bot.gyroDrive(0.6 * speedMultiplier,-500,270);
 

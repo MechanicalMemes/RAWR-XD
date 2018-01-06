@@ -27,10 +27,19 @@ public class RAWRXD_Auto_MK1 extends DogeAutoOpMode {
         super.runOpMode();
 
         redBottomAuto = new RAWRXD_Auto_RedBottom(this);
+       // blueTopAuto = new RAWRXD_Auto_BlueTopGhetto(this);
+        blueBottomAuto = new RAWRXD_Auto_BlueBottom(this);
 
         switch(fieldPostion){
             case RED_BOTTOM:
                 selectedAuto = redBottomAuto;
+                break;
+
+            case BLUE_TOP:
+                //selectedAuto = blueTopAuto;
+                break;
+            case BLUE_BOTTOM:
+                selectedAuto = blueBottomAuto;
         }
 
 

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.lib.auto.DogeAutoOpMode;
  * Created by Victo on 1/4/2018.
  */
 
-public class RAWRXD_Auto_RedBottom extends DogeAuto {
+public class RAWRXD_Auto_BlueBottom extends DogeAuto {
 
 
     private VuforiaHardware vuforia;
@@ -24,7 +24,7 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
 
     private double speedMultiplier = 1.0;
-    public RAWRXD_Auto_RedBottom(DogeAutoOpMode parent) {
+    public RAWRXD_Auto_BlueBottom(DogeAutoOpMode parent) {
         super(parent);
 
 
@@ -44,8 +44,6 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
         jewelDetector.areaWeight = 0.003;
         jewelDetector.maxDiffrence = 200;
         jewelDetector.debugContours = true;
-        jewelDetector.detectionMode = JewelDetector.JewelDetectionMode.PERFECT_AREA;
-        jewelDetector.perfectArea = 5550;
 
 
         cryptoboxDetector = new CryptoboxDetector();
@@ -90,35 +88,36 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
         telemetry.update();
         switch (jewelDetector.getLastOrder()){
             case RED_BLUE:
-                bot.gyroDrive(0.2,-70,0);
+                bot.gyroDrive(0.2,70,0);
 
                 bot.UpJewel();
-                bot.gyroDrive(1.0,80,0);
+                bot.gyroDrive(1.0,-80,0);
 
         }
         bot.LiftToPosition(1000);
         jewelDetector.disable();
 
+
         bot.SetPhoneFront();
-        bot.gyroDrive(0.2 * speedMultiplier,400,  -5);
+        bot.gyroDrive(0.2 * speedMultiplier,-300,  -5);
         bot.UpJewel();
         switch(vuforia.getVuMark()){
             case UNKNOWN:
-                bot.gyroDrive(0.6 * speedMultiplier,1000,0);
+                bot.gyroDrive(0.6 * speedMultiplier,-1000,0);
 
                 break;
             case LEFT:
-                bot.gyroDrive(0.6 * speedMultiplier,1400,0);
+                bot.gyroDrive(0.6 * speedMultiplier,-1400,0);
 
                 break;
 
             case CENTER:
-                bot.gyroDrive(0.6 * speedMultiplier,1200,0);
+                bot.gyroDrive(0.6 * speedMultiplier,-1200,0);
 
                 break;
 
             case RIGHT:
-                bot.gyroDrive(0.6 * speedMultiplier,780,0);
+                bot.gyroDrive(0.6 * speedMultiplier,-780,0);
 
                 break;
         }
@@ -135,12 +134,15 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
         bot.LiftToPosition(10);
         bot.gyroDrive(1 * speedMultiplier,1400,270);
-        bot.WaitForTime(0.3);
+
         bot.CloseGrab();
 
         bot.WaitForTime(0.1);
 
         bot.LiftToPosition(3000);
+
+        bot.WaitForTime(0.2);
+
 
         bot.gyroDrive(0.6 * speedMultiplier,-500,270);
 

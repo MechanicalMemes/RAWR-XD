@@ -94,8 +94,8 @@ public class RAWRXDBot {
 
 
 
-    public static final double     HEADING_THRESHOLD       = 0.3 ;      // As tight as we can make it with an integer gyro
-    public static final double     P_TURN_COEFF            = 0.08 ;     // Larger is more responsive, but also less stable
+    public static final double     HEADING_THRESHOLD       = 0.4 ;      // As tight as we can make it with an integer gyro
+    public static final double     P_TURN_COEFF            = 0.1 ;     // Larger is more responsive, but also less stable
     public static final double     P_DRIVE_COEFF           = 0.06;     // Larger is more responsive, but also less stable
 
     private LinearOpMode opMode;

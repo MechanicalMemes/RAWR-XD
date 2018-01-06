@@ -34,7 +34,7 @@ public class VuforiaHardware {
     }
 
     public void Loop(){
-        if(vuMark == RelicRecoveryVuMark.UNKNOWN){
+        if(RelicRecoveryVuMark.from(relicTemplate) != RelicRecoveryVuMark.UNKNOWN){
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
     }
