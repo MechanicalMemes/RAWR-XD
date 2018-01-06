@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by Alex on 11/3/2017.
@@ -70,10 +71,6 @@ public class CopyBotaBot {
     private String Right2_Grab_Name  = "rg2";
     private Servo  Right2_Grab_Servo = null;
 
-
-
-
-
     private String Help_Name = "help";
     public DcMotor Help_Motor = null;
     public DcMotor.Direction Help_Direction = DcMotorSimple.Direction.FORWARD;
@@ -114,6 +111,18 @@ public class CopyBotaBot {
         Help_Motor.setDirection(Help_Direction);
     }
 
+    public void SetDriveMotorMode(DcMotor.RunMode mode){
+        Drive_FrontLeft_Motor.setMode(mode);
+        Drive_FrontRight_Motor.setMode(mode);
+        Drive_RearLeft_Motor.setMode(mode);
+        Drive_RearRight_Motor.setMode(mode);
+    }
+
+
+    public boolean AreMotorsBusy(){
+        return (Drive_FrontLeft_Motor.isBusy() && Drive_FrontRight_Motor.isBusy() && Drive_RearLeft_Motor.isBusy() && Drive_RearRight_Motor.isBusy());
+    }
+
     public void Drive(double XValue, double YValue, double rotationInput,  double Sensitivity){
         final double x = Math.pow(XValue, 3.0);
         final double y = -Math.pow(YValue, 3.0);
@@ -135,6 +144,50 @@ public class CopyBotaBot {
         Drive_RearRight_Motor.setPower(v4 * Sensitivity);
     }
 
+    public void DriveEncoder(double XValue, double YValue, double rotationInput,  int distance){
+
+        SetDriveMotorMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetDriveMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        final double x = Math.pow(XValue, 3.0);
+        final double y = -Math.pow(YValue, 3.0);
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+
+        double direction = Math.atan2(x, y);
+        double robotAngle = direction + Math.PI / 4;
+
+        final double rotation = -Math.pow(rotationInput, 3.0);
+
+        final double v1 = speed * Math.cos(robotAngle) + rotation;
+        final double v2 = speed * Math.sin(robotAngle) - rotation;
+        final double v3 = speed * Math.sin(robotAngle) + rotation;
+        final double v4 = speed * Math.cos(robotAngle) - rotation;
+
+        Drive_FrontLeft_Motor.setTargetPosition(distance);
+        Drive_FrontRight_Motor.setTargetPosition(distance);
+        Drive_RearLeft_Motor.setTargetPosition(distance);
+        Drive_RearRight_Motor.setTargetPosition(distance);
+
+        Drive_FrontLeft_Motor.setPower(v1);
+        Drive_FrontRight_Motor.setPower(v2);
+        Drive_RearLeft_Motor.setPower(v3);
+        Drive_RearRight_Motor.setPower(v4);
+
+        while(AreMotorsBusy()){
+
+        }
+
+        SetDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public void WaitForTime(double time){
+        ElapsedTime elapsedTime = new ElapsedTime();
+        elapsedTime.reset();
+        elapsedTime.startTime();
+
+        while(elapsedTime.seconds() < time){
+
+        }
+    }
     public void LiftOverride(double val){
         Lift_Motor.setPower(val);
     }
