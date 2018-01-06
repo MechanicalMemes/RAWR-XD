@@ -50,9 +50,9 @@ import org.firstinspires.ftc.teamcode.hardware.bots.CopyBotaBot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="CopyBota Drive - Single", group="CopyBota")
+@TeleOp(name="JetOmi", group="CopyBota")
 
-public class CopyBota_Driver_Single extends OpMode
+public class JetOmni extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -112,7 +112,17 @@ public class CopyBota_Driver_Single extends OpMode
         telemetry.addData("GyroMode", gyroMode);
         telemetry.addData("Sensitivity",  Sensitivity);
 
-        bot.Drive(-gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x, Sensitivity);
+       // Jet Here
+            //holomonic formulas
+        bot.Drive_FrontLeft_Motor.setPower(-(-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+        bot.Drive_FrontRight_Motor.setPower(gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x);
+        bot.Drive_RearLeft_Motor.setPower(gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x);
+        bot.Drive_RearRight_Motor.setPower(-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x);
+
+        //motor values
+
+
+        //
 
         bot.Help_Motor.setPower(gamepad1.left_trigger);
 

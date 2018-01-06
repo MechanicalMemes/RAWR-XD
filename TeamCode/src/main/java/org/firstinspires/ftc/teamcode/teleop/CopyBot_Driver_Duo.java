@@ -113,7 +113,7 @@ public class CopyBot_Driver_Duo extends OpMode
         telemetry.addData("GyroMode", gyroMode);
         telemetry.addData("Sensitivity",  Sensitivity);
 
-        bot.Drive(gamepad1.left_stick_x, gamepad1.left_stick_y,gamepad1.right_stick_x, Sensitivity);
+        bot.Drive(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x, Sensitivity);
 
         bot.Help_Motor.setPower(gamepad1.left_trigger);
 

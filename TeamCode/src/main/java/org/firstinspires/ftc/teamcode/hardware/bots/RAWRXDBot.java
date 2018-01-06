@@ -52,7 +52,7 @@ public class RAWRXDBot {
     public Servo Phone_Servo = null;
     private double PHONE_POS_INSIDE = 0.25;
     private double PHONE_POS_FRONT = 0.4;
-    private double PHONE_POST_PICTO = 0.8;
+    private double PHONE_POST_PICTO = 0.97;
     private double PHONE_POST_OUTSIDE = 1;
 
     private String Lift1_Name = "lift1";

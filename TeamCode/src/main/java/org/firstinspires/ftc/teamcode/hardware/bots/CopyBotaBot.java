@@ -124,7 +124,7 @@ public class CopyBotaBot {
     }
 
     public void Drive(double XValue, double YValue, double rotationInput,  double Sensitivity){
-        final double x = Math.pow(XValue, 3.0);
+        final double x = -Math.pow(XValue, 3.0);
         final double y = -Math.pow(YValue, 3.0);
         final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
 

@@ -93,7 +93,7 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
                 bot.gyroDrive(0.2,-70,0);
 
                 bot.UpJewel();
-                bot.gyroDrive(1.0,80,0);
+                bot.gyroDrive(1.0,90,0);
 
         }
         bot.LiftToPosition(1000);
@@ -108,12 +108,12 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
                 break;
             case LEFT:
-                bot.gyroDrive(0.6 * speedMultiplier,1400,0);
+                bot.gyroDrive(0.6 * speedMultiplier,1430,0);
 
                 break;
 
             case CENTER:
-                bot.gyroDrive(0.6 * speedMultiplier,1200,0);
+                bot.gyroDrive(0.6 * speedMultiplier,1210,0);
 
                 break;
 
