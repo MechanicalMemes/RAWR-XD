@@ -49,20 +49,20 @@ public class CopyBotaBot {
 
 
     private double LEFT_GRAB_OPEN = 0.5;
-    private double LEFT_GRAB_MIDDLE = 0.7;
+    private double LEFT_GRAB_MIDDLE = 0.6;
     private double LEFT_GRAB_CLOSE = 0.9;
 
     private double LEFT2_GRAB_OPEN = 0.7;
-    private double LEFT2_GRAB_MIDDLE = 0.5;
+    private double LEFT2_GRAB_MIDDLE = 0.6;
     private double LEFT2_GRAB_CLOSE = 0.3;
 
 
     private double RIGHT_GRAB_OPEN = 0.7;
-    private double RIGHT_GRAB_MIDDLE =  0.5;
+    private double RIGHT_GRAB_MIDDLE =  0.6;
     private double RIGHT_GRAB_CLOSE = 0.3 ;
 
     private double RIGHT2_GRAB_OPEN = 0.5;
-    private double RIGHT2_GRAB_MIDDLE = 0.7;
+    private double RIGHT2_GRAB_MIDDLE = 0.6;
     private double RIGHT2_GRAB_CLOSE = 0.9;
 
     private String Left2_Grab_Name  = "lg2";

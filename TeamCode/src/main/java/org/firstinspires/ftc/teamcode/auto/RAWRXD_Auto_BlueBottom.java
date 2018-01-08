@@ -154,9 +154,9 @@ public class RAWRXD_Auto_BlueBottom extends DogeAuto {
 
         bot.OpenGrab();
         bot.WaitForTime(0.4);
-        bot.gyroDrive(0.25 * speedMultiplier,-1000,90);
+        bot.gyroDrive(0.5 * speedMultiplier,-700,90);
         bot.LiftToPosition(0);
-        bot.gyroDrive(0.7 * speedMultiplier,600,90);
+        bot.gyroDrive(0.7 * speedMultiplier,200,90);
         glyphDetector.disable();
     }
 

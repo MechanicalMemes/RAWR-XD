@@ -70,7 +70,11 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
     @Override
     public void Run() {
-        vuforia.Stop();
+.LiftToPosition(3000);
+
+        bot.gyroDrive(0.6 * speedMultiplier,-500,270);
+
+        bot.gyroTurn(0.6* speedM        vuforia.Stop();
 
 
         jewelDetector.enable();
@@ -80,7 +84,7 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
         bot.CloseGrab();
         bot.DownJewel();
         bot.SetPhoneOutside();
-        bot.WaitForTime(1.0);
+        bot.WaitForTime(0.3);
 
         bot.LiftToPosition(30);
 
@@ -140,21 +144,17 @@ public class RAWRXD_Auto_RedBottom extends DogeAuto {
 
         bot.WaitForTime(0.1);
 
-        bot.LiftToPosition(3000);
-
-        bot.gyroDrive(0.6 * speedMultiplier,-500,270);
-
-        bot.gyroTurn(0.6* speedMultiplier,90);
+        botultiplier,90);
 
 
         bot.gyroDrive(0.7* speedMultiplier,1000,90);
-        bot.gyroDrive(0.1 * speedMultiplier,600,90);
+        bot.gyroDrive(0.1 * speedMultiplier,650,90);
 
         bot.OpenGrab();
-        bot.WaitForTime(0.4);
-        bot.gyroDrive(0.25 * speedMultiplier,-1000,90);
+        bot.WaitForTime(0.2);
+        bot.gyroDrive(0.6 * speedMultiplier,-700,90);
         bot.LiftToPosition(0);
-        bot.gyroDrive(0.7 * speedMultiplier,600,90);
+        bot.gyroDrive(1.0 * speedMultiplier,200,90);
         glyphDetector.disable();
     }
 

@@ -139,7 +139,9 @@ public class RAWRXD_Driver_Duo extends OpMode
             bot.MidGrab();
         }
 
-
+        if(controller2.YState == Controller.ButtonState.JUST_PRESSED){
+            bot.UpJewel();
+        }
         if(gamepad1.left_trigger > 0.1 || gamepad1.left_bumper){
             Sensitivity = 0.25;
         }else if(gamepad1.right_trigger > 0.1 || gamepad1.right_bumper){

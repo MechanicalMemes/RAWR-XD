@@ -24,8 +24,13 @@ public class CopyBota_Ghetto extends LinearOpMode{
         waitForStart();
 
         bot.CloseGrab();
+        bot.LiftOverride(1);
         bot.WaitForTime(0.5);
-        bot.DriveEncoder(0,1.0,0,4000);
+        bot.LiftOverride(0);
+        bot.DriveEncoder(0,0.8,0.1,-1500);
+        bot.OpenGrab();
+        bot.WaitForTime(0.5);
+        bot.DriveEncoder(0,0.9,0,100);
         /*
         ElapsedTime time = new ElapsedTime();
         while(time.seconds() < 2.0){
