@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.lib.auto;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
+import org.firstinspires.ftc.teamcode.hardware.bots.DogeBot;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot_Old;
 
 /**
  * Created by Victo on 1/4/2018.
@@ -12,7 +13,7 @@ public abstract class DogeAuto {
     public Telemetry telemetry;
     public int autoSpeed;
     public boolean useDogeCV;
-    public RAWRXDBot bot;
+    public DogeBot bot;
 
     public DogeAuto(DogeAutoOpMode parent){
         opMode = parent;

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot_Old;
 import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 
 
@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 public class RAWRXD_Auto_Red_Far extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private RAWRXDBot bot = null;
+    private RAWRXDBot_Old bot = null;
 
     private VuforiaHardware vuforia;
     private JewelDetector jewelDetector;
@@ -29,7 +29,7 @@ public class RAWRXD_Auto_Red_Far extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXDBot(hardwareMap, this, telemetry);
+        bot = new RAWRXDBot_Old(hardwareMap, this, telemetry);
         bot.Init();
         bot.SetPhonePicto();
 

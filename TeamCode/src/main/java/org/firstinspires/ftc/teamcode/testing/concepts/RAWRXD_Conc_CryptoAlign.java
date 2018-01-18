@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode.testing.concepts;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
-import com.qualcomm.ftcrobotcontroller.FieldPositonData;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot_Old;
 
 /**
  * Created by Victo on 1/3/2018.
@@ -17,11 +15,11 @@ import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
 @Disabled
 public class RAWRXD_Conc_CryptoAlign extends LinearOpMode {
     private CryptoboxDetector cryptoboxDetector = null;
-    private RAWRXDBot bot;
+    private RAWRXDBot_Old bot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        bot = new RAWRXDBot(hardwareMap, this, telemetry);
+        bot = new RAWRXDBot_Old(hardwareMap, this, telemetry);
         bot.Init();
         bot.SetPhoneFront();
 

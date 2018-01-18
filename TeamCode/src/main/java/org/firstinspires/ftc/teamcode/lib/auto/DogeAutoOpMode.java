@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.lib.auto;
 import com.qualcomm.ftcrobotcontroller.FieldPositonData;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
+import org.firstinspires.ftc.teamcode.hardware.bots.DogeBot;
 
 /**
  * Created by Victo on 12/31/2017.
@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
 
 public abstract class DogeAutoOpMode extends LinearOpMode {
 
-    public RAWRXDBot bot;
+    public DogeBot bot;
     public FieldPositonData.FieldPostion fieldPostion;
     public boolean useDogeCV;
     public int autoSpeed;
@@ -21,9 +21,6 @@ public abstract class DogeAutoOpMode extends LinearOpMode {
         fieldPostion = FieldPositonData.fieldPostion;
         autoSpeed = FieldPositonData.speed;
         useDogeCV = FieldPositonData.dogeCVCrypto;
-
-        bot = new RAWRXDBot(hardwareMap, this,telemetry);
-        bot.Init();
     }
 
 }

@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.control.Controller;
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
+import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot_Old;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -58,7 +58,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private RAWRXDBot bot = null;
+    private RAWRXDBot_Old bot = null;
 
     private boolean gyroMode = false;
 
@@ -75,7 +75,7 @@ public class RAWRXD_Driver_Duo extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        bot = new RAWRXDBot(hardwareMap, null, telemetry);
+        bot = new RAWRXDBot_Old(hardwareMap, null, telemetry);
         controller = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
         bot.Init();
