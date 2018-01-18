@@ -10,8 +10,7 @@ public class PIDController {
 
     double P, I, D;
 
-    private double lastTime;
-    private double Input, Output, SetPoint;
+    private double  SetPoint;
     private double errSum, lastErr;
     private ElapsedTime elapsedTime;
     private boolean elaspReset = false;

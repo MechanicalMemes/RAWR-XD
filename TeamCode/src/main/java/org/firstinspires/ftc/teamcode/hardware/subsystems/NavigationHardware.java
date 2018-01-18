@@ -9,30 +9,11 @@ import com.qualcomm.robotcore.util.Hardware;
  * Created by Victo on 1/17/2018.
  */
 
-public class NavigationHardware {
-
-    public enum NavType{
-        MR_GYRO,
-        REV_IMU
-    }
-
-    public Gyroscope mrGyro;
-    public BNO055IMU imu;
-
-    public NavigationHardware(HardwareMap map, NavType type, String name){
+public abstract class NavigationHardware {
+    public NavigationHardware(HardwareMap map, String name){
 
     }
+    public abstract double getHeading();
 
-    public double getHeading(){
-        return 0;
-    }
-
-    public double getError(double targetAngle){
-        double angleError = 0;
-
-        angleError = (targetAngle - getHeading());
-        angleError -= (360*Math.floor(0.5+((angleError)/360.0)));
-
-        return angleError;
-    }
+    public abstract double getError(double targetAngle);
 }

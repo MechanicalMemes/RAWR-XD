@@ -13,12 +13,8 @@ import org.firstinspires.ftc.teamcode.lib.auto.DogeAutoOpMode;
 /**
  * Created by Victo on 1/4/2018.
  */
-@Autonomous(name="RAWR Auto - Red - Far", group="RAWRXD_AUTO")
-public class RAWRXD_Auto_MK1 extends DogeAutoOpMode {
-    private DogeAuto redBottomAuto;
-    private DogeAuto redTopAuto;
-    private DogeAuto blueTopAuto;
-    private DogeAuto blueBottomAuto;
+@Autonomous(name="Doge Auto", group="AUTO")
+public class DogeAutoMain extends DogeAutoOpMode {
 
     private DogeAuto selectedAuto;
 
@@ -26,20 +22,17 @@ public class RAWRXD_Auto_MK1 extends DogeAutoOpMode {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        redBottomAuto = new RAWRXD_Auto_RedBottom(this);
-       // blueTopAuto = new RAWRXD_Auto_BlueTopGhetto(this);
-        blueBottomAuto = new RAWRXD_Auto_BlueBottom(this);
 
         switch(fieldPostion){
             case RED_BOTTOM:
-                selectedAuto = redBottomAuto;
+
                 break;
 
             case BLUE_TOP:
                 //selectedAuto = blueTopAuto;
                 break;
             case BLUE_BOTTOM:
-                selectedAuto = blueBottomAuto;
+
         }
 
 
