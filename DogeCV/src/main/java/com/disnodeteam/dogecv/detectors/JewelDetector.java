@@ -44,15 +44,15 @@ public class JewelDetector extends OpenCVPipeline {
 
 
     public JewelDetectionMode  detectionMode    = JewelDetectionMode.MAX_AREA;
-    public double              downScaleFactor  = 0.4;
+    public double              downScaleFactor  = 0.5;
     public double              perfectRatio     = 1;
     public boolean             rotateMat        = false;
     public JewelDetectionSpeed speed            = JewelDetectionSpeed.BALANCED;
     public double              perfectArea      = 6500;
     public double              areaWeight       = 0.05; // Since we're dealing with 100's of pixels
-    public double              minArea          = 700;
-    public double              ratioWeight      = 15; // Since most of the time the area diffrence is a decimal place
-    public double              maxDiffrence     = 10; // Since most of the time the area diffrence is a decimal place
+    public double              minArea          = 1100;
+    public double              ratioWeight      = 30; // Since most of the time the area diffrence is a decimal place
+    public double              maxDiffrence     = 100; // Since most of the time the area diffrence is a decimal place
     public boolean             debugContours    = false;
     public DogeCVColorFilter   colorFilterRed   = new LeviColorFilter(LeviColorFilter.ColorPreset.RED);
     public DogeCVColorFilter   colorFilterBlue  = new LeviColorFilter(LeviColorFilter.ColorPreset.BLUE);

@@ -15,27 +15,24 @@ import java.util.List;
  */
 
 public class DriveFrame {
-    public DcMotor driveLeftFront;
-    public DcMotor driveLeftRear;
-    public DcMotor driveRightFront;
-    public DcMotor driveRightRear;
-
-    public List<DcMotor> allMotors = new ArrayList<>();
+    // 0 = Front Left
+    // 1 = Bottom Left
+    // 2 = Front Rightg
+    // 3 = Rear Right
+    public DcMotor allMotors[] = new DcMotor[4];
 
     private Telemetry telemetry;
 
     public DriveFrame(HardwareMap hwd, Telemetry tel, String motorNames[], boolean reverse){
-        driveLeftFront  = hwd.dcMotor.get(motorNames[0]);
-        driveLeftRear   = hwd.dcMotor.get(motorNames[1]);
-        driveRightFront = hwd.dcMotor.get(motorNames[2]);
-        driveRightRear  = hwd.dcMotor.get(motorNames[3]);
-
+        for(int i=0;i<allMotors.length;i++){
+            allMotors[i] = hwd.dcMotor.get(motorNames[i]);
+        }
         if(!reverse){
-            driveRightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            driveRightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            allMotors[2].setDirection(DcMotorSimple.Direction.REVERSE); // Set FrontRight
+            allMotors[3].setDirection(DcMotorSimple.Direction.REVERSE); // Set BottomRight
         }else{
-            driveLeftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            driveLeftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            allMotors[0].setDirection(DcMotorSimple.Direction.REVERSE); // Set FrontLeft
+            allMotors[1].setDirection(DcMotorSimple.Direction.REVERSE); // Set FrontRight
         }
 
         telemetry = tel;
@@ -45,7 +42,14 @@ public class DriveFrame {
     }
 
     public boolean isMotorBusy(){
-        return driveLeftFront.isBusy() || driveLeftRear.isBusy() || driveRightFront.isBusy() || driveRightRear.isBusy();
+        boolean isBusy = false;
+        for (DcMotor _motor : allMotors){
+            if(_motor.isBusy()){
+                isBusy = true;
+            }
+        }
+
+        return isBusy;
     }
 
     public void setMotorModes(DcMotor.RunMode mode){
@@ -61,23 +65,23 @@ public class DriveFrame {
     }
 
     public void setLeftPower(double power){
-        driveLeftFront.setPower(power);
-        driveLeftRear.setPower(power);
+        allMotors[0].setPower(power);
+        allMotors[1].setPower(power);
     }
 
     public void setRightPower(double power){
-        driveRightFront.setPower(power);
-        driveRightRear.setPower(power);
+        allMotors[2].setPower(power);
+        allMotors[3].setPower(power);
     }
 
     public void setLeftTarget(int target){
-        driveLeftFront.setTargetPosition(target);
-        driveLeftRear.setTargetPosition(target);
+        allMotors[0].setTargetPosition(target);
+        allMotors[1].setTargetPosition(target);
     }
 
     public void setRightTarget(int target){
-        driveRightFront.setTargetPosition(target);
-        driveRightRear.setTargetPosition(target);
+        allMotors[2].setTargetPosition(target);
+        allMotors[3].setTargetPosition(target);
     }
 
 

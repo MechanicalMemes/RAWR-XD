@@ -10,20 +10,30 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Grabbers;
 
 public class RAWRXDBot extends DogeBot {
 
-    private String leftDriveFront;
-    private String leftDriveRear;
-    private String rightDriveFront;
-    private String rightDriveRear;
+    private String leftDriveFront  = "dl1";
+    private String leftDriveRear   = "dl2";
+    private String rightDriveFront = "dr1";
+    private String rightDriveRear  = "dr2";
 
-    private String grabberTopLeft;
-    private String grabberBottomLeft;
-    private String grabberTopRight;
-    private String grabberBottomRight;
+    private String grabberTopLeft    = "gl1";
+    private String grabberBottomLeft = "gl2";
+    private String grabberTopRight   = "gr1";
+    private String grabberBottomRight= "gr2";
 
-    //private double grabberTopLeftOpen;
-    //private double grabberTopLeftOpen;
-   // private double grabberTopLeftOpen;
-    //private double grabberTopLeftOpen;
+    private double GRAB_TOP_LEFT_OPEN = 0;
+    private double GRAB_BOTTOM_LEFT_OPEN = 0;
+    private double GRAB_TOP_RIGHT_OPEN = 0;
+    private double GRAB_BOTTOM_RIGHT_OPEN = 0;
+
+    private double GRAB_TOP_LEFT_CLOSE = 0;
+    private double GRAB_BOTTOM_LEFT_CLOSE = 0;
+    private double GRAB_TOP_RIGHT_CLOSE = 0;
+    private double GRAB_BOTTOM_RIGHT_CLOSE = 0;
+
+    private double GRAB_TOP_LEFT_SOFTOPEN = 0;
+    private double GRAB_BOTTOM_LEFT_SOFTOPEN = 0;
+    private double GRAB_TOP_RIGHT_SOFTOPEN = 0;
+    private double GRAB_BOTTOM_RIGHT_SOFTOPEN = 0;
 
 
     public RAWRXDBot() {

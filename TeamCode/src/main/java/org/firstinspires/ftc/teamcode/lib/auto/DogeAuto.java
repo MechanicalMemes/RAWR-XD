@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.lib.auto;
 
+import com.qualcomm.ftccommon.configuration.RobotConfigFileManager;
+import com.qualcomm.ftccommon.configuration.RobotConfigMap;
+import com.qualcomm.robotcore.hardware.configuration.ConfigurationType;
+import com.qualcomm.robotcore.hardware.configuration.ConfigurationUtility;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.bots.DogeBot;
 import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot_Old;
@@ -21,6 +26,9 @@ public abstract class DogeAuto {
         bot = opMode.bot;
         autoSpeed = opMode.autoSpeed;
         useDogeCV = opMode.useDogeCV;
+
+
+
     }
 
     public abstract void Init();
