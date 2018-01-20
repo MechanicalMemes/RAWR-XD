@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.hardware.subsystems.Grabbers;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.JewelArm;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.NavigationHardware;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.PhoneServo;
 
 /**
  * Created by Victo on 1/17/2018.
@@ -33,6 +34,7 @@ public abstract class DogeBot {
     public NavigationHardware navigationHardware = null;
     public JewelArm jewelArm = null;
     public Lift lift = null;
+    public PhoneServo phoneServo = null;
 
     public DogeBot(HardwareMap hwd){
         hardwareMap = hwd;
