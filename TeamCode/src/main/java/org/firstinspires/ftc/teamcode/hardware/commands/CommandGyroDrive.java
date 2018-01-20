@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.hardware.commands;
 
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.hardware.bots.DogeBot;
 import org.firstinspires.ftc.teamcode.lib.auto.CommandBase;
 import org.firstinspires.ftc.teamcode.lib.auto.DogeAutoOpMode;
 import org.firstinspires.ftc.teamcode.lib.control.PIDController;
@@ -11,18 +10,18 @@ import org.firstinspires.ftc.teamcode.lib.control.PIDController;
  * Created by Victo on 1/17/2018.
  */
 
-public class CommandGyroTurn extends CommandBase {
+public class CommandGyroDrive extends CommandBase {
     private double angle = 0;
     private double speed = 0.5;
-
+    private double distance = 1000;
     private PIDController pidController;
 
-    public CommandGyroTurn(DogeAutoOpMode opMode, double speed, double angle) {
+    public CommandGyroDrive(DogeAutoOpMode opMode, double speed, double angle, double distance) {
         super(opMode);
 
         this.speed = speed;
         this.angle = angle;
-
+        this.distance = distance;
         pidController = new PIDController(bot.P, bot.I, bot.D);
     }
 

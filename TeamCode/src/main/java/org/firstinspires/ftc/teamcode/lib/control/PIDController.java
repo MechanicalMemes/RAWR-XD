@@ -10,11 +10,11 @@ public class PIDController {
 
     double P, I, D;
 
-    private double  SetPoint;
-    private double errSum, lastErr;
-    private ElapsedTime elapsedTime;
-    private boolean elaspReset = false;
-    private boolean bypassError = false;
+    public double  SetPoint;
+    public double errSum, lastErr, lastTime;
+    public ElapsedTime elapsedTime;
+    public boolean elaspReset = false;
+    public boolean bypassError = false;
 
     public PIDController(double P, double I, double D, double setPoint){
         this.P = P;
@@ -43,22 +43,22 @@ public class PIDController {
         }
 
         double now = elapsedTime.milliseconds();
-
+        double timeChange = (now - lastTime);
         double error = SetPoint - input;
 
         if(bypassError){
             error = input;
         }
 
-        errSum += error * now;
+        errSum += error * timeChange;
 
-        double dErr = (error - lastErr) / now;
+        double dErr = (error - lastErr) / timeChange;
 
-        double res  = P * error + I * errSum + D * dErr;
+        double res  = (P * error) +( I * errSum) +( D * dErr);
 
         lastErr = error;
+        lastTime = now;
 
-        elapsedTime.reset();
         return res;
     }
 }

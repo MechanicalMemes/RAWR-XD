@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.hardware.bots;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Hardware;
+
 import org.firstinspires.ftc.teamcode.hardware.sensors.IMU;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.DriveFrame;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Grabbers;
@@ -36,12 +39,13 @@ public class RAWRXDBot extends DogeBot {
     private double GRAB_BOTTOM_RIGHT_SOFTOPEN = 0;
 
 
-    public RAWRXDBot() {
-        super();
-        P = 0.1;
-        I = 0.1;
-        D = 0.1;
-        driveFrame = new DriveFrame(hardwareMap, null, new String[]{"dl1", "dl2", "dl3", "dl4"},false);
+    public RAWRXDBot(HardwareMap hwd) {
+        super(hwd);
+        P = 0.5;
+        I = 0;
+        D = 0.9;
+        PID_THRESH = 0.5;
+        driveFrame = new DriveFrame(hardwareMap, null, new String[]{leftDriveFront, leftDriveRear, rightDriveFront, rightDriveRear},false);
         grabbers = new Grabbers(hardwareMap, new String[]{"lg1", "lg2", "rg1", "rg2"},new double[]{0,1,0,1}, new double[]{0.5,0.5,0.5,0.5}, new double[]{1,0,1,0});
         navigationHardware = new IMU(hardwareMap, "imu");
     }

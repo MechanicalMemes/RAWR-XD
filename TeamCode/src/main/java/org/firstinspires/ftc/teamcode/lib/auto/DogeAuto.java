@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.configuration.ConfigurationUtility;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.bots.DogeBot;
-import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot_Old;
 
 /**
  * Created by Victo on 1/4/2018.

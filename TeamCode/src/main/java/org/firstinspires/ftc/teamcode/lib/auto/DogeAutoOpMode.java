@@ -35,7 +35,7 @@ public abstract class DogeAutoOpMode extends LinearOpMode {
 
         switch (currentConfig){
             case "RAWR-XD":
-                bot = new RAWRXDBot();
+                bot = new RAWRXDBot(hardwareMap);
                 break;
         }
 

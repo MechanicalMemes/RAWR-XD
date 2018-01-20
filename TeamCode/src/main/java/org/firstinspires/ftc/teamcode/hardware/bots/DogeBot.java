@@ -24,8 +24,8 @@ public abstract class DogeBot {
     public Grabbers grabbers = null;
     public NavigationHardware navigationHardware = null;
 
-    public DogeBot(){
-
+    public DogeBot(HardwareMap hwd){
+        hardwareMap = hwd;
     }
 
     public abstract void Init();
