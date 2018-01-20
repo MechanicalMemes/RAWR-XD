@@ -28,11 +28,13 @@ public class RAWRXDBot extends DogeBot {
     private String grabberBottomLeft = "gl2";
     private String grabberTopRight   = "gr1";
     private String grabberBottomRight= "gr2";
+    private String grabberNames[] = new String[]{grabberTopLeft, grabberBottomLeft, grabberTopRight, grabberBottomRight};
 
     private double GRAB_TOP_LEFT_OPEN = 0;
     private double GRAB_BOTTOM_LEFT_OPEN = 0;
     private double GRAB_TOP_RIGHT_OPEN = 0;
     private double GRAB_BOTTOM_RIGHT_OPEN = 0;
+    private double grabberOpenPos[] = new double[]{GRAB_TOP_LEFT_OPEN, GRAB_BOTTOM_LEFT_OPEN, GRAB_TOP_RIGHT_OPEN, GRAB_BOTTOM_RIGHT_OPEN};
 
     private double GRAB_TOP_LEFT_CLOSE = 0;
     private double GRAB_BOTTOM_LEFT_CLOSE = 0;
@@ -46,27 +48,26 @@ public class RAWRXDBot extends DogeBot {
 
 
 
-    private String jewelArm    = "jewel";
+    private String jewelArmName    = "jewel";
     private double JEWEL_UP = 0;
     private double JEWEL_DOWN = 1.0;
 
-    private String
 
     public RAWRXDBot(HardwareMap hwd) {
         super(hwd);
         P = 0.5;
         I = 0;
         D = 0.9;
-        PID_THRESH = 0.5;
+        PID_THRESH =1;
 
         COUNTS_PER_MOTOR_REV =  537.6;
 
-        driveFrame = new DriveFrame(hardwareMap, null, driveMotorNames,false);
-        grabbers = new Grabbers(hardwareMap, new String[]{"lg1", "lg2", "rg1", "rg2"},new double[]{0,1,0,1}, new double[]{0.5,0.5,0.5,0.5}, new double[]{1,0,1,0});
+        driveFrame         = new DriveFrame(hardwareMap, null, driveMotorNames,false);
+        grabbers           = new Grabbers(hardwareMap, grabberNames,grabberOpenPos, new double[]{0.5,0.5,0.5,0.5}, new double[]{1,0,1,0});
         navigationHardware = new IMU(hardwareMap, "imu");
-        jewelArm = new JewelArm(hardwareMap, "jewel", 0,1);
-        lift = new Lift(hardwareMap, new String[]{"lift1","lift2"}, 0,2500);
-        phoneServo = new PhoneServo(hardwareMap, "phone", new double[]{0, 0.8, 1.0});
+        jewelArm           = new JewelArm(hardwareMap, jewelArmName, JEWEL_UP,JEWEL_DOWN);
+        lift               = new Lift(hardwareMap, new String[]{"lift1","lift2"}, 0,2500);
+        phoneServo         = new PhoneServo(hardwareMap, "phone", new double[]{0, 0.8, 1.0});
     }
 
     @Override
