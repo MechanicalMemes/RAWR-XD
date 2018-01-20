@@ -30,7 +30,7 @@ public class CommandGyroTurn extends CommandBase {
     public void Run() {
         angle = -angle;
         // keep looping while we are still active, and not on heading.
-        while (opMode.opModeIsActive() && !onHeading(speed, angle, bot.P, bot.navigationHardware.getError(angle))  && !opMode.isStopRequested()){
+        while (opMode.opModeIsActive() && !onHeading(speed, angle, (int)bot.navigationHardware.getHeading())  && !opMode.isStopRequested()){
             // Update telemetry & Allow time for other processes to run.
 
         }
@@ -43,7 +43,7 @@ public class CommandGyroTurn extends CommandBase {
 
     // Helper Methods
 
-    boolean onHeading(double speed, double angle, double PCoeff, double error) {
+    boolean onHeading(double speed, double target, int heading) {
 
         double   steer ;
         boolean  onTarget = false ;
@@ -52,14 +52,21 @@ public class CommandGyroTurn extends CommandBase {
 
         // determine turn power based on +/- error
 
-        if (Math.abs(error) <= bot.PID_THRESH) {
+        if (Math.abs(heading) <= bot.PID_THRESH) {
             steer = 0.0;
             leftSpeed  = 0.0;
             rightSpeed = 0.0;
             onTarget = true;
         }
         else {
-            steer = getSteer(error, PCoeff);
+            double finalError = pidController.run((int)angle,heading);
+            if(opMode != null){
+                opMode.telemetry.addData("Final error" ,finalError);
+                opMode.telemetry.addData("Raw Angle" ,angle);
+                opMode.telemetry.addData("Raw Angle" ,target);
+                opMode.telemetry.update();
+            }
+            steer = Range.clip(finalError, -1, 1);
             rightSpeed  = speed * steer;
             leftSpeed   = -rightSpeed;
         }
@@ -71,14 +78,6 @@ public class CommandGyroTurn extends CommandBase {
 
         return onTarget;
     }
-    private double getSteer(double error, double PCoeff) {
-        double finalError = pidController.Compute(error);
-        if(opMode != null){
-            opMode.telemetry.addData("Final error" ,finalError);
-            opMode.telemetry.addData("Raw error" ,error);
-            opMode.telemetry.update();
-        }
-        return Range.clip(finalError, -1, 1);
-    }
+
 
 }

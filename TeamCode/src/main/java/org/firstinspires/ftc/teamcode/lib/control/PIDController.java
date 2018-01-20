@@ -1,64 +1,43 @@
 package org.firstinspires.ftc.teamcode.lib.control;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-/**
- * Created by Victo on 1/17/2018.
- */
-
 public class PIDController {
+    private double kP;
+    private double kI;
+    private double kD;
+    private double lastTime;
+    private int integral = 0;
+    private int previousError = 0;
 
-    double P, I, D;
-
-    public double  SetPoint;
-    public double errSum, lastErr, lastTime;
-    public ElapsedTime elapsedTime;
-    public boolean elaspReset = false;
-    public boolean bypassError = false;
-
-    public PIDController(double P, double I, double D, double setPoint){
-        this.P = P;
-        this.I = I;
-        this.D = D;
-
-        this.SetPoint = setPoint;
-
-        elapsedTime = new ElapsedTime();
+    public PIDController(double kP, double kI, double kD) {
+        this.kP = kP;
+        this.kI = kI;
+        this.kD = kD;
     }
 
-    public PIDController(double P, double I, double D){
-        this.P = P;
-        this.I = I;
-        this.D = D;
-
-        this.SetPoint = 0;
-        this.bypassError = true;
-        elapsedTime = new ElapsedTime();
+    public PIDController(){
     }
 
-    public double Compute(double input) {
-        if (!elaspReset) {
-            elapsedTime.reset();
-            elaspReset = true;
-        }
+    public void setVariables(double kP, double kI, double kD) {
+        this.kP = kP;
+        this.kI = kI;
+        this.kD = kD;
+    }
 
-        double now = elapsedTime.milliseconds();
-        double timeChange = (now - lastTime);
-        double error = SetPoint - input;
+    public double run(int targetValue, int position) {
+        double dt = (System.currentTimeMillis() - lastTime);
+        lastTime = System.currentTimeMillis();
 
-        if(bypassError){
-            error = input;
-        }
+        int angleError = (targetValue - position);
+        angleError -= (360*Math.floor(0.5+(((double) angleError)/360.0)));
 
-        errSum += error * timeChange;
+        int error = angleError;
 
-        double dErr = (error - lastErr) / timeChange;
+        integral += kI * error * dt;
 
-        double res  = (P * error) +( I * errSum) +( D * dErr);
+        double u = (kP * error + integral + kD * (error - previousError) / dt);
 
-        lastErr = error;
-        lastTime = now;
+        previousError = error;
 
-        return res;
+        return u;
     }
 }

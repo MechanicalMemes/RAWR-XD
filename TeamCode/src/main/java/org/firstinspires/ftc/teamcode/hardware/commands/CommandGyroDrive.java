@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware.commands;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.lib.auto.CommandBase;
@@ -21,18 +22,89 @@ public class CommandGyroDrive extends CommandBase {
 
         this.speed = speed;
         this.angle = angle;
-        this.distance = distance;
+        this.distance = bot.convertEncoder(distance);
         pidController = new PIDController(bot.P, bot.I, bot.D);
     }
 
     @Override
     public void Run() {
-        angle = -angle;
-        // keep looping while we are still active, and not on heading.
-        while (opMode.opModeIsActive() && !onHeading(speed, angle, bot.P, bot.navigationHardware.getError(angle))  && !opMode.isStopRequested()){
-            // Update telemetry & Allow time for other processes to run.
+        int     newLeftTarget1, newLeftTarget2;
+        int     newRightTarget1, newRightTarget2;
+        int     moveCounts;
+        double  max;
+        double  error;
+        double  steer;
+        double  leftSpeed;
+        double  rightSpeed;
 
+        // Ensure that the opmode is still active
+        if (canRunLoop()) {
+
+            // Determine new target position, and pass to motor controller
+            moveCounts =(int) distance;
+
+            newLeftTarget1 = bot.driveFrame.allMotors[0].getCurrentPosition() + moveCounts;
+            newLeftTarget2 = bot.driveFrame.allMotors[1].getCurrentPosition() + moveCounts;
+            newRightTarget1 = bot.driveFrame.allMotors[0].getCurrentPosition() + moveCounts;
+            newRightTarget2 = bot.driveFrame.allMotors[1].getCurrentPosition() + moveCounts;
+
+            // Set Target and Turn On RUN_TO_POSITION
+            bot.driveFrame.allMotors[0].setTargetPosition(newLeftTarget1);
+            bot.driveFrame.allMotors[1].setTargetPosition(newLeftTarget2);
+            bot.driveFrame.allMotors[2].setTargetPosition(newRightTarget1);
+            bot.driveFrame.allMotors[3].setTargetPosition(newRightTarget2);
+
+            bot.driveFrame.setMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            bot.driveFrame.setLeftPower(speed);
+            bot.driveFrame.setRightPower(speed);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (canRunLoop() && bot.driveFrame.isMotorBusy()){
+
+                // adjust relative speed based on heading error.
+                int heading = (int)bot.navigationHardware.getHeading();
+
+                double finalError = pidController.run((int)angle,heading);
+
+                steer = Range.clip(finalError, -1, 1);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    steer *= -1.0;
+
+                leftSpeed = speed - steer;
+                rightSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                if (max > 1.0)
+                {
+                    leftSpeed /= max;
+                    rightSpeed /= max;
+                }
+
+                bot.driveFrame.setLeftPower(leftSpeed);
+                bot.driveFrame.setRightPower(rightSpeed);
+
+                if(opMode != null){
+                    opMode.telemetry.addData("Final error" ,finalError);
+                    opMode.telemetry.addData("Raw Target" ,angle);
+                    opMode.telemetry.addData("Raw Angle" ,heading);
+
+                }
+
+            }
+
+            // Stop all motion;
+            bot.driveFrame.setLeftPower(0);
+            bot.driveFrame.setRightPower(0);
+
+            bot.driveFrame.setMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+
     }
 
     @Override
@@ -40,44 +112,5 @@ public class CommandGyroDrive extends CommandBase {
 
     }
 
-    // Helper Methods
-
-    boolean onHeading(double speed, double angle, double PCoeff, double error) {
-
-        double   steer ;
-        boolean  onTarget = false ;
-        double leftSpeed;
-        double rightSpeed;
-
-        // determine turn power based on +/- error
-
-        if (Math.abs(error) <= bot.PID_THRESH) {
-            steer = 0.0;
-            leftSpeed  = 0.0;
-            rightSpeed = 0.0;
-            onTarget = true;
-        }
-        else {
-            steer = getSteer(error, PCoeff);
-            rightSpeed  = speed * steer;
-            leftSpeed   = -rightSpeed;
-        }
-
-        bot.driveFrame.setLeftPower(leftSpeed);
-        bot.driveFrame.setRightPower(rightSpeed);
-
-
-
-        return onTarget;
-    }
-    private double getSteer(double error, double PCoeff) {
-        double finalError = pidController.Compute(error);
-        if(opMode != null){
-            opMode.telemetry.addData("Final error" ,finalError);
-            opMode.telemetry.addData("Raw error" ,error);
-            opMode.telemetry.update();
-        }
-        return Range.clip(finalError, -1, 1);
-    }
 
 }
