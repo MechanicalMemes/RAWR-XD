@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.control;
+package org.firstinspires.ftc.teamcode.lib.control;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.firstinspires.ftc.teamcode.control.Controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;

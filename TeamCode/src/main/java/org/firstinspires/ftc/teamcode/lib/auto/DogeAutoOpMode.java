@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.hardware.bots.DogeBot;
 import org.firstinspires.ftc.teamcode.hardware.bots.RAWRXDBot;
+import org.firstinspires.ftc.teamcode.lib.logging.UniLogger;
 
 /**
  * Created by Victo on 12/31/2017.
@@ -33,9 +34,16 @@ public abstract class DogeAutoOpMode extends LinearOpMode {
 
         currentConfig = configManager.getActiveConfig().getName();
 
+        UniLogger.Log("DOGE-AUTO", "Hardware Config Selected: " + currentConfig);
+        UniLogger.Log("DOGE-AUTO", "Field Position Selected: " + fieldPostion.toString());
+        UniLogger.Log("DOGE-AUTO", "Auto Speed: " + autoSpeed);
+        UniLogger.Log("DOGE-AUTO", "Use DogeCV: " + useDogeCV);
+
         switch (currentConfig){
             case "RAWR-XD":
+                UniLogger.Log("DOGE-AUTO", "Creating RAWR-XD bot for OpModes");
                 bot = new RAWRXDBot(hardwareMap);
+
                 break;
         }
 

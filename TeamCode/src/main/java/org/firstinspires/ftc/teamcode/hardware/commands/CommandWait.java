@@ -11,20 +11,30 @@ import org.firstinspires.ftc.teamcode.lib.auto.DogeAutoOpMode;
 
 public class CommandWait extends CommandBase {
     private double time;
+    private ElapsedTime timer;
     public CommandWait(DogeAutoOpMode opMode, double time) {
         super(opMode);
         this.time = time;
     }
 
+
     @Override
-    public void Run() {
-        ElapsedTime timer = new ElapsedTime();
-        while (canRunLoop() && timer.seconds() < time){
-        }
+    public void Start() {
+        timer = new ElapsedTime();
+    }
+
+    @Override
+    public void Loop() {
+        opMode.telemetry.addData("Waiting",timer.seconds() + "/" + time );
     }
 
     @Override
     public void Stop() {
+        timer = null;
+    }
 
+    @Override
+    public boolean IsTaskRunning() {
+        return timer.seconds() < time;
     }
 }
