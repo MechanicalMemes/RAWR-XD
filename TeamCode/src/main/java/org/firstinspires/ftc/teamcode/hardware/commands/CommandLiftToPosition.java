@@ -19,19 +19,23 @@ public class CommandLiftToPosition extends CommandBase {
     }
 
     @Override
-    public void Run() {
+    public void Start() {
         bot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         bot.lift.setTarget(position);
+    }
 
-        while(canRunLoop() && bot.lift.isLiftBusy()){
-            bot.lift.liftInput(1.0,true);
-        }
-
-        bot.lift.liftInput(0,true);
+    @Override
+    public void Loop() {
+        bot.lift.liftInput(1.0,true);
     }
 
     @Override
     public void Stop() {
+        bot.lift.liftInput(0,true);
+    }
 
+    @Override
+    public boolean IsTaskRunning() {
+        return bot.lift.isLiftBusy();
     }
 }

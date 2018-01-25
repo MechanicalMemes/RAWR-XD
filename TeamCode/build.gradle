@@ -12,10 +12,8 @@
 apply from: '../build.common.gradle'
 android {
     buildToolsVersion '26.0.2'
+    compileSdkVersion 23
 }
 dependencies {
-    implementation project(':DogeCV')
-    implementation project(':openCVLibrary320')
-    implementation project(':DogeLogger')
 
 }

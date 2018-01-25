@@ -27,18 +27,19 @@ public class CommandGyroTurn extends CommandBase {
     }
 
     @Override
-    public void Run() {
+    public void Start() {
         angle = -angle;
-        // keep looping while we are still active, and not on heading.
-        while (opMode.opModeIsActive() && !onHeading(speed, angle, (int)bot.navigationHardware.getHeading())  && !opMode.isStopRequested()){
-            // Update telemetry & Allow time for other processes to run.
-
-        }
     }
 
     @Override
-    public void Stop() {
+    public void Loop() {}
 
+    @Override
+    public void Stop() {}
+
+    @Override
+    public boolean IsTaskRunning() {
+        return !onHeading(speed, angle, (int)bot.navigationHardware.getHeading())  && !opMode.isStopRequested();
     }
 
     // Helper Methods

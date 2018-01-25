@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.hardware.commands.CommandLiftToPosition;
 import org.firstinspires.ftc.teamcode.hardware.sensors.VuforiaHardware;
 import org.firstinspires.ftc.teamcode.lib.auto.DogeAuto;
 import org.firstinspires.ftc.teamcode.lib.auto.DogeAutoOpMode;
-import org.omg.CORBA.UNKNOWN;
+
 
 /**
  * Created by Victo on 1/20/2018.
